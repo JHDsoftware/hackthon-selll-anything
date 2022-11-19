@@ -16,7 +16,7 @@
         <template v-if="step===0">
           <div class="text-body-1
         font-weight-medium
-        mb-8">What do you want to sell or buy?
+        mb-8">What do you want to trade?
           </div>
           <v-autocomplete
               autofocus
