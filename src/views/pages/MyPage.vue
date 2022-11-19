@@ -87,7 +87,7 @@
           <v-img class="mx-1" max-width="20px" max-length="30px" src="@/assets/kreditkarte.png"></v-img>
           Master Card
         </v-btn>
-        <v-btn class="mt-3" block width="100%" @click="rechargeDialog=false">
+        <v-btn class="mt-3" block width="100%" @click="rechargeDialog=false; rechargeAmount=''">
           Cancel
         </v-btn>
       </v-card>
@@ -127,8 +127,9 @@ export default {
   },
   methods: {
     updateMyWallet() {
-      this.myWallet += parseFloat(this.rechargeAmount);
+      this.myWallet += parseFloat(this.rechargeAmount)
       localStorage.setItem("wallet", this.myWallet)
+      this.rechargeAmount=''
       this.rechargeDialog = false
     },
     logout() {
