@@ -180,7 +180,7 @@ export async function getItemDetail(itemId, side) {
             minPrice,
             maxPrice: Math.max(...orderList.map(it => it.price)),
             avgPrice: orderList.reduce((sum, i) => sum + parseFloat(i.price), 0) / parseFloat(orderList.length),
-            minCount: orderList.filter(it => it.price === minPrice).reduce((sum, i) => sum + parseInt(i.quantity), 0)
+            minCount: orderList.filter(it => parseFloat(it.price) === parseFloat(minPrice)).reduce((sum, i) => sum + parseInt(i.quantity), 0)
         };
     }
 }

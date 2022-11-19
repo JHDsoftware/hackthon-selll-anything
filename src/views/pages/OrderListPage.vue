@@ -62,14 +62,14 @@
                     <div>
                       from
                       <v-avatar size="16">
-                        <v-img :src="'https://api.multiavatar.com/'+t.seller_user_id+'.svg'"></v-img>
+                        <v-img :src="'https://api.multiavatar.com/'+t.user_sell_id+'.svg'"></v-img>
                       </v-avatar>
                     </div>
                     <div>
                       <div>
                         to
                         <v-avatar size="16">
-                          <v-img :src="'https://api.multiavatar.com/'+t.buyer_user_id+'.svg'"></v-img>
+                          <v-img :src="'https://api.multiavatar.com/'+t.user_buy_id+'.svg'"></v-img>
                         </v-avatar>
                       </div>
                     </div>
@@ -132,6 +132,10 @@ export default {
         this.refreshData()
       }
     }
+  },
+  async mounted () {
+    await this.refreshData()
+    console.log(this.transactions)
   },
   methods: {
     async refreshData() {

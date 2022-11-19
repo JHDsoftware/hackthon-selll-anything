@@ -191,8 +191,8 @@
                     </div>
                   </v-card>
                   <v-card width="120px" elevation="0" class="ml-2 pa-2">
-                    <div class="text-caption" v-if="buyOrSell==='buy'">Total Buy Stock</div>
-                    <div class="text-caption" v-else>Total Sell Stock</div>
+                    <div class="text-caption" v-if="buyOrSell==='buy'">Total Stock</div>
+                    <div class="text-caption" v-else>Total Stock</div>
                     <div class="d-flex mt-4">
                       <v-icon small color="success darken-2">mdi-server</v-icon>
                       <v-spacer></v-spacer>
@@ -202,12 +202,12 @@
                     </div>
                   </v-card>
                   <v-card width="120px" elevation="0" class="ml-2 pa-2">
-                    <div class="text-caption" v-if="buyOrSell==='buy'">Min Buy Price</div>
-                    <div class="text-caption" v-else>Min Sell Price</div>
+                    <div class="text-caption" v-if="buyOrSell==='buy'">Min Offer Price</div>
+                    <div class="text-caption" v-else>Min Price</div>
                     <div class="d-flex mt-4">
                       <v-icon small color="error darken-2">mdi-cart-percent</v-icon>
                       <v-spacer></v-spacer>
-                      <div class="text-body-1 text-truncate">
+                      <div class="text-body-2 text-truncate">
                         {{ selectedItemDetail.minPrice| priceDisplay }}({{ selectedItemDetail.minCount }})
                       </div>
                     </div>
@@ -338,8 +338,6 @@ export default {
   },
   methods: {
     async getItemDetail() {
-      console.log(this.buyOrSell, "buy or sell")
-      console.log(this.selectedItemId, "selectedItemId")
       this.selectedItemDetail = await getItemDetail(this.selectedItemId, this.buyOrSell)
       console.log(this.selectedItemDetail, "detail")
     },
