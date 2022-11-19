@@ -1,4 +1,3 @@
-import {child, get, getDatabase, push, ref, remove, set} from "firebase/database";
 import {GlobalDB} from "@/dataLayer/service/firebase/database";
 import {collection, deleteDoc, doc, getDoc, getDocs, query, serverTimestamp, setDoc, where} from "firebase/firestore";
 import {resultOf} from "@/dataLayer/service/firebase/queryUtils";
@@ -17,11 +16,11 @@ import {resultOf} from "@/dataLayer/service/firebase/queryUtils";
  * @return
  */
 export async function addOrder(itemId, priceLow, priceHigh,
-                         quantity, fulfillQuantity, status, side, userId, payment) {
+                               quantity, fulfillQuantity, side, userId, payment) {
     try {
         const newOrderId = doc(collection(GlobalDB, "order"));
 
-        await setDoc(newOrderId,{
+        await setDoc(newOrderId, {
             order_id: newOrderId,
             item_id: itemId,
             price_low: priceLow,
@@ -30,14 +29,17 @@ export async function addOrder(itemId, priceLow, priceHigh,
             fulfilled_quantity: fulfillQuantity,
             side: side,
             user_id: userId,
-            status: status,
-            payment: payment,
             timestamp: serverTimestamp(),
         });
         console.log("Document written with ID: ", newOrderId);
     } catch (e) {
         console.error("Error adding document: ", e);
     }
+}
+
+export const SideOption = {
+    Buy: 'buy',
+    Sell: 'sell'
 }
 
 /**
@@ -95,7 +97,7 @@ export async function getOrdersByMatch(itemId, side) {
     return querySnapshot;
 
 
-   // return db.collection('order').where('item_id', '==', itemId).where('side', '==', side).get();
+    // return db.collection('order').where('item_id', '==', itemId).where('side', '==', side).get();
 }
 
 /**
