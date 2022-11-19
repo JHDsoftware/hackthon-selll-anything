@@ -93,6 +93,7 @@
 
           <div class="d-flex mt-6">
             <v-btn
+                v-if="!loading"
                 @click="showSearchDialog=false"
                 class="mr-2"
                 icon
@@ -124,7 +125,7 @@ export default {
   data: function () {
     return {
       userId: getCurrentUserId(),
-      showSearchDialog: true,
+      showSearchDialog: false,
       showNewOfferDialog: false,
       searchText: '',
       searchTextModel: '',
