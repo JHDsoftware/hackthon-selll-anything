@@ -3,6 +3,7 @@ import {collection, deleteDoc, doc, serverTimestamp, setDoc, where} from "fireba
 import {docContentOf, resultOf} from "@/dataLayer/service/firebase/queryUtils";
 import {getCurrentUserId} from "@/dataLayer/service/firebase/user";
 import {getOneItem} from "@/dataLayer/service/firebase/item";
+import {sortBy} from "lodash-es";
 
 /**
  * 添加order
@@ -104,7 +105,7 @@ export async function getMinPrice(itemId, quantity) {
         price = itemDetail.maxPrice
     } else {
         const arr = itemDetail.orderList
-        _.sortBy(arr, 'price')
+        sortBy(arr, 'price')
 
         for (const order of arr) {
             if (count < quantity) {
@@ -114,7 +115,7 @@ export async function getMinPrice(itemId, quantity) {
                 break;
             }
         }
-        
+
     }
     return {
         count, price
