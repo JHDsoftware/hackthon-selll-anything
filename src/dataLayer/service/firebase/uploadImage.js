@@ -12,8 +12,10 @@ export function nextImageRef(extensionName) {
  * @returns {Promise<void>}
  */
 export async function uploadImage(file) {
-    return await getDownloadURL((await uploadBytes(nextImageRef(
+    const res = (await uploadBytes(nextImageRef(
             file.name.split('.').pop()),
         file
-    )).ref)
+    ))
+    console.log(res)
+    return await getDownloadURL(res.ref)
 }

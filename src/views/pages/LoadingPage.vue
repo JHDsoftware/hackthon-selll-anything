@@ -1,13 +1,26 @@
 <template>
   <div style="width: 100vw;height: 100vh;"
        class="d-flex align-center justify-center">
-    <lottie-vue-player :src="'https://assets2.lottiefiles.com/packages/lf20_l5qvxwtf.json'"></lottie-vue-player>
+    <lottie-web-vue-esm
+        loop
+        :animation-data="require('@/assets/search.json')"
+    />
   </div>
 </template>
 
 <script>
+import LottieWebVueEsm from 'lottie-web-vue'
+
 export default {
-  name: "LoadingPage"
+  name: "LoadingPage",
+  components: {
+    LottieWebVueEsm
+  },
+  mounted() {
+    setTimeout(() => {
+      this.$router.push('/')
+    }, 2000)
+  }
 }
 </script>
 

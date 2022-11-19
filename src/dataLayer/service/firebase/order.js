@@ -8,15 +8,10 @@ import {getCurrentUserId} from "@/dataLayer/service/firebase/user";
  * @param itemId
  * @param price
  * @param quantity
- * @param fulfillQuantity
  * @param side
- * @param userId
  * @return
  */
-export async function addOrder(itemId, price,
-                               quantity,
-                               fulfillQuantity,
-                               side, userId) {
+export async function addOrder(itemId, price, quantity, side) {
     try {
         const newOrderId = doc(collection(GlobalDB, "order"));
 
@@ -25,7 +20,7 @@ export async function addOrder(itemId, price,
             item_id: itemId,
             price: price,
             quantity: quantity,
-            fulfilled_quantity: fulfillQuantity,
+            fulfilled_quantity: 0,
             side: side,
             user_id: getCurrentUserId(),
             timestamp: serverTimestamp(),
@@ -37,8 +32,7 @@ export async function addOrder(itemId, price,
 }
 
 export const SideOption = {
-    Buy: 'buy',
-    Sell: 'sell'
+    Buy: 'buy', Sell: 'sell'
 }
 
 /**
@@ -85,7 +79,7 @@ export async function getOrderOne(orderId) {
  * @param side
  * @return {orders}
  */
-export async function getOrdersByMatch(itemId, side) {
+export async function getOrdersByMatch(itemId) {
     const q = query(collection(GlobalDB, "order"), where("item_id", "==", itemId));
 
     const querySnapshot = await getDocs(q);

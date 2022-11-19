@@ -1,5 +1,5 @@
 <template>
-  <v-container style="background: #f6f6f6" class="fill-height align-start">
+  <v-container style="background: #f6f6f6;width: 100%" class="fill-height align-start">
     <div class="pa-6" style="width: 100%">
       <page-title>
         Submit New Offer
@@ -21,9 +21,8 @@
           <v-autocomplete
               autofocus
               item-text="item_name"
-              item-value="item_id"
+              item-value="item_id.id"
               v-model="selectedItemId"
-              return-object
               :search-input.sync="searchInput"
               placeholder="A Cute... Car!"
               :items="items"
@@ -113,25 +112,26 @@
         </template>
         <template v-else-if="step===2">
           <div style="width: 100%">
-            <v-card elevation="0" class="pa-4 d-flex align-center"
-                    style="border-radius: 16px;width: 100%"
+            <v-card
+                v-if="currentItem"
+                elevation="0" class="pa-4 d-flex align-center"
+                style="border-radius: 16px;width: 100%"
             >
               <v-img style="border-radius: 16px" class="flex-grow-0" width="144" aspect-ratio="1"
-                     src="https://random.imagecdn.app/500/500"></v-img>
+                     :src="currentItem.imageUrl"></v-img>
               <div class="flex-grow-1 ml-4">
                 <div class="text-caption">
-                  Id: Iwadw12387
+                  Id: {{ currentItem.item_id.id }}
                 </div>
                 <div class="text-body-1 font-weight-medium">
-                  Some Item Name
+                  {{ currentItem.item_name }}
                 </div>
                 <div style="max-lines: 3;
                 text-overflow: ellipsis;
                 overflow: hidden;
                 line-clamp: 2"
                      class="text-body-2 mt-1">
-                  Some Item Named wadhuaw dh iuahd uiahdindhawuid hawuidhauihdui ahdui hauid huiawhd uiawhuid haui hdwuh
-                  ahuidia uwn...
+                  {{ currentItem.description }}
                 </div>
 
 
@@ -219,6 +219,7 @@
               </div>
               <div class="mt-4 d-flex">
                 <v-text-field
+                    v-model="amount"
                     placeholder="The amount of your offer"
                     type="number" step="1" min="0"
                     rounded filled>
@@ -227,8 +228,21 @@
               <div class="text-body-1 font-weight-medium">
                 {{ isBuy ? 'the max price I can afford is...' : 'the price for each is....' }}
               </div>
+              <div v-if="isBuy&&amount" class="text-caption">
+                <template v-if="rightNowPrice">
+                  If you pay {{ rightNowPrice|priceDisplay }}, you can directly get the item you need.
+                  <a
+                      @click="price=rightNowPrice">Apply</a>
+                </template>
+                <template v-else>
+                  <v-progress-circular size="8"></v-progress-circular>
+
+                </template>
+
+              </div>
               <div class="mt-4 d-flex">
                 <v-text-field
+                    v-model="price"
                     placeholder="price, e.g. 123.5"
                     type="number" step="0.01" min="0"
                     rounded filled>
@@ -262,6 +276,7 @@ import NextStepButton from "@/views/widgets/NextStepButton";
 import BackStepButton from "@/views/widgets/BackStepButton";
 import {uploadImage} from "@/dataLayer/service/firebase/uploadImage";
 import {addItem, getItems} from "@/dataLayer/service/firebase/item";
+import {addOrder, SideOption} from "@/dataLayer/service/firebase/order";
 
 export default {
   name: "OrderSubmitPage",
@@ -274,7 +289,12 @@ export default {
     },
     amount(val) {
       if (this.isBuy && val) {
-        
+        setTimeout(() => {
+          this.rightNowPrice = 12.5
+        }, 2000)
+
+      } else {
+        this.rightNowPrice = ''
       }
     }
   },
@@ -286,6 +306,10 @@ export default {
       console.log(this.file)
       return this.file ? URL.createObjectURL(this.file) : null
     },
+    currentItem: function () {
+      console.log(this.items, this.selectedItemId)
+      return this.items.find(it => it.item_id.id === this.selectedItemId)
+    }
   },
   data: function () {
     return {
@@ -294,7 +318,7 @@ export default {
       itemDesc: '',
       step: 0,
       file: null,
-      items: ['apple', 'banana', 'banana2'],
+      items: [],
       selectedItemId: null,
       searchInput: '',
       lastSearchInput: '',
@@ -316,9 +340,11 @@ export default {
     },
     async reloadItems() {
       this.items = await getItems()
-      console.log(this.items, 'items')
     },
-    submitOffer() {
+    async submitOffer() {
+      await addOrder(this.selectedItemId,
+          this.price, this.amount,
+          this.isBuy ? SideOption.Buy : SideOption.Sell)
       this.$router.push('/loading')
     },
     startAddItem() {
@@ -329,7 +355,9 @@ export default {
     },
     async confirmAddItem() {
       const imageUrl = await uploadImage(this.file)
-      await addItem(this.itemName, this.itemDesc, imageUrl, []);
+      const id = await addItem(this.itemName, this.itemDesc, imageUrl, []);
+      await this.reloadItems()
+      this.selectedItemId = id
       this.step = 2
     },
     lostFocus() {

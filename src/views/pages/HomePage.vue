@@ -50,7 +50,7 @@
         </div>
       </template>
     </v-app-bar>
-    <v-main v-scroll="onScroll" class="overflow-y-auto"  style="background: #f0f0f0;min-height: calc(100vh)" >
+    <v-main v-scroll="onScroll" class="overflow-y-auto" style="background: #f0f0f0;min-height: calc(100vh)">
       <div class="px-6">
         <div style="width: 100%" class="pa-6 py-10 mb-4 d-flex align-center justify-center flex-column">
           <div class="display-1">Explore, Trade and Share</div>
@@ -132,10 +132,6 @@
         <my-page @close="showUserPanel=false"></my-page>
       </v-card>
     </v-dialog>
-    <v-dialog width="300" v-model="rechargeDialog">
-
-    </v-dialog>
-
   </div>
 </template>
 
@@ -160,11 +156,12 @@ export default {
       offsetTop: 0,
       showUserPanel: false,
       userId: getCurrentUserId(),
+      orderList: [],
     };
   },
 
   methods: {
-    gotoSalePage () {
+    gotoSalePage() {
       router.push('orderList')
     },
 
