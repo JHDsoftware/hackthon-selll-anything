@@ -21,7 +21,7 @@ export async function addItem(itemName, desc, imageUrl, tagId) {
             tag_id: tagId,
             timestamp: serverTimestamp(),
         });
-        console.log("Document written with ID: ", docRef.id);
+        console.log("Document written with ID: ", newItemId);
     } catch (e) {
         console.error("Error adding document: ", e);
     }
