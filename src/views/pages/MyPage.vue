@@ -22,7 +22,7 @@
             <v-icon>mdi-wallet</v-icon>
             <div class="d-flex mt-1">
               <div class="text-caption">
-                {{ 1000 | priceDisplay }}
+                {{ myWallet | priceDisplay }}
               </div>
             </div>
           </div>
@@ -80,10 +80,10 @@
           </v-text-field>
         </div>
         <v-spacer></v-spacer>
-          <v-btn :disabled="payRule" block width="100%" color="primary" @click="rechargeDialog=false">
+          <v-btn elevation="0" :disabled="payRule" block width="100%" color="primary" @click="updateMyWallet()">
             <v-img max-width="70px" max-length="110px" src="@/assets/paypal_name.png"></v-img>
           </v-btn>
-          <v-btn :disabled="payRule" class="mt-3" block width="100%" color="orange" @click="rechargeDialog=false">
+          <v-btn elevation="0" :disabled="payRule" class="mt-3" block width="100%" color="orange" @click="updateMyWallet()">
             <v-img class="mx-1" max-width="20px" max-length="30px" src="@/assets/kreditkarte.png"></v-img>
             Master Card
           </v-btn>
@@ -112,14 +112,25 @@ export default {
       return this.rechargeAmount === 0 || this.rechargeAmount === null || this.rechargeAmount === "" || this.rechargeAmount === "0"
     }
   },
+  watch:{
+    myWallet (val) {
+      return val
+    }
+  },
   data: function () {
     return {
+      myWallet: 1000,
       rechargeAmount: null,
       rechargeDialog: false,
       user: getCurrentUser()
     };
   },
   methods: {
+    updateMyWallet () {
+      this.myWallet += parseFloat(this.rechargeAmount);
+      localStorage.setItem("wallet", this.myWallet)
+      this.rechargeDialog=false
+    },
     logout() {
       FireBaseAuth.signOut()
       this.$router.push('/login')
@@ -129,7 +140,7 @@ export default {
     },
   },
   mounted() {
-    console.log(this.user)
+    localStorage.getItem("wallet") ?  this.myWallet = parseFloat(localStorage.getItem("wallet")):  this.myWallet = 1000
   }
 }
 </script>
