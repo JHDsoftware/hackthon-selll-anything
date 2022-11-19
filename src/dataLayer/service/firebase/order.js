@@ -1,9 +1,9 @@
-import {GlobalDB} from "@/plugins/google-fire-base";
-import {collection, deleteDoc, doc, serverTimestamp, setDoc, where} from "firebase/firestore";
+import {GlobalDB} from "@/dataLayer/service/firebase/database";
+import {collection, deleteDoc, doc, orderBy, getDocs, query, serverTimestamp, setDoc, where} from "firebase/firestore";
 import {docContentOf, resultOf} from "@/dataLayer/service/firebase/queryUtils";
 import {getCurrentUserId} from "@/dataLayer/service/firebase/user";
 import {getOneItem} from "@/dataLayer/service/firebase/item";
-import {sortBy} from "lodash-es";
+import { sortBy} from "lodash-es";
 
 /**
  * 添加order
@@ -30,6 +30,20 @@ export async function addOrder(itemId, price, quantity, side) {
     } catch (e) {
         console.error("Error adding document: ", e);
     }
+
+    // const side_reverse = (side === 'buy') ? 'sell' : 'buy';
+    // const opstr = (side === 'buy') ? '<=' : '>=';
+    // const sequence = (side === 'buy') ? 'asc' : 'desc';
+    // const q = query(collection(GlobalDB, "order"), where("item_id", "==", itemId)
+    //     , where('side', '==', side_reverse)
+    //     , where('price', opstr, price),orderBy('price', sequence));
+    // const querySnapshot = await getDocs(q);
+    // const sum =0
+    // querySnapshot.forEach((item)=>{
+    //     sum += item.quantity
+    // })
+
+
 }
 
 export const SideOption = {
