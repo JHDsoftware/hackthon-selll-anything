@@ -1,6 +1,6 @@
-import {collection, deleteDoc, doc, getDoc, getDocs, query, serverTimestamp, setDoc, where} from "firebase/firestore";
+import {collection, deleteDoc, doc, getDocs, query, serverTimestamp, setDoc, where} from "firebase/firestore";
 import {GlobalDB} from "@/dataLayer/service/firebase/database";
-import {resultOf} from "@/dataLayer/service/firebase/queryUtils";
+import {docContentOf, resultOf} from "@/dataLayer/service/firebase/queryUtils";
 
 /**
  * 添加item
@@ -55,16 +55,7 @@ export async function getItems() {
  * @return {Promise<void>}
  */
 export async function getOneItem(itemId) {
-    const docRef = doc(GlobalDB, "item", itemId);
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists()) {
-        console.log("Document data:", docSnap.data());
-    } else {
-        // doc.data() will be undefined in this case
-        console.log("No such document!");
-    }
-    return docSnap;
+    return await docContentOf(doc(GlobalDB, "item", itemId));
 }
 
 /**
