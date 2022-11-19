@@ -213,8 +213,19 @@
                   </v-card>
                 </div>
               </div>
-              <div class="text-body-1 mt-12 font-weight-medium">
-                for..
+              <div class="text-body-1 mt-12 font-weight-medium"
+              >
+                I {{ isBuy ? 'need' : 'will provide' }}...
+              </div>
+              <div class="mt-4 d-flex">
+                <v-text-field
+                    placeholder="The amount of your offer"
+                    type="number" step="1" min="0"
+                    rounded filled>
+                </v-text-field>
+              </div>
+              <div class="text-body-1 font-weight-medium">
+                {{ isBuy ? 'the max price I can afford is...' : 'the price for each is....' }}
               </div>
               <div class="mt-4 d-flex">
                 <v-text-field
@@ -226,17 +237,7 @@
                   </template>
                 </v-text-field>
               </div>
-              <div class="text-body-1 font-weight-medium"
-              >
-                Amount
-              </div>
-              <div class="mt-4 d-flex">
-                <v-text-field
-                    placeholder="The amount of your offer"
-                    type="number" step="1" min="0"
-                    rounded filled>
-                </v-text-field>
-              </div>
+
               <v-btn @click="submitOffer" height="52"
                      rounded
                      elevation="0"
@@ -270,6 +271,11 @@ export default {
       if (val) {
         this.lastSearchInput = val
       }
+    },
+    amount(val) {
+      if (this.isBuy && val) {
+        
+      }
     }
   },
   computed: {
@@ -279,7 +285,7 @@ export default {
     uploadUrl: function () {
       console.log(this.file)
       return this.file ? URL.createObjectURL(this.file) : null
-    }
+    },
   },
   data: function () {
     return {
@@ -293,6 +299,9 @@ export default {
       searchInput: '',
       lastSearchInput: '',
       buyOrSell: null,
+      amount: '',
+      rightNowPrice: '',
+      price: '',
     };
   },
   methods: {
