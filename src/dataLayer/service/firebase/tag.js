@@ -10,7 +10,7 @@ export async function addTag(tagName) {
     try {
         const newTagId = doc(collection(GlobalDB, "tag"));
         await setDoc(newTagId, {
-            tag_id: newTagId,
+            tag_id: newTagId.id,
             tag_name: tagName,
             timestamp: Date.now(),
         });
