@@ -1,6 +1,6 @@
-import {collection, deleteDoc, doc, getDoc, query, setDoc, where} from 'firebase/firestore'
+import {collection, deleteDoc, doc, getDoc, setDoc} from 'firebase/firestore'
 import {FireBaseAuth, FireBaseStore} from '@/plugins/google-fire-base'
-import {child, get, getDatabase, push, ref, remove, set, update} from "firebase/database";
+import {getDatabase, ref, set} from "firebase/database";
 import {GlobalDB} from "@/dataLayer/service/firebase/database";
 
 const userDBPath = 'user'
@@ -19,7 +19,7 @@ export async function login(id, displayName) {
 export function getCurrentUserId() {
     return FireBaseAuth.currentUser?.uid
 }
-
+ 
 export function getCurrentUser() {
     return FireBaseAuth.currentUser
 }

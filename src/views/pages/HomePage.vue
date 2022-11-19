@@ -46,15 +46,6 @@
             <v-icon left small>mdi-plus-circle</v-icon>
             new Offer
           </v-btn>
-          <v-btn
-              elevation="0"
-              class="ml-2"
-              @click="gotoSalePage"
-              color="warning black--text lighten-4"
-              small>
-            <v-icon left small>mdi-plus-circle</v-icon>
-            Exist Order
-          </v-btn>
         </div>
       </template>
     </v-app-bar>
@@ -88,6 +79,9 @@
         </div>
       </div>
     </v-main>
+    <v-navigation-drawer width="340" app right v-model="showMyOrders">
+      <order-list-page></order-list-page>
+    </v-navigation-drawer>
     <v-dialog fullscreen v-model="showSearchDialog">
       <v-card style="width: 100vw;height: 100vh">
         <div class="pa-6 d-flex align-center flex-column justify-center fill-height">
@@ -150,10 +144,11 @@ import MyPage from "@/views/pages/MyPage";
 import {getCurrentUserId} from "@/dataLayer/service/firebase/user";
 import OrderCard from "@/views/widgets/items/OrderCard";
 import router from "@/router";
+import OrderListPage from "@/views/pages/OrderListPage";
 
 export default {
   name: "HomePage",
-  components: {MyPage, OrderCard, VersionDisplay, LogoDisplay},
+  components: {OrderListPage, MyPage, OrderCard, VersionDisplay, LogoDisplay},
   data: function () {
     return {
       showSearchDialog: false,
@@ -163,6 +158,7 @@ export default {
       loading: false,
       offsetTop: 0,
       showUserPanel: false,
+      showMyOrders: true,
       userId: getCurrentUserId(),
       orderList: [],
     };

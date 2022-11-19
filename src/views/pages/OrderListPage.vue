@@ -1,61 +1,84 @@
 <template>
-  <div style="background: #f0f0f0;min-height: calc(100vh)">
+  <div class="pa-4">
     <page-title>
-      Submit New Offer
+      My Offers
       <template #backButton>
         <v-btn outlined style="border-radius: 8px" icon @click="$router.back()">
           <v-icon>mdi-arrow-left</v-icon>
         </v-btn>
       </template>
-      <template #subtitle>
-        meet something special 🐻
-      </template>
     </page-title>
-
-    <v-container>
-      <div class="px-6">
-        <div style="width: 100%" class="pa-6 my-10 mb-4 d-flex align-center justify-center flex-column">
-          <div class="display-1">Transaction Overview</div>
-          <div class="text-body-1 font-weight-black">See all your Transactions😋</div>
-        </div>
+    <div class="mt-12">
+      <div class="py-1"
+           style="display: grid;grid-template-columns: repeat(3,minmax(0,1fr));background: #f0f0f0;border-radius: 24px">
+        <v-card
+            @click="tab=0"
+            style="border-radius: 24px"
+            :color="tab===0?'success black--text lighten-2':'transparent'"
+            :elevation="tab===0?1:0"
+            class="pa-2 d-flex align-center text-caption justify-center"
+        >
+          Active
+        </v-card>
+        <v-card
+            @click="tab=1"
+            style="border-radius: 24px"
+            :color="tab===1?'success black--text lighten-2':'transparent'"
+            :elevation="tab===1?1:0"
+            class="pa-2 d-flex text-caption align-center justify-center"
+        >
+          Complete
+        </v-card>
+        <v-card
+            @click="tab=2"
+            style="border-radius: 24px"
+            :color="tab===2?'success black--text lighten-2':'transparent'"
+            :elevation="tab===2?1:0"
+            class="pa-2 d-flex align-center text-caption justify-center"
+        >
+          Logs
+        </v-card>
       </div>
-      <v-tabs
-          class="ml-3"
-          v-model="tab"
-          background-color="transparent"
-          glow>
-        <v-tab v-for="item in items" :key="item">
-          {{ item }}
-        </v-tab>
-        <v-tab-item>
-          <order-list-item
-              :items="notFinishedData"
-          />
+      <template v-if="tab===0">
+        <div class="py-2">
+          <v-card elevation="0"
+                  class="pa-4 mb-2 d-flex align-center">
+            <v-img
+                src="https://random.imagecdn.app/500/500"
+                :aspect-ratio="1"
+                style="border-radius: 12px"
+                height="64"
+                class="flex-grow-0 mr-4"
+                width="64"/>
+            <div class="d-flex flex-column">
+              <div class="text-caption">Item Name</div>
+              <v-chip small outlined class="text-body-2 d-flex align-center">
+                <v-icon small color="success darken-2">mdi-import</v-icon>
+                &times; 50
+              </v-chip>
 
-        </v-tab-item>
-        <v-tab-item>
-          <order-list-item
-              :items="finishedData"
-          />
-
-        </v-tab-item>
-      </v-tabs>
-
-
-      <version-display></version-display>
-    </v-container>
+              <v-spacer></v-spacer>
+              <div class="d-flex">
+                <div class="text-caption font-weight-bold">@{{ 15 | priceDisplay }}</div>
+              </div>
+            </div>
+            <div>
+              <v-icon>mdi-dots-horiznotal</v-icon>
+            </div>
+          </v-card>
+        </div>
+      </template>
+    </div>
   </div>
 </template>
 
 <script>
-import VersionDisplay from "@/views/widgets/VersionDisplay";
 import {getCurrentUserId} from "@/dataLayer/service/firebase/user";
-import OrderListItem from "@/views/widgets/items/OrderListItem";
 import router from "@/router";
 import PageTitle from "@/views/widgets/PageTitle";
 
 export default {
-  components: {PageTitle, VersionDisplay, OrderListItem},
+  components: {PageTitle},
   name: "OrderListPage",
   computed: {
     finishedData() {
@@ -67,9 +90,8 @@ export default {
   },
   data: () => {
     return {
-      tab: null,
+      tab: 0,
       userId: getCurrentUserId(),
-      items: ["In process", "Ordered"],
       listItems: [
         {
           avatar: 'https://api.multiavatar.com/' + getCurrentUserId() + '.svg',

@@ -16,7 +16,6 @@ import {sortBy} from "lodash-es";
 export async function addOrder(itemId, price, quantity, side) {
     try {
         const newOrderId = doc(collection(GlobalDB, "order"));
-
         await setDoc(newOrderId, {
             order_id: newOrderId.id,
             item_id: itemId,
