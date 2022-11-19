@@ -130,16 +130,28 @@ export async function getOrderOne(orderId) {
 export async function getItemDetail(itemId, side) {
     //array
     const orderList = await resultOf(query(collection(GlobalDB, "order"), where("item_id", "==", itemId), where('side', '==', side)));
-    const minPrice = Math.min(...orderList.map(it => it.price))
-    return {
-        ...(await getOneItem(itemId)),
-        orderList,
-        totalStock: orderList.reduce((sum, i) => sum + i.quantity, 0),
-        minPrice,
-        maxPrice: Math.max(...orderList.map(it => it.price)),
-        avgPrice: orderList.reduce((sum, i) => sum + i.price, 0) / orderList.length,
-        minCount: orderList.filter(it => it.price === minPrice).reduce((sum, i) => sum + i.quantity, 0)
-    };
+    if(orderList.length === 0) {
+        return {
+            ...(await getOneItem(itemId)),
+            orderList,
+            totalStock: 0,
+            minPrice: 0,
+            maxPrice: 0,
+            avgPrice: 0,
+            minCount: 0
+        };
+    } else {
+        const minPrice = Math.min(...orderList.map(it => it.price));
+        return {
+            ...(await getOneItem(itemId)),
+            orderList,
+            totalStock: orderList.reduce((sum, i) => sum + parseInt(i.quantity), 0),
+            minPrice,
+            maxPrice: Math.max(...orderList.map(it => it.price)),
+            avgPrice: orderList.reduce((sum, i) => sum + parseFloat(i.price), 0) / parseFloat(orderList.length),
+            minCount: orderList.filter(it => it.price === minPrice).reduce((sum, i) => sum + parseInt(i.quantity), 0)
+        };
+    }
 }
 
 /**
