@@ -220,6 +220,7 @@
               </div>
               <div class="mt-4 d-flex">
                 <v-text-field
+                    autofocus
                     v-model="amount"
                     placeholder="The amount of your offer"
                     type="number" step="1" min="0"
@@ -236,8 +237,7 @@
                       @click="price=rightNowPrice">Apply</a>
                 </template>
                 <template v-else>
-                  <v-progress-circular size="8"></v-progress-circular>
-
+                  <v-progress-circular size="12"/>
                 </template>
 
               </div>

@@ -146,14 +146,19 @@ import LogoDisplay from "@/views/widgets/LogoDisplay";
 import MyPage from "@/views/pages/MyPage";
 import {getCurrentUser, getCurrentUserId} from "@/dataLayer/service/firebase/user";
 import OrderCard from "@/views/widgets/items/OrderCard";
-import {getActiveOrder} from "@/dataLayer/service/firebase/order";
+import {getActiveOrder, getOrderByList} from "@/dataLayer/service/firebase/order";
 import OrderListPage from "@/views/pages/OrderListPage";
-
+import {collection, onSnapshot, query} from 'firebase/firestore'
+import {GlobalDB} from "@/plugins/google-fire-base";
 
 export default {
   name: "HomePage",
   components: {MyPage, OrderCard, LogoDisplay, OrderListPage},
   async mounted() {
+    onSnapshot(query(collection(GlobalDB, "order")), (snapshot) => {
+      const res = snapshot.docs.map(it => it.data())
+      this.orderList = getOrderByList(res)
+    });
     this.orderList = await getActiveOrder()
   },
   computed: {

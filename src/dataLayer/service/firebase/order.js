@@ -91,7 +91,7 @@ export async function removeOrder(orderId) {
 export async function getUserOrderList() {
     return await resultOf(query(collection(GlobalDB, "order"), where("user_id", "==", getCurrentUserId())));
 }
- 
+
 
 /**
  * 查询orders list
@@ -103,6 +103,18 @@ export async function getOrderList() {
 
 export async function getUserActiveOrderList() {
     const orderList = await getUserOrderList()
+    return Object.values(groupBy(orderList, (it) => it.item_id + '!!!' + it.side + '!!!' + it.user_id + '!!!' + it.price)).map(it => {
+
+        return it.reduce((obj, i) => {
+            console.log(it.quantity)
+            return {
+                ...i, quantity: parseInt(obj?.quantity ?? 0) + parseInt(i.quantity)
+            }
+        }, null)
+    }).filter(it => it.quantity > 0)
+}
+
+export function getOrderByList(orderList) {
     return Object.values(groupBy(orderList, (it) => it.item_id + '!!!' + it.side + '!!!' + it.user_id + '!!!' + it.price)).map(it => {
 
         return it.reduce((obj, i) => {
@@ -149,7 +161,7 @@ export async function getOrderOne(orderId) {
 export async function getItemDetail(itemId, side) {
     //array
     const orderList = await resultOf(query(collection(GlobalDB, "order"), where("item_id", "==", itemId), where('side', '==', side)));
-    if(orderList.length === 0) {
+    if (orderList.length === 0) {
         return {
             ...(await getOneItem(itemId)),
             orderList,
