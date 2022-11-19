@@ -1,5 +1,4 @@
-
-import { getDatabase, ref, set, child, push, get, remove } from "firebase/database";
+import {child, get, getDatabase, push, ref, remove, set} from "firebase/database";
 
 /**
  * 添加item
@@ -7,51 +6,48 @@ import { getDatabase, ref, set, child, push, get, remove } from "firebase/databa
  * @param desc
  * @param imageUrl
  * @param tagId(list)
- * @return 
+ * @return
  */
-   export function addItem(itemName, desc, imageUrl, tagId) {
+export function addItem(itemName, desc, imageUrl, tagId) {
     const db = getDatabase();
     const newItemId = push(child(ref(db), 'item')).key;
     set(ref(db, 'item/' + newItemId), {
-      item_id: newItemId,
-      item_name: itemName,
-      description: desc,
-      imageUrl: imageUrl,
-      tag_id: tagId,
-      timestamp: Date.now(),
+        item_id: newItemId,
+        item_name: itemName,
+        description: desc,
+        imageUrl: imageUrl,
+        tag_id: tagId,
+        timestamp: Date.now(),
     });
-  }
+}
 
-  /**
+/**
  * 删除item
  * @param itemId
- * @return 
+ * @return
  */
-   export function removeItem(itemId) {
+export function removeItem(itemId) {
     const db = getDatabase();
     remove(ref(db, 'item/' + itemId));
-  }
-  
-  /**
-   * 查询一个item
-   * @param itemId
-   * @return {Promise<void>}
-   */
-   export async function getItemOne(itemId) {
-      const db = getDatabase();
-      const snapshot = await get(ref(db, '/item/' + itemId))
-      const item = snapshot.val();
-      return item;
-  }
+}
 
-  /**
-   * 查询多个item
-   * @param tagId
-   * @return {Promise<void>}
-   */
-   export async function getItemsByTag(tagId) {
+/**
+ * 查询一个item
+ * @param itemId
+ * @return {Promise<void>}
+ */
+export async function getItemOne(itemId) {
     const db = getDatabase();
-    const items = db.collection('item').where('tag_id','array-conctains',tagId).get();
-    
-    return items;
+    const snapshot = await get(ref(db, '/item/' + itemId))
+    return snapshot.val();
+}
+
+/**
+ * 查询多个item
+ * @param tagId
+ * @return {Promise<void>}
+ */
+export async function getItemsByTag(tagId) {
+    const db = getDatabase();
+    return db.collection('item').where('tag_id', 'array-conctains', tagId).get();
 }
