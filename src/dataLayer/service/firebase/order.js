@@ -96,7 +96,7 @@ export async function getOrderList() {
 
 export async function getActiveOrder() {
     const orderList = await getOrderList()
-    return Object.values(groupBy(orderList, (it) => it.side + '!!!' + it.user_id + '!!!' + it.price)).map(it => {
+    return Object.values(groupBy(orderList, (it) => it.side + '!!!' + it.user_id)).map(it => {
         return it.reduce((obj, i) => {
             return {
                 ...i, quantity: parseInt(obj?.quantity ?? 0) + parseInt(i.quantity)
