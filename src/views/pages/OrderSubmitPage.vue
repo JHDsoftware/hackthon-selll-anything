@@ -20,7 +20,9 @@
           </div>
           <v-autocomplete
               autofocus
-              v-model="selectedItem"
+              item-text="item_name"
+              item-value="item_id"
+              v-model="selectedItemId"
               return-object
               :search-input.sync="searchInput"
               placeholder="A Cute... Car!"
@@ -43,7 +45,7 @@
               </v-list-item>
             </template>
           </v-autocomplete>
-          <next-step-button v-if="selectedItem" @click="step=2"/>
+          <next-step-button v-if="selectedItemId" @click="step=2"/>
         </template>
         <template v-else-if="step===1">
           <div>
@@ -285,7 +287,7 @@ export default {
       step: 0,
       file: null,
       items: ['apple', 'banana', 'banana2'],
-      selectedItem: null,
+      selectedItemId: null,
       searchInput: '',
       lastSearchInput: '',
       buyOrSell: null,
@@ -312,11 +314,14 @@ export default {
     },
     lostFocus() {
       if (this.lastSearchInput) {
-        if (!this.selectedItem) {
+        if (!this.selectedItemId) {
           this.startAddItem()
         }
       }
     }
+  },
+  mounted() {
+    this.reloadItems()
   }
 
 }
