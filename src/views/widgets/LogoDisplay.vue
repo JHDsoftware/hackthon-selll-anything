@@ -1,7 +1,7 @@
 <template>
   <div>
     <span class="font-weight-medium">Trade</span>
-    <span class="font-weight-black"> Anything</span>
+    <span class="font-weight-black text-uppercase">Any</span>
   </div>
 </template>
 

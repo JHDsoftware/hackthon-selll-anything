@@ -18,8 +18,7 @@
           <v-img :src="'https://api.multiavatar.com/'+t+'.svg'"></v-img>
         </v-avatar>
       </div>
-
-      <div class="d-flex align-center">
+      <div class="mt-2">
         <div class="text-body-1">
           Real Thing with long name
         </div>
