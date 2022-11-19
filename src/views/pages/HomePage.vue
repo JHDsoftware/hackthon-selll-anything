@@ -135,6 +135,7 @@
         <my-page @close="showUserPanel=false"></my-page>
       </v-card>
     </v-dialog>
+    <v-dialog></v-dialog>
   </div>
 </template>
 
@@ -171,7 +172,7 @@ export default {
       user: getCurrentUser(),
       userId: getCurrentUserId(),
       orderList: [],
-      showMyOrders: false
+      showMyOrders: false,
     };
   },
 

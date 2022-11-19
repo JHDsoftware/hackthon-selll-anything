@@ -4,7 +4,7 @@
         flex-column" style="height: 100vh;background: #f6f6f6">
     <v-card class="text-center py-6 px-2"
             width="100%"
-            rounded
+            style="border-radius: 16px"
             elevation="0"
             max-width="400px">
       <template v-if="!passwordForget">
