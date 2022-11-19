@@ -43,13 +43,13 @@
               </v-list-item>
             </template>
           </v-autocomplete>
-          <next-step-button/>
+          <next-step-button v-if="selectedItem" @click="step=2"/>
         </template>
         <template v-else-if="step===1">
           <div>
             <div class="text-body-1
         font-weight-medium
-        mb-8">Fill in some Details
+        mb-8">Fill in some Details🔍
             </div>
             <div style="width: 100%" class="d-flex justify-center">
               <v-card
@@ -184,7 +184,6 @@
                   placeholder="The amount of your offer"
                   type="number" step="1" min="0"
                   rounded filled>
-
               </v-text-field>
             </div>
             <v-btn height="52" rounded elevation="0"
@@ -236,11 +235,12 @@ export default {
   methods: {
     lostFocus() {
       console.log('change')
-      if (!this.selectedItem) {
-        this.step = 1
-      } else {
-        this.step = 2
+      if (this.lastSearchInput) {
+        if (!this.selectedItem) {
+          this.step = 1
+        }
       }
+
     }
   }
 
