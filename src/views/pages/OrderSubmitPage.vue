@@ -119,7 +119,7 @@
             >
               <v-img style="border-radius: 16px" class="flex-grow-0" width="144" aspect-ratio="1"
                      :src="currentItem.imageUrl"></v-img>
-              <div class="flex-grow-1 ml-4">
+              <div class="flex-grow-1 ml-4 overflow-auto">
                 <div class="text-caption">
                   Id: {{ currentItem.item_id }}
                 </div>
