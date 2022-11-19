@@ -4,32 +4,26 @@ import {docContentOf, resultOf} from "@/dataLayer/service/firebase/queryUtils";
 
 /**
  * 添加transaction
- * @param orderSellId
- * @param orderBuyId
  * @param userSellId
  * @param userBuyId
  * @param itemId
- * @param status(boolean)
  * @param price
  * @param quantity
- * @param payment
  * @return
  */
-export async function addTran(orderBuyId, orderSellId, userBuyId, userSellId, itemId, status, price, quantity, payment) {
+export async function addTran(userBuyId, userSellId, itemId, price, quantity) {
     try {
         const newTranId = doc(collection(GlobalDB, "transaction"));
 
         await setDoc(newTranId, {
             transaction_id: newTranId.id,
-            order_buy_id: orderBuyId,
-            order_sell_id: orderSellId,
             user_sell_id: userSellId,
             user_buy_id: userBuyId,
             item_id: itemId,
             price: price,
             quantity: quantity,
-            status: status,
-            payment: payment,
+            status: 1,
+            payment: 1,
             timestamp: Date.now(),
         });
         console.log("Document written with ID: ", newTranId);

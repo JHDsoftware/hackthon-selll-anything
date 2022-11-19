@@ -12,7 +12,7 @@
     </v-img>
     <div class="pa-2 px-4">
       <div class="text-caption">
-        <span v-if="!isBuy" class="success--text text--darken-3 font-weight-medium">Needed</span>
+        <span v-if="isBuy" class="success--text text--darken-3 font-weight-medium">Needed</span>
         <span v-else class="error--text text--darken-3 font-weight-medium">Provided</span>
         by
         <v-avatar size="16" class="ml-1">

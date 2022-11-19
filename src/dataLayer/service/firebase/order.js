@@ -1,9 +1,25 @@
-import {GlobalDB} from "@/dataLayer/service/firebase/database";
-import {collection, deleteDoc, doc, orderBy, getDocs, query, serverTimestamp, setDoc, where} from "firebase/firestore";
+import {collection, deleteDoc, doc, orderBy, query, serverTimestamp, setDoc, where} from "firebase/firestore";
 import {docContentOf, resultOf} from "@/dataLayer/service/firebase/queryUtils";
 import {getCurrentUserId} from "@/dataLayer/service/firebase/user";
 import {getOneItem} from "@/dataLayer/service/firebase/item";
-import { sortBy} from "lodash-es";
+import {groupBy, sortBy} from "lodash-es";
+import {GlobalDB} from "@/plugins/google-fire-base";
+import {addTran} from "@/dataLayer/service/firebase/transaction";
+
+export async function addOrderInternal(itemId, price, quantity, side, type = OperationType.Add) {
+    const newOrderId = doc(collection(GlobalDB, "order"));
+    await setDoc(newOrderId, {
+        order_id: newOrderId.id,
+        item_id: itemId,
+        price: price,
+        quantity: quantity,
+        side: side,
+        type: type,
+        user_id: getCurrentUserId(),
+        timestamp: serverTimestamp(),
+    });
+
+}
 
 /**
  * 添加order
@@ -14,34 +30,39 @@ import { sortBy} from "lodash-es";
  * @return
  */
 export async function addOrder(itemId, price, quantity, side) {
-    try {
-        const newOrderId = doc(collection(GlobalDB, "order"));
-        await setDoc(newOrderId, {
-            order_id: newOrderId.id,
-            item_id: itemId,
-            price: price,
-            quantity: quantity,
-            side: side,
-            type: OperationType.Add,
-            user_id: getCurrentUserId(),
-            timestamp: serverTimestamp(),
-        });
-        console.log("Document written with ID: ", newOrderId);
-    } catch (e) {
-        console.error("Error adding document: ", e);
-    }
 
-    // const side_reverse = (side === 'buy') ? 'sell' : 'buy';
-    // const opstr = (side === 'buy') ? '<=' : '>=';
-    // const sequence = (side === 'buy') ? 'asc' : 'desc';
-    // const q = query(collection(GlobalDB, "order"), where("item_id", "==", itemId)
-    //     , where('side', '==', side_reverse)
-    //     , where('price', opstr, price),orderBy('price', sequence));
-    // const querySnapshot = await getDocs(q);
-    // const sum =0
-    // querySnapshot.forEach((item)=>{
-    //     sum += item.quantity
-    // })
+    addOrderInternal(itemId, price, quantity, side)
+    const isBuy = side === 'buy'
+    const sideReverse = (side === 'buy') ? 'sell' : 'buy';
+    const operator = (side === 'buy') ? '<=' : '>=';
+    const sequence = (side === 'buy') ? 'asc' : 'desc';
+    const q = query(collection(GlobalDB, "order"), where("item_id", "==", itemId), where('side', '==', sideReverse), where('price', operator, price), orderBy('price', sequence));
+    const items = await resultOf(q);
+
+    const group = Object.values(groupBy(items, (it) => it.user_id + '!!!' + it.price)).map(it => {
+        return it.reduce((obj, i) => {
+            if (!obj) {
+                obj = i
+                obj.quantity = 0
+            }
+            return {
+                ...obj, quantity: parseInt(obj.quantity) + parseInt(i.quantity)
+            }
+        }, null)
+    }).filter(it => it.quantity > 0)
+
+    let requiredQuantity = quantity
+
+    for (const record of group) {
+        const [buyer, seller] = isBuy ? [getCurrentUserId(), record.user_id] : [record.user_id, getCurrentUserId()]
+        const insertQuantity = Math.min(requiredQuantity, record.quantity)
+        await addTran(buyer, seller, itemId, record.price, insertQuantity)
+        await addOrderInternal(itemId, record.price, -insertQuantity, side, OperationType.FullFilled)
+        requiredQuantity -= insertQuantity
+        if (requiredQuantity === 0) {
+            break
+        }
+    }
 
 
 }
