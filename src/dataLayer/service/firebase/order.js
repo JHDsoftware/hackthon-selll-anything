@@ -112,6 +112,7 @@ export async function getMinPrice(itemId, quantity) {
                 count += order.quantity
             } else {
                 price = order.price
+                count = -1
                 break;
             }
         }
