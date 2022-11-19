@@ -1,5 +1,5 @@
 import {GlobalDB} from "@/dataLayer/service/firebase/database";
-import {collection, deleteDoc, doc, getDoc, getDocs, query, serverTimestamp, setDoc, where} from "firebase/firestore";
+import {collection, deleteDoc, doc, serverTimestamp, setDoc, where} from "firebase/firestore";
 import {docContentOf, resultOf} from "@/dataLayer/service/firebase/queryUtils";
 import {getCurrentUserId} from "@/dataLayer/service/firebase/user";
 import {getOneItem} from "@/dataLayer/service/firebase/item";
@@ -72,53 +72,54 @@ export async function getOrderOne(orderId) {
  * @param side
  * @return {orders}
  */
-export async function getOrderListByMatch(itemId, side) {
+export async function getItemDetail(itemId, side) {
     //array
     const orderList = await resultOf(collection(GlobalDB, "order"), where("item_id", "==", itemId), where('side', '==', side));
-    const queryOrder = {};
-    let totalPrice;
-    queryOrder["orderList"] = orderList
-    queryOrder["itemInfo"] = await getOneItem(itemId);
-
-    for (let i = 0; i < orderList.length; i++) {
-        queryOrder["totalStock"] += orderList[i].quantity;
-        queryOrder["minPrice"] = Math.min(queryOrder["minPrice"], orderList[i].price);
-        queryOrder["maxPrice"] = Math.max(queryOrder["maxPrice"], orderList[i].price);
-        totalPrice += orderList[i].price;
-    }
-    queryOrder["avgPrice"] = totalPrice / orderList.length;
-
-    for (let i = 0; i < orderList.length; i++) {
-        if(orderList[i].price == queryOrder["avgPrice"]){
-            queryOrder["meanQuantity"] += orderList[i].quantity;
-        }
-    }
-
-    return queryOrder;
+    const minPrice = Math.min(...orderList.map(it => it.price))
+    return {
+        ...(await getOneItem(itemId)),
+        orderList,
+        totalStock: orderList.reduce((sum, i) => sum + i.quantity, 0),
+        minPrice,
+        maxPrice: Math.max(...orderList.map(it => it.price)),
+        avgPrice: orderList.reduce((sum, i) => sum + i.price, 0) / orderList.length,
+        minCount: orderList.filter(it => it.price === minPrice).reduce((sum, i) => sum + i.quantity, 0)
+    };
 }
 
 /**
  * 买家给固定的quantity， 想要知道花最少钱的能买到这个固定数量的东西, 根据item_id，
  * @param itemId
- * @param side
+ * @param quantity
  * @return price, quantity(不一定可以买完）
  */
 export async function getMinPrice(itemId, quantity) {
-    const queryOrder = await getOrderListByMatch(itemId, "sell");
+    const itemDetail = await getItemDetail(itemId, "sell");
 
-    const minPrice = {};
-    if(queryOrder["totalStock"] <= quantity){
-        minPrice["quantity"] = quantity;
-        for (let i = 0; i < queryOrder["orderList"].length; i++){
-            minPrice["price"] += queryOrder["orderList"][i].price * queryOrder["orderList"][i].quantity
+    let price = 0;
+    let count = 0;
+
+    if (itemDetail.totalStock <= quantity) {
+        count = itemDetail.totalStock
+        price = itemDetail.maxPrice
+    } else {
+        const arr = itemDetail.orderList
+        _.sortBy(arr, 'price')
+
+        for (const order of arr) {
+            if (count < quantity) {
+                count += order.quantity
+            } else {
+                price = order.price
+                break;
+            }
         }
-        return minPrice;
+        
+    }
+    return {
+        count, price
     }
 
-
-    for (let i = 0; i < orderList.length; i++) {
-
-    }
 
 }
 
