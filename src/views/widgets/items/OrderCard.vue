@@ -12,7 +12,7 @@
     </v-img>
     <div class="pa-2 px-4">
       <div class="text-caption">
-        is
+        {{ t.quantity }}
         <span v-if="t.side === 'buy'" class="success--text text--darken-3 font-weight-medium">Needed</span>
         <span v-else class="error--text text--darken-3 font-weight-medium">Provided</span>
         by
@@ -20,21 +20,13 @@
           <v-img :src="'https://api.multiavatar.com/'+t.user_id+'.svg'"></v-img>
         </v-avatar>
       </div>
-      <div class="mt-2">
-        <div class="text-body-1">
-          {{orderInfo.item_name}}
+      <div class="mt-0">
+        <div class="text-body-1 text-capitalize">
+          {{ orderInfo.item_name }}
         </div>
       </div>
-      <div class="mt-1 font-weight-medium">
+      <div class="mt-1 text-body-2 font-weight-medium">
         {{ t.price | priceDisplay }}
-      </div>
-      <div class="text-caption mt-n1 d-flex align-center">
-        <div>
-          {{t.quantity}} in stock
-        </div>
-
-
-        <v-spacer></v-spacer>
       </div>
 
 
@@ -47,7 +39,7 @@ import {getOneItem} from "@/dataLayer/service/firebase/item";
 
 export default {
   name: "OrderCard",
-  data: ()=> {
+  data: () => {
     return {
       orderInfo: ''
     }
