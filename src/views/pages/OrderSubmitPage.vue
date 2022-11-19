@@ -117,6 +117,9 @@
               <v-img style="border-radius: 16px" class="flex-grow-0" width="144" aspect-ratio="1"
                      src="https://random.imagecdn.app/500/500"></v-img>
               <div class="flex-grow-1 ml-4">
+                <div class="text-caption">
+                  Id: Iwadw12387
+                </div>
                 <div class="text-body-1 font-weight-medium">
                   Some Item Name
                 </div>
@@ -124,13 +127,12 @@
                 text-overflow: ellipsis;
                 overflow: hidden;
                 line-clamp: 2"
-                     class="text-body-2 mt-4">
+                     class="text-body-2 mt-1">
                   Some Item Named wadhuaw dh iuahd uiahdindhawuid hawuidhauihdui ahdui hauid huiawhd uiawhuid haui hdwuh
                   ahuidia uwn...
                 </div>
-                <div class="text-caption mt-4">
-                  Id: Iwadw12387
-                </div>
+
+
               </div>
             </v-card>
             <div class="text-body-1 mt-12 font-weight-medium">
@@ -168,35 +170,78 @@
               </v-card>
 
             </div>
-            <div class="text-body-1 mt-12 font-weight-medium">
-              for..
-            </div>
-            <div class="mt-4 d-flex">
-              <v-text-field
-                  placeholder="price, e.g. 123.5"
-                  type="number" step="0.01" min="0"
-                  rounded filled>
-                <template #append>
-                  <v-icon size="20">mdi-currency-eur</v-icon>
-                </template>
-              </v-text-field>
-            </div>
-            <div class="text-body-1 font-weight-medium"
-            >
-              Amount
-            </div>
-            <div class="mt-4 d-flex">
-              <v-text-field
-                  placeholder="The amount of your offer"
-                  type="number" step="1" min="0"
-                  rounded filled>
-              </v-text-field>
-            </div>
-            <v-btn @click="submitOffer" height="52" rounded elevation="0"
-                   color="primary lighten-4 black--text">
-              Submit Offer
-              <v-icon right>mdi-check</v-icon>
-            </v-btn>
+            <template v-if="buyOrSell">
+              <div
+                  class="mt-2 ">
+                <div class="text-body-1 mt-12 font-weight-medium">
+                  Current market status
+                </div>
+                <div class="d-flex mt-4">
+                  <v-card width="120px" elevation="0" class="pa-2">
+                    <div class="text-caption">Avg Price</div>
+                    <div class="d-flex mt-4">
+                      <v-icon small color="warning darken-2">mdi-finance</v-icon>
+                      <v-spacer></v-spacer>
+                      <div class="text-body-1">
+                        {{ 15.95 | priceDisplay }}
+                      </div>
+                    </div>
+                  </v-card>
+                  <v-card width="120px" elevation="0" class="ml-2 pa-2">
+                    <div class="text-caption">Total Stock</div>
+                    <div class="d-flex mt-4">
+                      <v-icon small color="success darken-2">mdi-server</v-icon>
+                      <v-spacer></v-spacer>
+                      <div class="text-body-1">
+                        {{ 125 }}
+                      </div>
+                    </div>
+                  </v-card>
+                  <v-card width="120px" elevation="0" class="ml-2 pa-2">
+                    <div class="text-caption">Min Price</div>
+                    <div class="d-flex mt-4">
+                      <v-icon small color="error darken-2">mdi-cart-percent</v-icon>
+                      <v-spacer></v-spacer>
+                      <div class="text-body-1">
+                        {{ 12.5| priceDisplay }}(12)
+                      </div>
+                    </div>
+                  </v-card>
+                </div>
+              </div>
+              <div class="text-body-1 mt-12 font-weight-medium">
+                for..
+              </div>
+              <div class="mt-4 d-flex">
+                <v-text-field
+                    placeholder="price, e.g. 123.5"
+                    type="number" step="0.01" min="0"
+                    rounded filled>
+                  <template #append>
+                    <v-icon size="20">mdi-currency-eur</v-icon>
+                  </template>
+                </v-text-field>
+              </div>
+              <div class="text-body-1 font-weight-medium"
+              >
+                Amount
+              </div>
+              <div class="mt-4 d-flex">
+                <v-text-field
+                    placeholder="The amount of your offer"
+                    type="number" step="1" min="0"
+                    rounded filled>
+                </v-text-field>
+              </div>
+              <v-btn @click="submitOffer" height="52"
+                     rounded
+                     elevation="0"
+                     color="primary lighten-4 black--text">
+                Submit Offer
+                <v-icon right>mdi-check</v-icon>
+              </v-btn>
+            </template>
+
           </div>
         </template>
 
@@ -236,7 +281,7 @@ export default {
     return {
       itemName: '',
       itemDesc: '',
-      step: 0,
+      step: 2,
       file: null,
       items: ['apple', 'banana', 'banana2'],
       selectedItem: null,
