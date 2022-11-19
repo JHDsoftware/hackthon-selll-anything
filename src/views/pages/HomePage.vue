@@ -129,13 +129,9 @@
     </v-dialog>
     <v-dialog fullscreen v-model="showUserPanel">
       <v-card style="width: 100vw;height: 100vh">
-        <my-page></my-page>
+        <my-page @close="showUserPanel=false"></my-page>
       </v-card>
     </v-dialog>
-    <v-dialog width="300" v-model="rechargeDialog">
-
-    </v-dialog>
-
   </div>
 </template>
 
@@ -144,6 +140,7 @@ import LogoDisplay from "@/views/widgets/LogoDisplay";
 import VersionDisplay from "@/views/widgets/VersionDisplay";
 import OrderCard from "@/views/widgets/items/OrderCard";
 import MyPage from "@/views/pages/MyPage";
+import {getCurrentUserId} from "@/dataLayer/service/firebase/user";
 
 export default {
   name: "HomePage",
@@ -156,7 +153,8 @@ export default {
       message: '',
       loading: false,
       offsetTop: 0,
-      showUserPanel: false
+      showUserPanel: false,
+      userId: getCurrentUserId(),
     };
   },
 

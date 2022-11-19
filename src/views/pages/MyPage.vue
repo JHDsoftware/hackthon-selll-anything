@@ -5,7 +5,7 @@
     <v-avatar size="80">
       <v-img :src="'https://api.multiavatar.com/'+userId+'.svg'"></v-img>
     </v-avatar>
-    <div class="text-body-1  mt-8">
+    <div class="text-body-1 font-weight-bold mt-8">
       {{ userName }}
       <v-icon x-small v-if="!user.isAnonymous">mdi-pencil</v-icon>
     </div>
@@ -14,7 +14,9 @@
     </div>
     <div class="mt-8"
          style="display: grid;grid-gap:8px;grid-template-columns: repeat(3,minmax(0,1fr))">
-      <v-card class="pa-2" elevation="0" color="#f6f6f6">
+      <v-card
+          width="84"
+          class="pa-2" elevation="0" color="#f6f6f6">
         <v-responsive :aspect-ratio="1">
           <div style="width: 100%;height: 100%" class="d-flex flex-column justify-center align-center">
             <v-icon>mdi-wallet</v-icon>
@@ -38,7 +40,7 @@
           </div>
         </v-responsive>
       </v-card>
-      <v-card class="pa-2" elevation="0" color="#f6f6f6">
+      <v-card @click="logout" class="pa-2" elevation="0" color="#f6f6f6">
         <v-responsive :aspect-ratio="1">
           <div style="width: 100%;height: 100%" class="d-flex flex-column justify-center align-center">
             <v-icon>mdi-logout</v-icon>
@@ -50,6 +52,11 @@
           </div>
         </v-responsive>
       </v-card>
+    </div>
+    <div class="mt-12">
+      <v-btn outlined icon @click="saveUserInfo">
+        <v-icon>mdi-close</v-icon>
+      </v-btn>
     </div>
 
   </div>
