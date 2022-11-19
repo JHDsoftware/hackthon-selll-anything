@@ -58,7 +58,7 @@
         <div style="display: grid;grid-template-columns: repeat(auto-fit,minmax(180px,1fr));grid-gap: 12px">
           <order-card
               v-for="t in orderList"
-              :key="t"
+              :key="t.order_id"
               :t="t"
           />
         </div>
@@ -143,7 +143,7 @@ import VersionDisplay from "@/views/widgets/VersionDisplay";
 import MyPage from "@/views/pages/MyPage";
 import {getCurrentUser, getCurrentUserId} from "@/dataLayer/service/firebase/user";
 import OrderCard from "@/views/widgets/items/OrderCard";
-import {getOrderList} from "@/dataLayer/service/firebase/order";
+import {getActiveOrder} from "@/dataLayer/service/firebase/order";
 import OrderListPage from "@/views/pages/OrderListPage";
 
 
@@ -151,7 +151,7 @@ export default {
   name: "HomePage",
   components: {MyPage, OrderCard, VersionDisplay, LogoDisplay, OrderListPage},
   async mounted() {
-    this.orderList = await getOrderList()
+    this.orderList = await getActiveOrder()
   },
   computed: {
     userName() {

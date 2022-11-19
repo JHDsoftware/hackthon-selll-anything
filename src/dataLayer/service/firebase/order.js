@@ -1,12 +1,12 @@
-import {collection, deleteDoc, doc, orderBy, query, serverTimestamp, setDoc, where} from "firebase/firestore";
+import {collection, deleteDoc, doc, query, serverTimestamp, setDoc, where} from "firebase/firestore";
 import {docContentOf, resultOf} from "@/dataLayer/service/firebase/queryUtils";
 import {getCurrentUserId} from "@/dataLayer/service/firebase/user";
 import {getOneItem} from "@/dataLayer/service/firebase/item";
-import {groupBy, sortBy} from "lodash-es";
+import {groupBy, orderBy, sortBy} from "lodash-es";
 import {GlobalDB} from "@/plugins/google-fire-base";
 import {addTran} from "@/dataLayer/service/firebase/transaction";
 
-export async function addOrderInternal(itemId, price, quantity, side, type = OperationType.Add) {
+export async function addOrderInternal(itemId, price, quantity, side, type = OperationType.Add, userId = getCurrentUserId()) {
     const newOrderId = doc(collection(GlobalDB, "order"));
     await setDoc(newOrderId, {
         order_id: newOrderId.id,
@@ -15,7 +15,7 @@ export async function addOrderInternal(itemId, price, quantity, side, type = Ope
         quantity: quantity,
         side: side,
         type: type,
-        user_id: getCurrentUserId(),
+        user_id: userId,
         timestamp: serverTimestamp(),
     });
 
@@ -34,29 +34,31 @@ export async function addOrder(itemId, price, quantity, side) {
     addOrderInternal(itemId, price, quantity, side)
     const isBuy = side === 'buy'
     const sideReverse = (side === 'buy') ? 'sell' : 'buy';
-    const operator = (side === 'buy') ? '<=' : '>=';
-    const sequence = (side === 'buy') ? 'asc' : 'desc';
-    const q = query(collection(GlobalDB, "order"), where("item_id", "==", itemId), where('side', '==', sideReverse), where('price', operator, price), orderBy('price', sequence));
-    const items = await resultOf(q);
+
+    const q = query(collection(GlobalDB, "order"), where("item_id", "==", itemId));
+    const items = (await resultOf(q)).filter(it => {
+        return it.side === sideReverse && (isBuy ? it.price <= price : it.price >= price)
+    });
+    orderBy(items, ['price'], [isBuy ? 'asc' : 'desc'])
+    console.log(items, 'items')
 
     const group = Object.values(groupBy(items, (it) => it.user_id + '!!!' + it.price)).map(it => {
         return it.reduce((obj, i) => {
-            if (!obj) {
-                obj = i
-                obj.quantity = 0
-            }
             return {
-                ...obj, quantity: parseInt(obj.quantity) + parseInt(i.quantity)
+                ...i, quantity: parseInt(obj?.quantity ?? 0) + parseInt(i.quantity)
             }
         }, null)
     }).filter(it => it.quantity > 0)
+    console.log(group)
 
     let requiredQuantity = quantity
 
     for (const record of group) {
+        console.log(requiredQuantity)
         const [buyer, seller] = isBuy ? [getCurrentUserId(), record.user_id] : [record.user_id, getCurrentUserId()]
         const insertQuantity = Math.min(requiredQuantity, record.quantity)
         await addTran(buyer, seller, itemId, record.price, insertQuantity)
+        await addOrderInternal(itemId, record.price, -insertQuantity, sideReverse, OperationType.FullFilled, record.user_id)
         await addOrderInternal(itemId, record.price, -insertQuantity, side, OperationType.FullFilled)
         requiredQuantity -= insertQuantity
         if (requiredQuantity === 0) {
@@ -90,6 +92,17 @@ export async function removeOrder(orderId) {
  */
 export async function getOrderList() {
     return await resultOf(collection(GlobalDB, "order"));
+}
+
+export async function getActiveOrder() {
+    const orderList = await getOrderList()
+    return Object.values(groupBy(orderList, (it) => it.side + '!!!' + it.user_id + '!!!' + it.price)).map(it => {
+        return it.reduce((obj, i) => {
+            return {
+                ...i, quantity: parseInt(obj?.quantity ?? 0) + parseInt(i.quantity)
+            }
+        }, null)
+    }).filter(it => it.quantity > 0)
 
 }
 

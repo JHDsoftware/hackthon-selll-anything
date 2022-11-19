@@ -60,8 +60,6 @@ export default {
   },
   async mounted() {
     this.orderInfo = await getOneItem(this.t.item_id)
-    console.log(this.t, "t")
-    console.log(this.orderInfo, "t")
   }
 }
 </script>
