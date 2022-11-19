@@ -3,16 +3,9 @@
           color="white"
           elevation="0">
     <v-list three-line>
-      <template v-for="(item, index) in items">
-
-        <v-divider
-            v-if="item.divider"
-            :key="index"
-            :inset="item.inset"
-        ></v-divider>
+      <template v-for="item in items">
 
         <v-list-item
-            v-else
             :key="item.title"
         >
             <v-avatar >
@@ -35,6 +28,7 @@
               <span v-html="item.subtitle"></span>
             </v-list-item-subtitle>
           </v-list-item-content>
+
 
           <v-list-item-action>
             <v-btn icon>

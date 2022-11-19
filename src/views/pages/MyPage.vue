@@ -15,7 +15,7 @@
     <div class="mt-8"
          style="display: grid;grid-gap:8px;grid-template-columns: repeat(3,minmax(0,1fr))">
       <v-card
-          width="84"
+          width="84" @click="rechargeDialog = true"
           class="pa-2" elevation="0" color="#f6f6f6">
         <v-responsive :aspect-ratio="1">
           <div style="width: 100%;height: 100%" class="d-flex flex-column justify-center align-center">
@@ -58,7 +58,38 @@
         <v-icon>mdi-close</v-icon>
       </v-btn>
     </div>
+    <v-dialog transition="dialog-bottom-transition"
+              max-width="350" min-height="450"  v-model="rechargeDialog">
+      <v-card class="px-5 py-3" >
+          <span class="text-body-1 mt-12 font-weight-medium">
+            Recharge Amount
+          </span>
+          <v-spacer></v-spacer>
 
+        <div class="mt-4 d-flex">
+          <v-text-field
+              v-model="rechargeAmount"
+              placeholder="recharge price, e.g. 123.5"
+              type="number" step="0.01" min="0"
+              rounded filled>
+            <template #append>
+              <v-icon size="20">mdi-currency-eur</v-icon>
+            </template>
+          </v-text-field>
+        </div>
+        <v-spacer></v-spacer>
+          <v-btn :disabled="payRule" block width="100%" color="primary" @click="rechargeDialog=false">
+            <v-img max-width="70px" max-length="110px" src="@/assets/paypal_name.png"></v-img>
+          </v-btn>
+          <v-btn :disabled="payRule" class="mt-3" block width="100%" color="orange" @click="rechargeDialog=false">
+            <v-img class="mx-" max-width="20px" max-length="30px" src="@/assets/kreditkarte.png"></v-img>
+            Master Card
+          </v-btn>
+        <v-btn class="mt-3"  block width="100%" @click="rechargeDialog=false">
+          Cancel
+        </v-btn>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -74,10 +105,15 @@ export default {
     },
     userName() {
       return this.user.isAnonymous ? 'Guest' : this.user.displayName
+    },
+    payRule() {
+      return this.rechargeAmount === 0 || this.rechargeAmount === null || this.rechargeAmount === "" || this.rechargeAmount === "0"
     }
   },
   data: function () {
     return {
+      rechargeAmount: null,
+      rechargeDialog: false,
       user: getCurrentUser()
     };
   },
