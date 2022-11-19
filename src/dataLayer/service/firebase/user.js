@@ -1,6 +1,6 @@
 import { doc, setDoc} from 'firebase/firestore'
 import {FireBaseAuth, FireBaseStore} from '@/plugins/google-fire-base'
-import { getDatabase, ref, set, onValue, update } from "firebase/database";
+import { getDatabase, ref, set, onValue, update, child, push, get, remove } from "firebase/database";
 
 const userDBPath = 'user'
 
@@ -65,7 +65,7 @@ export function writeUserData(name, email, psw, balance) {
  export async function getLoggedInUser(userId) {
     const db = getDatabase();
     const snapshot = await get(ref(db, '/user/' + userId))
-    user = snapshot.val();
+    const user = snapshot.val();
     return user;
 }
 
@@ -83,7 +83,7 @@ export function writeUserData(name, email, psw, balance) {
     const db = getDatabase();
     
     onValue(ref(db, '/user/' + userId), (snapshot) => {
-        user = {
+        const user = {
             user_id: userId,
             email: snapshot.val().email,
             password: snapshot.val().password,
@@ -91,13 +91,16 @@ export function writeUserData(name, email, psw, balance) {
             timestamp: snapshot.val().timestamp,
             balance: balance,
         }
+        const updates = {};
+        updates['/user/' + userId] = user;
+        update(ref(db), updates)
     }, {
         onlyOnce: true
     });
     
-    const updates = {};
-    updates['/user/' + userId] = user;
-    return update(ref(db), updates);
+    // const updates = {};
+    // updates['/user/' + userId] = user;
+    //return update(ref(db), updates);
   }
 
 

@@ -1,5 +1,5 @@
 
-import { getDatabase, ref, set, remove } from "firebase/database";
+import { getDatabase, ref, set, child, push, get, remove } from "firebase/database";
 
 /**
  * 添加item
@@ -40,7 +40,7 @@ import { getDatabase, ref, set, remove } from "firebase/database";
    export async function getItemOne(itemId) {
       const db = getDatabase();
       const snapshot = await get(ref(db, '/item/' + itemId))
-      item = snapshot.val();
+      const item = snapshot.val();
       return item;
   }
 
@@ -51,6 +51,7 @@ import { getDatabase, ref, set, remove } from "firebase/database";
    */
    export async function getItemsByTag(tagId) {
     const db = getDatabase();
-    items = db.collection('item').where('tag_id','array-conctains',tagId).get().then(res => {}).catch(error => {});
+    const items = db.collection('item').where('tag_id','array-conctains',tagId).get();
+    
     return items;
 }

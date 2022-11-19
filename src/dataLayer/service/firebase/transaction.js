@@ -1,5 +1,5 @@
 
-import { getDatabase, ref, set, remove } from "firebase/database";
+import { getDatabase, ref, set, child, push, get, remove  } from "firebase/database";
 
 /**
  * 添加transaction
@@ -63,7 +63,7 @@ import { getDatabase, ref, set, remove } from "firebase/database";
    */
    export async function getTransByItem(itemId) {
     const db = getDatabase();
-    transactions = db.collection('transaction').where('item_id','==', itemId).get().then(res => {}).catch(error => {});
+    const transactions = db.collection('transaction').where('item_id','==', itemId).get()
     return transactions;
 }
 
@@ -75,7 +75,8 @@ import { getDatabase, ref, set, remove } from "firebase/database";
    */
    export async function getTransByBuyer(userId, status) {
     const db = getDatabase();
-    trans = db.collection('transaction').where('user_buy_id','==',userId).where('status', '==', status).get().then(res => {}).catch(error => {});
+    const trans = db.collection('transaction').where('user_buy_id','==',userId).where('status', '==', status).get()
+
     return trans;
  }
 
@@ -87,6 +88,7 @@ import { getDatabase, ref, set, remove } from "firebase/database";
    */
   export async function getTransBySeller(userId, status) {
     const db = getDatabase();
-    trans = db.collection('transaction').where('user_sell_id','==',userId).where('status', '==', status).get().then(res => {}).catch(error => {});
+    const trans = db.collection('transaction').where('user_sell_id','==',userId).where('status', '==', status).get()
+    
     return trans;
  }
