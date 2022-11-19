@@ -8,17 +8,17 @@ import {child, get, getDatabase, push, ref, remove, set} from "firebase/database
  * @param tagId(list)
  * @return
  */
-export function addItem(itemName, desc, imageUrl, tagId) {
+export async function addItem(itemName, desc, imageUrl, tagId) {
     const db = getDatabase();
     const newItemId = push(child(ref(db), 'item')).key;
-    set(ref(db, 'item/' + newItemId), {
+    return await set(ref(db, 'item/' + newItemId), {
         item_id: newItemId,
         item_name: itemName,
         description: desc,
         imageUrl: imageUrl,
         tag_id: tagId,
         timestamp: Date.now(),
-    });
+    })
 }
 
 /**

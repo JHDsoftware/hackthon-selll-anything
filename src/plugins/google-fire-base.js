@@ -4,6 +4,7 @@ import {login} from '@/dataLayer/service/firebase/user'
 import router from '@/router'
 import 'firebase/compat/firestore';
 import 'firebase/compat/auth';
+import 'firebase/compat/storage'
 
 import {
     createUserWithEmailAndPassword,
@@ -30,7 +31,7 @@ const firebaseConfig = {
 export const FireBaseApp = firebase.initializeApp(firebaseConfig)
 export const Analytics = getAnalytics(FireBaseApp)
 export const FireBaseAuth = firebase.auth()
-
+export const FireBaseStorageRef = firebase.storage().ref()
 FireBaseAuth.useDeviceLanguage()
 
 FireBaseAuth.onAuthStateChanged(user => {
