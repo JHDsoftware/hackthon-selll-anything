@@ -256,7 +256,7 @@ import PageTitle from "@/views/widgets/PageTitle";
 import NextStepButton from "@/views/widgets/NextStepButton";
 import BackStepButton from "@/views/widgets/BackStepButton";
 import {uploadImage} from "@/dataLayer/service/firebase/uploadImage";
-import {addItem} from "@/dataLayer/service/firebase/item";
+import {addItem, getItems} from "@/dataLayer/service/firebase/item";
 
 export default {
   name: "OrderSubmitPage",
@@ -279,9 +279,10 @@ export default {
   },
   data: function () {
     return {
+      itemList: [],
       itemName: '',
       itemDesc: '',
-      step: 2,
+      step: 0,
       file: null,
       items: ['apple', 'banana', 'banana2'],
       selectedItem: null,
@@ -291,6 +292,10 @@ export default {
     };
   },
   methods: {
+    async reloadItems() {
+      this.items = await getItems()
+      console.log(this.items, 'items')
+    },
     submitOffer() {
       this.$router.push('/loading')
     },
@@ -302,7 +307,6 @@ export default {
     },
     async confirmAddItem() {
       const imageUrl = await uploadImage(this.file)
-      console.log(imageUrl)
       await addItem(this.itemName, this.itemDesc, imageUrl, []);
       this.step = 2
     },

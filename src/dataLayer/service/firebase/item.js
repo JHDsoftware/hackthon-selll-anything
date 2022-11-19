@@ -1,5 +1,6 @@
 import {collection, deleteDoc, doc, getDoc, getDocs, query, serverTimestamp, setDoc, where} from "firebase/firestore";
 import {GlobalDB} from "@/dataLayer/service/firebase/database";
+import {resultOf} from "@/dataLayer/service/firebase/queryUtils";
 
 /**
  * 添加item
@@ -43,12 +44,7 @@ export async function removeItem(itemId) {
  * @return {Promise<void>}
  */
 export async function getItems() {
-    const querySnapshot = await getDocs(collection(GlobalDB, "item"));
-    querySnapshot.forEach((doc) => {
-        console.log(`${doc.id} => ${doc.data()}`);
-    });
-
-    return querySnapshot;
+    return await resultOf(collection(GlobalDB, "item"));
 }
 
 /**
