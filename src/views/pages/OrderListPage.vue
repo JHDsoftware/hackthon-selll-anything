@@ -3,7 +3,7 @@
     <page-title>
       My Offers
       <template #backButton>
-        <v-btn outlined style="border-radius: 8px" icon @click="$router.back()">
+        <v-btn outlined style="border-radius: 8px" icon @click="goBackPage">
           <v-icon>mdi-arrow-left</v-icon>
         </v-btn>
       </template>
@@ -41,31 +41,72 @@
       </div>
       <template v-if="tab===0">
         <div class="py-2">
-          <v-card elevation="0"
-                  class="pa-4 mb-2 d-flex align-center">
-            <v-img
-                src="https://random.imagecdn.app/500/500"
-                :aspect-ratio="1"
-                style="border-radius: 12px"
-                height="64"
-                class="flex-grow-0 mr-4"
-                width="64"/>
-            <div class="d-flex flex-column">
-              <div class="text-caption">Item Name</div>
-              <v-chip small outlined class="text-body-2 d-flex align-center">
-                <v-icon small color="success darken-2">mdi-import</v-icon>
-                &times; 50
-              </v-chip>
-
-              <v-spacer></v-spacer>
-              <div class="d-flex">
-                <div class="text-caption font-weight-bold">@{{ 15 | priceDisplay }}</div>
-              </div>
-            </div>
-            <div>
-              <v-icon>mdi-dots-horiznotal</v-icon>
-            </div>
-          </v-card>
+          <v-list three-line>
+            <order-list-item>
+              <v-list-item-action>
+                <v-btn icon>
+                  <v-icon>mdi-pencil</v-icon>
+                </v-btn>
+              </v-list-item-action>
+            </order-list-item>
+          </v-list>
+        </div>
+      </template>
+      <template v-else-if="tab===1">
+        <div class="py-2">
+          <v-list three-line>
+            <order-list-item>
+              <template>
+                <v-list-item-action-text>
+                  from
+                  <v-avatar size="16">
+                    <v-img :src="'https://api.multiavatar.com/'+123+'.svg'"></v-img>
+                  </v-avatar>
+                </v-list-item-action-text>
+              </template>
+            </order-list-item>
+            <order-list-item>
+              <template>
+                <v-list-item-action-text>
+                  to
+                  <v-avatar size="16">
+                    <v-img :src="'https://api.multiavatar.com/'+123+'.svg'"></v-img>
+                  </v-avatar>
+                </v-list-item-action-text>
+              </template>
+            </order-list-item>
+          </v-list>
+        </div>
+      </template>
+      <template v-else>
+        <div class="py-2">
+          <v-list three-line>
+            <order-list-item>
+              <template>
+                <template>
+                  <v-list-item-action-text>
+                    <span class="success--text text--darken-2">Add</span>
+                  </v-list-item-action-text>
+                </template>
+              </template>
+            </order-list-item>
+            <order-list-item>
+              <template>
+                <template>
+                  <v-list-item-action-text>
+                    <span class="error--text text--darken-2">Delete</span>
+                  </v-list-item-action-text>
+                </template>
+              </template>
+            </order-list-item>
+            <order-list-item>
+              <template>
+                <v-list-item-action-text>
+                  <span>Fullfilled</span>
+                </v-list-item-action-text>
+              </template>
+            </order-list-item>
+          </v-list>
         </div>
       </template>
     </div>
@@ -74,67 +115,22 @@
 
 <script>
 import {getCurrentUserId} from "@/dataLayer/service/firebase/user";
-import router from "@/router";
 import PageTitle from "@/views/widgets/PageTitle";
+import OrderListItem from "@/views/widgets/items/OrderListItem";
 
 export default {
-  components: {PageTitle},
+  components: {OrderListItem, PageTitle},
   name: "OrderListPage",
-  computed: {
-    finishedData() {
-      return this.listItems.filter(this.filterFinished)
-    },
-    notFinishedData() {
-      return this.listItems.filter(this.filterNotFinished)
-    }
-  },
+  computed: {},
   data: () => {
     return {
-      tab: 0,
+      tab: 2,
       userId: getCurrentUserId(),
-      listItems: [
-        {
-          avatar: 'https://api.multiavatar.com/' + getCurrentUserId() + '.svg',
-          tradeAvatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
-          timestamp: '2022/11/19 13:43:23',
-          isSold: true,
-          isFinished: true,
-          title: 'Real Thing with Long Name',
-          price: 100,
-          subtitle: `DescDescDescDescDescDesc`,
-        },
-        {
-          avatar: 'https://api.multiavatar.com/' + getCurrentUserId() + '.svg',
-          tradeAvatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
-          timestamp: '2022/11/19 13:43:23',
-          isSold: true,
-          isFinished: true,
-          title: 'Real Thing with Long Name',
-          price: 100,
-          subtitle: `DescDescDescDescDescDesc`,
-        },
-        {
-          avatar: 'https://api.multiavatar.com/' + getCurrentUserId() + '.svg',
-          tradeAvatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
-          timestamp: '2022/11/19 13:43:23',
-          isSold: false,
-          isFinished: false,
-          title: 'Summer BBQ',
-          price: 120,
-          subtitle: `DescDescDescDescDescDescDescDescDescDescDescDescDescDescDescDescDescDesc`,
-        },
-      ],
     }
   },
   methods: {
-    filterFinished(item) {
-      return item.isFinished === true
-    },
-    filterNotFinished(item) {
-      return item.isFinished === false
-    },
     goBackPage() {
-      router.back()
+      this.$emit('close')
     }
   },
 }

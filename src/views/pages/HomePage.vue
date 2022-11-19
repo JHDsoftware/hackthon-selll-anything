@@ -19,7 +19,7 @@
           <v-img :src="'https://api.multiavatar.com/'+userId+'.svg'"></v-img>
         </v-avatar>
         <span class="text-body-2">
-              James Bond
+             {{ userName }}
         </span>
 
         <v-icon class="ml-2">mdi-chevron-down</v-icon>
@@ -45,15 +45,6 @@
               small>
             <v-icon left small>mdi-plus-circle</v-icon>
             new Offer
-          </v-btn>
-          <v-btn
-              elevation="0"
-              class="ml-2"
-              @click="gotoSalePage"
-              color="warning black--text lighten-4"
-              small>
-            <v-icon left small>mdi-plus-circle</v-icon>
-            Exist Order
           </v-btn>
         </div>
       </template>
@@ -88,6 +79,9 @@
         </div>
       </div>
     </v-main>
+    <v-navigation-drawer temporary width="340" app right v-model="showMyOrders">
+      <order-list-page @close="showMyOrders=false"></order-list-page>
+    </v-navigation-drawer>
     <v-dialog fullscreen v-model="showSearchDialog">
       <v-card style="width: 100vw;height: 100vh">
         <div class="pa-6 d-flex align-center flex-column justify-center fill-height">
@@ -147,16 +141,22 @@
 import LogoDisplay from "@/views/widgets/LogoDisplay";
 import VersionDisplay from "@/views/widgets/VersionDisplay";
 import MyPage from "@/views/pages/MyPage";
-import {getCurrentUserId} from "@/dataLayer/service/firebase/user";
+import {getCurrentUser, getCurrentUserId} from "@/dataLayer/service/firebase/user";
 import OrderCard from "@/views/widgets/items/OrderCard";
-import router from "@/router";
 import {getOrderList} from "@/dataLayer/service/firebase/order";
+import OrderListPage from "@/views/pages/OrderListPage";
+
 
 export default {
   name: "HomePage",
-  components: {MyPage, OrderCard, VersionDisplay, LogoDisplay},
-  async mounted (){
+  components: {MyPage, OrderCard, VersionDisplay, LogoDisplay, OrderListPage},
+  async mounted() {
     this.orderList = await getOrderList()
+  },
+  computed: {
+    userName() {
+      return this.user.isAnonymous ? 'Guest' : this.user.displayName
+    },
   },
   data: function () {
     return {
@@ -167,14 +167,16 @@ export default {
       loading: false,
       offsetTop: 0,
       showUserPanel: false,
+      user: getCurrentUser(),
       userId: getCurrentUserId(),
       orderList: [],
+      showMyOrders: false
     };
   },
 
   methods: {
     gotoSalePage() {
-      router.push('orderList')
+      this.showMyOrders = true
     },
 
     onScroll(e) {

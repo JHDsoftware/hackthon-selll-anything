@@ -12,8 +12,7 @@
     </v-img>
     <div class="pa-2 px-4">
       <div class="text-caption">
-        {{ t.quantity }}
-        <span v-if="t.side === 'buy'" class="success--text text--darken-3 font-weight-medium">Needed</span>
+        <span v-if="!isBuy" class="success--text text--darken-3 font-weight-medium">Needed</span>
         <span v-else class="error--text text--darken-3 font-weight-medium">Provided</span>
         by
         <v-avatar size="16" class="ml-1">
@@ -25,8 +24,15 @@
           {{ orderInfo.item_name }}
         </div>
       </div>
-      <div class="mt-1 text-body-2 font-weight-medium">
-        {{ t.price | priceDisplay }}
+      <div class="d-flex align-center mt-2">
+        <div class="mt-0 text-body-2 font-weight-medium">
+          {{ t.price | priceDisplay }}
+        </div>
+        <v-spacer></v-spacer>
+        <div class="d-flex text-body-2 align-center">
+          &times;
+          {{ t.quantity }}
+        </div>
       </div>
 
 
@@ -42,6 +48,11 @@ export default {
   data: () => {
     return {
       orderInfo: ''
+    }
+  },
+  computed: {
+    isBuy() {
+      return this.t.side === 'buy'
     }
   },
   props: {
