@@ -185,7 +185,7 @@
                     <div class="d-flex mt-4">
                       <v-icon small color="warning darken-2">mdi-finance</v-icon>
                       <v-spacer></v-spacer>
-                      <div class="text-body-1">
+                      <div class="text-body-1 text-truncate">
                         {{ selectedItemDetail.avgPrice | priceDisplay }}
                       </div>
                     </div>
@@ -208,7 +208,7 @@
                       <v-icon small color="error darken-2">mdi-cart-percent</v-icon>
                       <v-spacer></v-spacer>
                       <div class="text-body-1">
-                        {{ selectedItemDetail.minPrice| priceDisplay }}({{selectedItemDetail.minCount}})
+                        {{ selectedItemDetail.minPrice| priceDisplay }}({{ selectedItemDetail.minCount }})
                       </div>
                     </div>
                   </v-card>
@@ -257,7 +257,7 @@
                      rounded
                      elevation="0"
                      color="primary lighten-4 black--text"
-                    :loading="loading">
+                     :loading="loading">
                 Submit Offer
                 <v-icon right>mdi-check</v-icon>
               </v-btn>
@@ -336,13 +336,13 @@ export default {
     };
   },
   methods: {
-    async getItemDetail () {
+    async getItemDetail() {
       console.log(this.buyOrSell, "buy or sell")
       console.log(this.selectedItemId, "selectedItemId")
       this.selectedItemDetail = await getItemDetail(this.selectedItemId, this.buyOrSell)
       console.log(this.selectedItemDetail, "detail")
     },
-    clearPriceAndData () {
+    clearPriceAndData() {
       this.price = ''
       this.amount = ''
     },
