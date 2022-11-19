@@ -21,7 +21,7 @@
           <v-autocomplete
               autofocus
               item-text="item_name"
-              item-value="item_id.id"
+              item-value="item_id"
               v-model="selectedItemId"
               :search-input.sync="searchInput"
               placeholder="A Cute... Car!"
@@ -121,7 +121,7 @@
                      :src="currentItem.imageUrl"></v-img>
               <div class="flex-grow-1 ml-4">
                 <div class="text-caption">
-                  Id: {{ currentItem.item_id.id }}
+                  Id: {{ currentItem.item_id }}
                 </div>
                 <div class="text-body-1 font-weight-medium">
                   {{ currentItem.item_name }}
@@ -308,7 +308,7 @@ export default {
     },
     currentItem: function () {
       console.log(this.items, this.selectedItemId)
-      return this.items.find(it => it.item_id.id === this.selectedItemId)
+      return this.items.find(it => it.item_id === this.selectedItemId)
     }
   },
   data: function () {

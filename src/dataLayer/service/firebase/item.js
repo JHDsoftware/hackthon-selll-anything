@@ -15,7 +15,7 @@ export async function addItem(itemName, desc, imageUrl, tagIds) {
         const newItemId = doc(collection(GlobalDB, "item"));
 
         await setDoc(newItemId, {
-            item_id: newItemId,
+            item_id: newItemId.id,
             item_name: itemName,
             description: desc,
             imageUrl: imageUrl,
