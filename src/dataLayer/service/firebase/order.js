@@ -129,7 +129,7 @@ export async function getOrderOne(orderId) {
  */
 export async function getItemDetail(itemId, side) {
     //array
-    const orderList = await resultOf(collection(GlobalDB, "order"), where("item_id", "==", itemId), where('side', '==', side));
+    const orderList = await resultOf(query(collection(GlobalDB, "order"), where("item_id", "==", itemId), where('side', '==', side)));
     const minPrice = Math.min(...orderList.map(it => it.price))
     return {
         ...(await getOneItem(itemId)),
@@ -186,6 +186,10 @@ export async function getMinPrice(itemId, quantity) {
  * @param status
  * @return {Promise<void>}
  */
-export async function getOrdersByUser(userId, status) {
-    return GlobalDB.collection('order').where('user_id', '==', userId).where('status', '==', status).get();
+export async function getCombinedOrdersByUser(userId) {
+    const orderSellList = await resultOf(collection(GlobalDB, "order"), where("user_id", "==", userId), where("side", "==", "sell"));
+    //const orderBuyList = await resultOf(collection(GlobalDB, "order"), where("user_id", "==", userId), where("side", "==", "Buy"));
+
+    console.log(orderSellList.filter((item) => orderSellList.includes(item.item_id)).reduce((sum, i) => sum + i.quantity, 0));
+    //group by item_id and combine data
 }
