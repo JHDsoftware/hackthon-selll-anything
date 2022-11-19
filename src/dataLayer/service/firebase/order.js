@@ -1,4 +1,4 @@
-import {GlobalDB} from "@/dataLayer/service/firebase/database";
+import {GlobalDB} from "@/plugins/google-fire-base";
 import {collection, deleteDoc, doc, serverTimestamp, setDoc, where} from "firebase/firestore";
 import {docContentOf, resultOf} from "@/dataLayer/service/firebase/queryUtils";
 import {getCurrentUserId} from "@/dataLayer/service/firebase/user";

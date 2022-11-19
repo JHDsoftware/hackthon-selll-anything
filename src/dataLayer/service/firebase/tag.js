@@ -1,5 +1,5 @@
 import {collection, deleteDoc, doc, setDoc} from "firebase/firestore";
-import {GlobalDB} from "@/dataLayer/service/firebase/database";
+import {GlobalDB} from "@/plugins/google-fire-base";
 
 /**
  * 添加tag

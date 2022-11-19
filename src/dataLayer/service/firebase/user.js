@@ -1,7 +1,7 @@
 import {collection, deleteDoc, doc, getDoc, setDoc} from 'firebase/firestore'
 import {FireBaseAuth, FireBaseStore} from '@/plugins/google-fire-base'
 import {getDatabase, ref, set} from "firebase/database";
-import {GlobalDB} from "@/dataLayer/service/firebase/database";
+import {GlobalDB} from "@/plugins/google-fire-base";
 
 const userDBPath = 'user'
 

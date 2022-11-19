@@ -1,5 +1,6 @@
-import {collection, deleteDoc, doc, getDoc, getDocs, query, setDoc, where} from "firebase/firestore";
-import {GlobalDB} from "@/dataLayer/service/firebase/database";
+import {collection, deleteDoc, doc, query, setDoc, where} from "firebase/firestore";
+import {GlobalDB} from "@/plugins/google-fire-base";
+import {docContentOf, resultOf} from "@/dataLayer/service/firebase/queryUtils";
 
 /**
  * 添加transaction
@@ -55,16 +56,17 @@ export async function removeTran(tranId) {
  * @return {Promise<void>}
  */
 export async function getTranOne(tranId) {
-    const docRef = doc(GlobalDB, "transaction", tranId);
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists()) {
-        console.log("Document data:", docSnap.data());
-    } else {
-        // doc.data() will be undefined in this case
-        console.log("No such document!");
-    }
-    return docSnap;
+    // const docRef = doc(GlobalDB, "transaction", tranId);
+    // const docSnap = await getDoc(docRef);
+    //
+    // if (docSnap.exists()) {
+    //     console.log("Document data:", docSnap.data());
+    // } else {
+    //     // doc.data() will be undefined in this case
+    //     console.log("No such document!");
+    // }
+    // return docSnap;
+    return await docContentOf(doc(GlobalDB, "transaction", tranId));
 }
 
 /**
@@ -74,14 +76,15 @@ export async function getTranOne(tranId) {
  * @return {orders}
  */
 export async function getTransByItem(itemId) {
-    const q = query(collection(GlobalDB, "transaction"), where("item_id", "==", itemId));
-
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-        // doc.data() is never undefined for query doc snapshots
-        console.log(doc.id, " => ", doc.data());
-    });
-    return querySnapshot;
+    //const q = query(collection(GlobalDB, "transaction"), where("item_id", "==", itemId));
+    //
+    // const querySnapshot = await getDocs(q);
+    // querySnapshot.forEach((doc) => {
+    //     // doc.data() is never undefined for query doc snapshots
+    //     console.log(doc.id, " => ", doc.data());
+    // });
+    // return querySnapshot;
+    return await resultOf(query(collection(GlobalDB, "transaction"), where("item_id", "==", itemId)));
 }
 
 /**
@@ -91,14 +94,15 @@ export async function getTransByItem(itemId) {
  * @return {Promise<void>}
  */
 export async function getTransByBuyer(userId, status) {
-    const q = query(collection(GlobalDB, "transaction"), where("user_id", "==", userId), where('status', '==', status));
-
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-        // doc.data() is never undefined for query doc snapshots
-        console.log(doc.id, " => ", doc.data());
-    });
-    return querySnapshot;
+    // const q = query(collection(GlobalDB, "transaction"), where("user_id", "==", userId), where('status', '==', status));
+    //
+    // const querySnapshot = await getDocs(q);
+    // querySnapshot.forEach((doc) => {
+    //     // doc.data() is never undefined for query doc snapshots
+    //     console.log(doc.id, " => ", doc.data());
+    // });
+    // return querySnapshot;
+    return await resultOf(query(collection(GlobalDB, "transaction"), where("user_id", "==", userId), where('status', '==', status)));
 
 }
 
@@ -109,13 +113,14 @@ export async function getTransByBuyer(userId, status) {
  * @return {Promise<void>}
  */
 export async function getTransBySeller(userId, status) {
-    const q = query(collection(GlobalDB, "transaction"), where("user_sell_id", "==", userId), where('status', '==', status));
+    //const q = query(collection(GlobalDB, "transaction"), where("user_sell_id", "==", userId), where('status', '==', status));
 
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-        // doc.data() is never undefined for query doc snapshots
-        console.log(doc.id, " => ", doc.data());
-    });
-    return querySnapshot;
+    // const querySnapshot = await getDocs(q);
+    // querySnapshot.forEach((doc) => {
+    //     // doc.data() is never undefined for query doc snapshots
+    //     console.log(doc.id, " => ", doc.data());
+    // });
+    // return querySnapshot;
+    return await resultOf(query(collection(GlobalDB, "transaction"), where("user__sell_id", "==", userId), where('status', '==', status)));
 
 }

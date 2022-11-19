@@ -1,5 +1,5 @@
-import {collection, deleteDoc, doc, getDocs, query, serverTimestamp, setDoc, where} from "firebase/firestore";
-import {GlobalDB} from "@/dataLayer/service/firebase/database";
+import {collection, deleteDoc, doc, query, serverTimestamp, setDoc, where} from "firebase/firestore";
+import {GlobalDB} from "@/plugins/google-fire-base";
 import {docContentOf, resultOf} from "@/dataLayer/service/firebase/queryUtils";
 
 /**
@@ -64,14 +64,9 @@ export async function getOneItem(itemId) {
  * @return {Promise<void>}
  */
 export async function getItemsByTag(tagId) {
-    const q = query(collection(GlobalDB, "item"), where("tag_id", "==", tagId));
 
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-        // doc.data() is never undefined for query doc snapshots
-        console.log(doc.id, " => ", doc.data());
-    });
-    return querySnapshot;
+    return await resultOf(query(collection(GlobalDB, "item"), where("tag_id", "==", tagId)));
+
 }
 
 
