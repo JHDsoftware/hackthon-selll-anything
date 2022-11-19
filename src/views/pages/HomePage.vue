@@ -41,7 +41,7 @@
           </v-btn>
           <v-btn
               elevation="0"
-              @click="showNewOfferDialog=true"
+              @click="toNewOffer"
               color="success black--text lighten-4"
               small>
             <v-icon left small>mdi-plus-circle</v-icon>
@@ -50,7 +50,7 @@
         </div>
       </template>
     </v-app-bar>
-    <v-main v-scroll="onScroll" class="overflow-y-auto"  style="background: #f0f0f0;min-height: calc(100vh)" >
+    <v-main v-scroll="onScroll" class="overflow-y-auto" style="background: #f0f0f0;min-height: calc(100vh)">
       <div class="px-6">
         <div style="width: 100%" class="pa-6 py-10 mb-4 d-flex align-center justify-center flex-column">
           <div class="display-1">Explore, Trade and Share</div>
@@ -134,24 +134,24 @@
             <v-img :src="'https://api.multiavatar.com/'+userId+'.svg'"></v-img>
           </v-avatar>
           <span class="text-body-2 mt-2">
-              UID: {{userId}}
+              UID: {{ userId }}
         </span>
           <div class="mt-8" style="width: 300px">
             <span class="text-body-2">Name:</span>
-              <v-text-field
-                  v-model="userName"
-                  rounded
-                  hide-details
-                  autofocus
-                  filled
-                  placeholder="Input New Name"
-              />
+            <v-text-field
+                v-model="userName"
+                rounded
+                hide-details
+                autofocus
+                filled
+                placeholder="Input New Name"
+            />
           </div>
           <div class="mt-4" style="width: 300px">
             <span class="text-body-2">Wallet: </span>
             <div class="d-flex">
               <v-card-title class="ml-1">
-                {{1000 | priceDisplay}}
+                {{ 1000 | priceDisplay }}
               </v-card-title>
               <v-spacer></v-spacer>
               <v-btn class="mt-2" elevation="0" @click="rechargeDialog = true">
@@ -203,7 +203,6 @@ export default {
       userId: getCurrentUserId(),
       userName: "James Bond",
       showSearchDialog: false,
-      showNewOfferDialog: false,
       searchText: '',
       searchTextModel: '',
       message: '',
@@ -214,20 +213,23 @@ export default {
   },
 
   methods: {
-    gotoSalePage () {
+    gotoSalePage() {
 
     },
-    saveUserInfo () {
+    saveUserInfo() {
       this.showUserPanel = false
     },
-    onScroll (e) {
+    onScroll(e) {
       this.offsetTop = e.target.scrollingElement.scrollTop
     },
-    toTop () {
+    toTop() {
       window.scrollTo({
         top: 0,
         behavior: "smooth"
       })
+    },
+    toNewOffer() {
+      this.$router.push('offerSubmit')
     },
     startSearch() {
       this.searchTextModel = ''

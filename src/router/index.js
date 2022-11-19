@@ -5,6 +5,7 @@ import MyPage from "@/views/pages/MyPage";
 import OrderListPage from "@/views/pages/OrderListPage";
 import HomePage from "@/views/pages/HomePage";
 import {getCurrentUserId} from "@/dataLayer/service/firebase/user";
+import OrderSubmitPage from "@/views/pages/OrderSubmitPage";
 
 Vue.use(VueRouter)
 
@@ -17,6 +18,9 @@ const routes = [{
 }, {
     path: '/orderList', name: 'orderList', component: OrderListPage
 },
+    {
+        path: '/offerSubmit', name: 'offerSubmit', component: OrderSubmitPage
+    },
 
 ]
 
