@@ -9,7 +9,7 @@
           @click="gotoSalePage()"
           class="mr-4"
       >
-        mdi-bell
+        mdi-clipboard-list
       </v-icon>
       <v-card
           @click="showUserPanel = true"
@@ -80,7 +80,8 @@
       </div>
     </v-main>
     <v-navigation-drawer temporary width="340" app right v-model="showMyOrders">
-      <order-list-page @close="showMyOrders=false"></order-list-page>
+      <order-list-page :show="showMyOrders"
+                       @close="showMyOrders=false"/>
     </v-navigation-drawer>
     <v-dialog fullscreen v-model="showSearchDialog">
       <v-card style="width: 100vw;height: 100vh">
