@@ -18,8 +18,6 @@
 
         <v-icon class="ml-2">mdi-chevron-down</v-icon>
       </v-card>
-
-
       <template #extension>
         <div class="d-flex align-center" style="width: 100vw">
           <v-btn light
@@ -61,6 +59,7 @@
         </div>
         <div style="display: grid;grid-template-columns: repeat(auto-fit,minmax(180px,1fr));grid-gap: 12px">
           <order-card
+              @click="$router.push('/offerSubmit/'+t.item_id)"
               v-for="t in orderList"
               :key="t.order_id"
               :t="t"

@@ -281,6 +281,7 @@ import {addItem, getItems} from "@/dataLayer/service/firebase/item";
 import {addOrder, getItemDetail, SideOption} from "@/dataLayer/service/firebase/order";
 
 export default {
+  props: {id: {}},
   name: "OrderSubmitPage",
   components: {BackStepButton, NextStepButton, PageTitle},
   watch: {
@@ -393,6 +394,10 @@ export default {
   },
   mounted() {
     this.reloadItems()
+    if (this.id) {
+      this.selectedItemId = this.id
+      this.step = 2
+    }
   }
 
 }

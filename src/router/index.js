@@ -21,6 +21,8 @@ const routes = [{
 }, {
     path: '/offerSubmit', name: 'offerSubmit', component: OrderSubmitPage
 }, {
+    path: '/offerSubmit/:id', props: true, name: 'offerSubmit', component: OrderSubmitPage
+}, {
     path: '/loading', name: 'loading', component: LoadingPage
 },
 

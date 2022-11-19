@@ -1,5 +1,5 @@
 <template>
-  <v-card style="user-select: none;border-radius: 16px"
+  <v-card @click="$emit('click')" style="user-select: none;border-radius: 16px"
           color="white"
           elevation="0">
     <v-img :aspect-ratio="1" :src="orderInfo.imageUrl">
