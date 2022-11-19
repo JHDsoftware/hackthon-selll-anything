@@ -5,12 +5,6 @@
         <logo-display/>
       </div>
       <v-spacer/>
-      <v-icon
-          @click="gotoSalePage()"
-          class="mr-4"
-      >
-        mdi-clipboard-list
-      </v-icon>
       <v-card
           @click="showUserPanel = true"
           class="pa-1 d-flex align-center rounded-pill"
@@ -27,7 +21,7 @@
 
 
       <template #extension>
-        <div class="d-flex align-center">
+        <div class="d-flex align-center" style="width: 100vw">
           <v-btn light
                  @click="startSearch"
                  elevation="0"
@@ -37,6 +31,16 @@
           >
             <v-icon left small>mdi-tune</v-icon>
             Search
+          </v-btn>
+          <v-spacer></v-spacer>
+          <v-btn
+              class="mr-2"
+              elevation="0"
+              @click="gotoSalePage"
+              color="warning black--text lighten-4"
+              small>
+            <v-icon left small>mdi-clipboard-list</v-icon>
+            My Offers
           </v-btn>
           <v-btn
               elevation="0"
@@ -52,7 +56,7 @@
     <v-main v-scroll="onScroll" class="overflow-y-auto" style="background: #f0f0f0;min-height: calc(100vh)">
       <div class="px-6">
         <div style="width: 100%" class="pa-6 py-10 mb-4 d-flex align-center justify-center flex-column">
-          <div class="display-1">Explore, Trade and Share</div>
+          <div class="display-1 text-center">Explore, Trade and Share</div>
           <div class="text-body-1 font-weight-black">Things that you love😋</div>
         </div>
         <div style="display: grid;grid-template-columns: repeat(auto-fit,minmax(180px,1fr));grid-gap: 12px">
@@ -62,7 +66,6 @@
               :t="t"
           />
         </div>
-        <version-display/>
         <div v-if="offsetTop>0" style="position: fixed; bottom: 36px;right: 36px;">
           <v-btn
               class="mx-2"
@@ -79,7 +82,7 @@
         </div>
       </div>
     </v-main>
-    <v-navigation-drawer temporary width="340" app right v-model="showMyOrders">
+    <v-navigation-drawer width="340" app right v-model="showMyOrders">
       <order-list-page :show="showMyOrders"
                        @close="showMyOrders=false"/>
     </v-navigation-drawer>
@@ -141,7 +144,6 @@
 
 <script>
 import LogoDisplay from "@/views/widgets/LogoDisplay";
-import VersionDisplay from "@/views/widgets/VersionDisplay";
 import MyPage from "@/views/pages/MyPage";
 import {getCurrentUser, getCurrentUserId} from "@/dataLayer/service/firebase/user";
 import OrderCard from "@/views/widgets/items/OrderCard";
@@ -151,7 +153,7 @@ import OrderListPage from "@/views/pages/OrderListPage";
 
 export default {
   name: "HomePage",
-  components: {MyPage, OrderCard, VersionDisplay, LogoDisplay, OrderListPage},
+  components: {MyPage, OrderCard, LogoDisplay, OrderListPage},
   async mounted() {
     this.orderList = await getActiveOrder()
   },

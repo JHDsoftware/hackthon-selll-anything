@@ -6,8 +6,7 @@
       <v-img :src="'https://api.multiavatar.com/'+userId+'.svg'"></v-img>
     </v-avatar>
     <div class="text-body-1 font-weight-bold mt-8">
-      {{ userName }}
-      <v-icon x-small v-if="!user.isAnonymous">mdi-pencil</v-icon>
+      {{ userName || 'Guest' }}
     </div>
     <div class="text-caption">
       {{ userId }}
@@ -61,12 +60,12 @@
       </v-btn>
     </div>
     <v-dialog transition="dialog-bottom-transition"
-              max-width="350" min-height="450"  v-model="rechargeDialog">
-      <v-card class="px-5 py-3" >
+              max-width="350" min-height="450" v-model="rechargeDialog">
+      <v-card class="px-5 py-3">
           <span class="text-body-1 mt-12 font-weight-medium">
             Recharge Amount
           </span>
-          <v-spacer></v-spacer>
+        <v-spacer></v-spacer>
 
         <div class="mt-4 d-flex">
           <v-text-field
@@ -80,14 +79,15 @@
           </v-text-field>
         </div>
         <v-spacer></v-spacer>
-          <v-btn elevation="0" :disabled="payRule" block width="100%" color="primary" @click="updateMyWallet()">
-            <v-img max-width="70px" max-length="110px" src="@/assets/paypal_name.png"></v-img>
-          </v-btn>
-          <v-btn elevation="0" :disabled="payRule" class="mt-3" block width="100%" color="orange" @click="updateMyWallet()">
-            <v-img class="mx-1" max-width="20px" max-length="30px" src="@/assets/kreditkarte.png"></v-img>
-            Master Card
-          </v-btn>
-        <v-btn class="mt-3"  block width="100%" @click="rechargeDialog=false">
+        <v-btn elevation="0" :disabled="payRule" block width="100%" color="primary" @click="updateMyWallet()">
+          <v-img max-width="70px" max-length="110px" src="@/assets/paypal_name.png"></v-img>
+        </v-btn>
+        <v-btn elevation="0" :disabled="payRule" class="mt-3" block width="100%" color="orange"
+               @click="updateMyWallet()">
+          <v-img class="mx-1" max-width="20px" max-length="30px" src="@/assets/kreditkarte.png"></v-img>
+          Master Card
+        </v-btn>
+        <v-btn class="mt-3" block width="100%" @click="rechargeDialog=false">
           Cancel
         </v-btn>
       </v-card>
@@ -112,8 +112,8 @@ export default {
       return this.rechargeAmount === 0 || this.rechargeAmount === null || this.rechargeAmount === "" || this.rechargeAmount === "0"
     }
   },
-  watch:{
-    myWallet (val) {
+  watch: {
+    myWallet(val) {
       return val
     }
   },
@@ -126,10 +126,10 @@ export default {
     };
   },
   methods: {
-    updateMyWallet () {
+    updateMyWallet() {
       this.myWallet += parseFloat(this.rechargeAmount);
       localStorage.setItem("wallet", this.myWallet)
-      this.rechargeDialog=false
+      this.rechargeDialog = false
     },
     logout() {
       FireBaseAuth.signOut()
@@ -140,7 +140,7 @@ export default {
     },
   },
   mounted() {
-    localStorage.getItem("wallet") ?  this.myWallet = parseFloat(localStorage.getItem("wallet")):  this.myWallet = 1000
+    localStorage.getItem("wallet") ? this.myWallet = parseFloat(localStorage.getItem("wallet")) : this.myWallet = 1000
   }
 }
 </script>
