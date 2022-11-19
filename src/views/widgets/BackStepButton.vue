@@ -12,7 +12,8 @@
 
 <script>
 export default {
-  name: "BackStepButton"
+  name: "BackStepButton",
+  props: {}
 }
 </script>
 

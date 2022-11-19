@@ -97,15 +97,16 @@
             <div class="text-caption mb-2">
               Name of the Thing
             </div>
-            <v-text-field placeholder="e.g. A cute Car" rounded filled></v-text-field>
+            <v-text-field v-model="itemName" placeholder="e.g. A cute Car" rounded filled></v-text-field>
             <div class="text-caption mb-2">
               Some detailed Description
             </div>
             <v-text-field
+                v-model="itemDesc"
                 placeholder="Something more you want to tell the people about this" rounded
                 filled/>
             <back-step-button @click="step=1" class="mr-2"/>
-            <next-step-button @click="step=2"/>
+            <next-step-button :disabled="!(itemDesc&&itemName&&file)" @click="confirmAddItem"/>
           </div>
         </template>
         <template v-else-if="step===2">
@@ -204,6 +205,8 @@
 import PageTitle from "@/views/widgets/PageTitle";
 import NextStepButton from "@/views/widgets/NextStepButton";
 import BackStepButton from "@/views/widgets/BackStepButton";
+import {uploadImage} from "@/dataLayer/service/firebase/uploadImage";
+import {addItem} from "@/dataLayer/service/firebase/item";
 
 export default {
   name: "OrderSubmitPage",
@@ -223,7 +226,8 @@ export default {
   },
   data: function () {
     return {
-
+      itemName: '',
+      itemDesc: '',
       step: 0,
       file: null,
       items: ['apple', 'banana', 'banana2'],
@@ -233,14 +237,24 @@ export default {
     };
   },
   methods: {
+    startAddItem() {
+      this.itemName = this.lastSearchInput
+      this.itemDesc = ''
+      this.file = null
+      this.step = 1
+    },
+    async confirmAddItem() {
+      const imageUrl = await uploadImage(this.file)
+      console.log(imageUrl)
+      await addItem(this.itemName, this.itemDesc, imageUrl, []);
+      this.step = 2
+    },
     lostFocus() {
-      console.log('change')
       if (this.lastSearchInput) {
         if (!this.selectedItem) {
-          this.step = 1
+          this.startAddItem()
         }
       }
-
     }
   }
 

@@ -2,6 +2,7 @@
   <v-btn elevation="0"
          @click="$emit('click')"
          height="52"
+         :disabled="disabled"
          rounded
          color="primary lighten-4 black--text"
   >
@@ -12,7 +13,12 @@
 
 <script>
 export default {
-  name: "NextStepButton"
+  name: "NextStepButton",
+  props: {
+    disabled: {
+      default: false
+    }
+  }
 }
 </script>
 

@@ -1,5 +1,5 @@
 import {FireBaseStorageRef} from "@/plugins/google-fire-base";
-import {ref, uploadBytes} from "firebase/storage";
+import {getDownloadURL, ref, uploadBytes} from "firebase/storage";
 import {v4 as uuidv4} from 'uuid';
 
 export function nextImageRef(extensionName) {
@@ -12,9 +12,8 @@ export function nextImageRef(extensionName) {
  * @returns {Promise<void>}
  */
 export async function uploadImage(file) {
-    const res = await uploadBytes(nextImageRef(
+    return await getDownloadURL((await uploadBytes(nextImageRef(
             file.name.split('.').pop()),
         file
-    )
-    return res.ref.fullPath
+    )).ref)
 }
