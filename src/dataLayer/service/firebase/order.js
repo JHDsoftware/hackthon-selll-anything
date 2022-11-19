@@ -22,8 +22,8 @@ export async function addOrder(itemId, price, quantity, side) {
             item_id: itemId,
             price: price,
             quantity: quantity,
-            fulfilled_quantity: 0,
             side: side,
+            type: OperationType.Add,
             user_id: getCurrentUserId(),
             timestamp: serverTimestamp(),
         });
@@ -35,6 +35,10 @@ export async function addOrder(itemId, price, quantity, side) {
 
 export const SideOption = {
     Buy: 'buy', Sell: 'sell'
+}
+
+export const OperationType = {
+    Add: 'Add', Del: 'Del', FullFilled: 'FullFilled'
 }
 
 /**

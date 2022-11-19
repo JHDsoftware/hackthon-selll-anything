@@ -1,13 +1,16 @@
 <template>
   <div style="background: #f0f0f0;min-height: calc(100vh)">
-    <v-app-bar app elevation="0">
-      <div>
-        <logo-display/>
-      </div>
-
-      <v-spacer/>
-      <v-btn @click="goBackPage">Return</v-btn>
-    </v-app-bar>
+    <page-title>
+      Submit New Offer
+      <template #backButton>
+        <v-btn outlined style="border-radius: 8px" icon @click="$router.back()">
+          <v-icon>mdi-arrow-left</v-icon>
+        </v-btn>
+      </template>
+      <template #subtitle>
+        meet something special 🐻
+      </template>
+    </page-title>
 
     <v-container>
       <div class="px-6">
@@ -22,18 +25,18 @@
           background-color="transparent"
           glow>
         <v-tab v-for="item in items" :key="item">
-          {{item}}
+          {{ item }}
         </v-tab>
         <v-tab-item>
-            <order-list-item
-                :items="notFinishedData"
-            />
+          <order-list-item
+              :items="notFinishedData"
+          />
 
         </v-tab-item>
         <v-tab-item>
-            <order-list-item
-                :items="finishedData"
-            />
+          <order-list-item
+              :items="finishedData"
+          />
 
         </v-tab-item>
       </v-tabs>
@@ -47,14 +50,14 @@
 <script>
 import VersionDisplay from "@/views/widgets/VersionDisplay";
 import {getCurrentUserId} from "@/dataLayer/service/firebase/user";
-import LogoDisplay from "@/views/widgets/LogoDisplay";
 import OrderListItem from "@/views/widgets/items/OrderListItem";
 import router from "@/router";
+import PageTitle from "@/views/widgets/PageTitle";
 
 export default {
-  components: {VersionDisplay, LogoDisplay, OrderListItem},
+  components: {PageTitle, VersionDisplay, OrderListItem},
   name: "OrderListPage",
-  computed:{
+  computed: {
     finishedData() {
       return this.listItems.filter(this.filterFinished)
     },
@@ -62,14 +65,14 @@ export default {
       return this.listItems.filter(this.filterNotFinished)
     }
   },
-  data: ()=> {
+  data: () => {
     return {
       tab: null,
       userId: getCurrentUserId(),
       items: ["In process", "Ordered"],
       listItems: [
         {
-          avatar: 'https://api.multiavatar.com/'+getCurrentUserId()+'.svg',
+          avatar: 'https://api.multiavatar.com/' + getCurrentUserId() + '.svg',
           tradeAvatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
           timestamp: '2022/11/19 13:43:23',
           isSold: true,
@@ -79,7 +82,7 @@ export default {
           subtitle: `DescDescDescDescDescDesc`,
         },
         {
-          avatar: 'https://api.multiavatar.com/'+getCurrentUserId()+'.svg',
+          avatar: 'https://api.multiavatar.com/' + getCurrentUserId() + '.svg',
           tradeAvatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
           timestamp: '2022/11/19 13:43:23',
           isSold: true,
@@ -89,7 +92,7 @@ export default {
           subtitle: `DescDescDescDescDescDesc`,
         },
         {
-          avatar: 'https://api.multiavatar.com/'+getCurrentUserId()+'.svg',
+          avatar: 'https://api.multiavatar.com/' + getCurrentUserId() + '.svg',
           tradeAvatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
           timestamp: '2022/11/19 13:43:23',
           isSold: false,
@@ -108,7 +111,7 @@ export default {
     filterNotFinished(item) {
       return item.isFinished === false
     },
-    goBackPage () {
+    goBackPage() {
       router.back()
     }
   },

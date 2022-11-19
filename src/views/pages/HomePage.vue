@@ -5,15 +5,12 @@
         <logo-display/>
       </div>
       <v-spacer/>
-      <v-card
+      <v-icon
           @click="gotoSalePage()"
-          class="pa-1 d-flex align-center rounded-pill mr-4"
-          elevation="0">
-        <v-icon size="30" class="ml-1 mr-4" color="purple">mdi-list-box</v-icon>
-        <span class="text-body-2">Order List</span>
-        <v-icon class="ml-2">mdi-chevron-down</v-icon>
-      </v-card>
-
+          class="mr-4"
+      >
+        mdi-bell
+      </v-icon>
       <v-card
           @click="showUserPanel = true"
           class="pa-1 d-flex align-center rounded-pill"
@@ -27,6 +24,8 @@
 
         <v-icon class="ml-2">mdi-chevron-down</v-icon>
       </v-card>
+
+
       <template #extension>
         <div class="d-flex align-center">
           <v-btn light
@@ -46,6 +45,15 @@
               small>
             <v-icon left small>mdi-plus-circle</v-icon>
             new Offer
+          </v-btn>
+          <v-btn
+              elevation="0"
+              class="ml-2"
+              @click="gotoSalePage"
+              color="warning black--text lighten-4"
+              small>
+            <v-icon left small>mdi-plus-circle</v-icon>
+            Exist Order
           </v-btn>
         </div>
       </template>
