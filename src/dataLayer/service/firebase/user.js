@@ -1,6 +1,7 @@
-import {doc, setDoc} from 'firebase/firestore'
+import {collection, deleteDoc, doc, getDoc, query, setDoc, where} from 'firebase/firestore'
 import {FireBaseAuth, FireBaseStore} from '@/plugins/google-fire-base'
 import {child, get, getDatabase, push, ref, remove, set, update} from "firebase/database";
+import {GlobalDB} from "@/dataLayer/service/firebase/database";
 
 const userDBPath = 'user'
 
@@ -32,16 +33,23 @@ export function getCurrentUser() {
  * @return
  */
 export function writeUserData(name, email, psw, balance) {
-    const db = getDatabase();
-    const newUserId = push(child(ref(db), 'user')).key;
-    set(ref(db, 'user/' + newUserId), {
-        user_id: newUserId,
-        displayName: name,
-        email: email,
-        password: psw,
-        balance: balance,
-        timestamp: Date.now(),
-    });
+    try {
+        const newUserId = doc(collection(GlobalDB, "user"));
+
+        const db = getDatabase();
+        set(ref(db, 'user/' + newUserId), {
+            user_id: newUserId.id,
+            displayName: name,
+            email: email,
+            password: psw,
+            balance: balance,
+            timestamp: Date.now(),
+        });
+        console.log("Document written with ID: ", newUserId);
+    } catch (e) {
+        console.error("Error adding document: ", e);
+    }
+
 }
 
 /**
@@ -49,9 +57,10 @@ export function writeUserData(name, email, psw, balance) {
  * @param userId
  * @return
  */
-export function removeItem(userId) {
-    const db = getDatabase();
-    remove(ref(db, 'user/' + userId));
+export async function removeItem(userId) {
+
+    await deleteDoc(doc(GlobalDB, "user", userId));
+
 }
 
 /**
@@ -61,9 +70,16 @@ export function removeItem(userId) {
  * @param userId
  */
 export async function getLoggedInUser(userId) {
-    const db = getDatabase();
-    const snapshot = await get(ref(db, '/user/' + userId))
-    return snapshot.val();
+    const docRef = doc(GlobalDB, "user", userId);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+        console.log("Document data:", docSnap.data());
+    } else {
+        // doc.data() will be undefined in this case
+        console.log("No such document!");
+    }
+    return docSnap;
 }
 
 /**
@@ -73,18 +89,18 @@ export async function getLoggedInUser(userId) {
  * @return
  */
 export async function updateUserBalance(userId, balance) {
-    const db = getDatabase();
-    const user = (await get(ref(db, '/user/' + userId))).val()
-    const updates = {}
-    updates['/user/' + userId] = {
+
+    const docRef = doc(GlobalDB, "user", userId);
+    const updates = {
         user_id: userId,
-        email: user.email,
-        password: user.password,
-        displayName: user.displayName,
-        timestamp: user.timestamp,
+        email: docRef.email,
+        password: docRef.password,
+        displayName: docRef.displayName,
+        timestamp: docRef.timestamp,
         balance: balance,
     }
-    update(ref(db), updates)
+    await setDoc(docRef, updates)
+
 }
 
 
