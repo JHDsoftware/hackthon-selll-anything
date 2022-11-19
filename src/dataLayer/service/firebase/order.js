@@ -1,7 +1,8 @@
 import {GlobalDB} from "@/dataLayer/service/firebase/database";
 import {collection, deleteDoc, doc, getDoc, getDocs, query, serverTimestamp, setDoc, where} from "firebase/firestore";
-import {resultOf} from "@/dataLayer/service/firebase/queryUtils";
+import {docContentOf, resultOf} from "@/dataLayer/service/firebase/queryUtils";
 import {getCurrentUserId} from "@/dataLayer/service/firebase/user";
+import {getOneItem} from "@/dataLayer/service/firebase/item";
 
 /**
  * 添加order
@@ -61,16 +62,8 @@ export async function getOrderList() {
  */
 export async function getOrderOne(orderId) {
 
-    const docRef = doc(GlobalDB, "order", orderId);
-    const docSnap = await getDoc(docRef);
+    return await docContentOf(doc(GlobalDB, "order", orderId));
 
-    if (docSnap.exists()) {
-        console.log("Order data:", docSnap.data());
-    } else {
-        // doc.data() will be undefined in this case
-        console.log("No such order!");
-    }
-    return docSnap;
 }
 
 /**
@@ -79,19 +72,56 @@ export async function getOrderOne(orderId) {
  * @param side
  * @return {orders}
  */
-export async function getOrdersByMatch(itemId) {
-    const q = query(collection(GlobalDB, "order"), where("item_id", "==", itemId));
+export async function getOrderListByMatch(itemId, side) {
+    //array
+    const orderList = await resultOf(collection(GlobalDB, "order"), where("item_id", "==", itemId), where('side', '==', side));
+    const queryOrder = {};
+    let totalPrice;
+    queryOrder["orderList"] = orderList
+    queryOrder["itemInfo"] = await getOneItem(itemId);
 
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-        // doc.data() is never undefined for query doc snapshots
-        console.log(doc.id, " => ", doc.data());
-    });
-    return querySnapshot;
+    for (let i = 0; i < orderList.length; i++) {
+        queryOrder["totalStock"] += orderList[i].quantity;
+        queryOrder["minPrice"] = Math.min(queryOrder["minPrice"], orderList[i].price);
+        queryOrder["maxPrice"] = Math.max(queryOrder["maxPrice"], orderList[i].price);
+        totalPrice += orderList[i].price;
+    }
+    queryOrder["avgPrice"] = totalPrice / orderList.length;
 
+    for (let i = 0; i < orderList.length; i++) {
+        if(orderList[i].price == queryOrder["avgPrice"]){
+            queryOrder["meanQuantity"] += orderList[i].quantity;
+        }
+    }
 
-    // return db.collection('order').where('item_id', '==', itemId).where('side', '==', side).get();
+    return queryOrder;
 }
+
+/**
+ * 买家给固定的quantity， 想要知道花最少钱的能买到这个固定数量的东西, 根据item_id，
+ * @param itemId
+ * @param side
+ * @return price, quantity(不一定可以买完）
+ */
+export async function getMinPrice(itemId, quantity) {
+    const queryOrder = await getOrderListByMatch(itemId, "sell");
+
+    const minPrice = {};
+    if(queryOrder["totalStock"] <= quantity){
+        minPrice["quantity"] = quantity;
+        for (let i = 0; i < queryOrder["orderList"].length; i++){
+            minPrice["price"] += queryOrder["orderList"][i].price * queryOrder["orderList"][i].quantity
+        }
+        return minPrice;
+    }
+
+
+    for (let i = 0; i < orderList.length; i++) {
+
+    }
+
+}
+
 
 /**
  * 查询一个用户的多个 未完成的(true) 已完成的(false) orders
