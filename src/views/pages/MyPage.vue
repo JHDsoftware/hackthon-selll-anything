@@ -13,9 +13,9 @@
       {{ userId }}
     </div>
     <div class="mt-8"
-         style="display: grid;grid-gap:8px;grid-template-columns: repeat(2,minmax(0,1fr))">
+         style="display: grid;grid-gap:8px;grid-template-columns: repeat(3,minmax(0,1fr))">
       <v-card
-          width="112" @click="rechargeDialog = true"
+          width="80" @click="rechargeDialog = true"
           class="pa-2" elevation="0" color="#f6f6f6">
         <v-responsive :aspect-ratio="1">
           <div style="width: 100%;height: 100%" class="d-flex flex-column justify-center align-center">
@@ -23,6 +23,20 @@
             <div class="d-flex mt-1">
               <div class="text-caption">
                 {{ 1000 | priceDisplay }}
+              </div>
+            </div>
+          </div>
+        </v-responsive>
+      </v-card>
+      <v-card
+          width="80"
+          class="pa-2" elevation="0" color="#f6f6f6">
+        <v-responsive :aspect-ratio="1">
+          <div style="width: 100%;height: 100%" class="d-flex flex-column justify-center align-center">
+            <v-icon>mdi-trophy</v-icon>
+            <div class="d-flex mt-1">
+              <div class="text-caption">
+                Prize
               </div>
             </div>
           </div>

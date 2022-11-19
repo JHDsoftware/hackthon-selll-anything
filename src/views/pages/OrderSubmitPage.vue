@@ -253,7 +253,8 @@
               <v-btn :disabled="!submitRule" @click="submitOffer" height="52"
                      rounded
                      elevation="0"
-                     color="primary lighten-4 black--text">
+                     color="primary lighten-4 black--text"
+                    :loading="loading">
                 Submit Offer
                 <v-icon right>mdi-check</v-icon>
               </v-btn>
@@ -355,10 +356,12 @@ export default {
       this.items = await getItems()
     },
     async submitOffer() {
+      this.loading = true
       await addOrder(this.selectedItemId,
           this.price, this.amount,
           this.isBuy ? SideOption.Buy : SideOption.Sell)
-      this.$router.push('/loading')
+      this.loading = false
+      await this.$router.push('/loading')
     },
     startAddItem() {
       this.itemName = this.lastSearchInput
