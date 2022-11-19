@@ -1,9 +1,8 @@
 <template>
   <div>
-    <v-app-bar dark app elevation="0">
+    <v-app-bar app elevation="0">
       <div>
         <logo-display/>
-        <version-display class="mt-n1"></version-display>
       </div>
       <v-spacer/>
       <v-btn icon class="mr-4">
@@ -18,10 +17,19 @@
       </v-card>
     </v-app-bar>
     <v-main style="background: #f0f0f0;min-height: calc(100vh)">
-      <div class="pa-6">
-        <div style="display: grid;grid-template-columns: repeat(auto-fit,minmax(180px,1fr));grid-gap: 12px">
-          <order-card v-for="t in 12" :key="t"></order-card>
+      <div class="px-6">
+        <div style="width: 100%" class="pa-6 py-10 mb-4 d-flex align-center justify-center flex-column">
+          <div class="display-1">Explore, Trade and Share</div>
+          <div class="text-body-1 font-weight-black">Things that you love😋</div>
         </div>
+        <div style="display: grid;grid-template-columns: repeat(auto-fit,minmax(180px,1fr));grid-gap: 12px">
+          <order-card
+              v-for="t in 12"
+              :key="t"
+              :t="t"
+          />
+        </div>
+        <version-display/>
       </div>
     </v-main>
   </div>

@@ -1,5 +1,6 @@
 <template>
-  <v-card style="user-select: none;border-radius: 16px" color="white"
+  <v-card style="user-select: none;border-radius: 16px"
+          color="white"
           elevation="0">
     <v-img :aspect-ratio="1" src="https://random.imagecdn.app/500/500">
       <template #placeholder>
@@ -13,7 +14,7 @@
       <div class="text-caption">
         <span class="success--text text--darken-3 font-weight-medium">Sales</span>
         by
-        <v-avatar size="14" class="ml-1">
+        <v-avatar size="16" class="ml-1">
           <v-img :src="'https://api.multiavatar.com/'+t+'.svg'"></v-img>
         </v-avatar>
       </div>
@@ -43,7 +44,10 @@
 
 <script>
 export default {
-  name: "OrderCard"
+  name: "OrderCard",
+  props: {
+    t: {}
+  }
 }
 </script>
 
