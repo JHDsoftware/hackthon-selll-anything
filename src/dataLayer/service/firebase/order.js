@@ -1,5 +1,5 @@
 
-import { getDatabase, ref, set, remove } from "firebase/database";
+import { getDatabase, ref, set, child, push, get, remove } from "firebase/database";
 
 /**
  * 添加order
@@ -63,21 +63,10 @@ import { getDatabase, ref, set, remove } from "firebase/database";
    */
    export async function getOrdersByMatch(itemId, side) {
     const db = getDatabase();
-    orders = db.collection('order').where('item_id','==', itemId).where('side', '==', side).get().then(res => {}).catch(error => {});
+    const orders = db.collection('order').where('item_id','==', itemId).where('side', '==', side).get()
+
     return orders;
 }
-
-  /**
-   * 查询一个用户的多个orders 
-   * @param userid
-   * @return {Promise<void>}
-   */
-   export async function getOrdersByUser(userId) {
-    const db = getDatabase();
-    orders = db.collection('order').where('user_id','==',userId).get().then(res => {}).catch(error => {});
-    return orders;
- }
-
 
    /**
    * 查询一个用户的多个 未完成的(true) 已完成的(false) orders 
@@ -87,6 +76,7 @@ import { getDatabase, ref, set, remove } from "firebase/database";
    */
     export async function getOrdersByUser(userId, status) {
         const db = getDatabase();
-        orders = db.collection('order').where('user_id','==',userId).where('status', '==', status).get().then(res => {}).catch(error => {});
+        const orders = db.collection('order').where('user_id','==',userId).where('status', '==', status).get()
+       
         return orders;
-       }
+    }
