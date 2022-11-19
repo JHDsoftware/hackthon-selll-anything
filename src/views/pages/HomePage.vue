@@ -9,7 +9,7 @@
           @click="showUserPanel = true"
           class="pa-1 d-flex align-center rounded-pill"
           elevation="0">
-        <v-avatar size="30" class="mr-4">
+        <v-avatar size="30" class="mr-2">
           <v-img :src="'https://api.multiavatar.com/'+userId+'.svg'"></v-img>
         </v-avatar>
         <span class="text-body-2">
@@ -137,7 +137,11 @@
         <my-page @close="showUserPanel=false"></my-page>
       </v-card>
     </v-dialog>
-    <v-dialog></v-dialog>
+    <v-dialog fullscreen v-model="showChangeNumberDialog">
+      <v-card class="pa-4">
+
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -146,7 +150,7 @@ import LogoDisplay from "@/views/widgets/LogoDisplay";
 import MyPage from "@/views/pages/MyPage";
 import {getCurrentUser, getCurrentUserId} from "@/dataLayer/service/firebase/user";
 import OrderCard from "@/views/widgets/items/OrderCard";
-import {getActiveOrder, getOrderByList} from "@/dataLayer/service/firebase/order";
+import {getOrderByList} from "@/dataLayer/service/firebase/order";
 import OrderListPage from "@/views/pages/OrderListPage";
 import {collection, onSnapshot, query} from 'firebase/firestore'
 import {GlobalDB} from "@/plugins/google-fire-base";
@@ -159,7 +163,6 @@ export default {
       const res = snapshot.docs.map(it => it.data())
       this.orderList = getOrderByList(res)
     });
-    this.orderList = await getActiveOrder()
   },
   computed: {
     userName() {
@@ -179,6 +182,7 @@ export default {
       userId: getCurrentUserId(),
       orderList: [],
       showMyOrders: false,
+      showChangeNumberDialog: false
     };
   },
 

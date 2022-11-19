@@ -19,9 +19,12 @@
           <v-img :src="'https://api.multiavatar.com/'+t.user_id+'.svg'"></v-img>
         </v-avatar>
       </div>
-      <div class="mt-0">
-        <div class="text-body-1 text-capitalize">
+      <div class="mt-1">
+        <div class="text-body-1 text-capitalize text-truncate">
           {{ orderInfo.item_name }}
+        </div>
+        <div class="text-caption text-capitalize text-truncate">
+          {{ orderInfo.description }}
         </div>
       </div>
       <div class="d-flex align-center mt-2">

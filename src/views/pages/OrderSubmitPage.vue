@@ -119,10 +119,9 @@
             >
               <v-img style="border-radius: 16px" class="flex-grow-0" width="144" aspect-ratio="1"
                      :src="currentItem.imageUrl"></v-img>
-              <div class="flex-grow-1 ml-4 overflow-auto">
-                <div class="text-caption">
-                  Id: {{ currentItem.item_id }}
-                </div>
+              <div class="flex-grow-1 ml-4 d-flex flex-column" style="height: 144px">
+
+
                 <div class="text-body-1 font-weight-medium">
                   {{ currentItem.item_name }}
                 </div>
@@ -133,8 +132,10 @@
                      class="text-body-2 mt-1">
                   {{ currentItem.description }}
                 </div>
-
-
+                <v-spacer></v-spacer>
+                <div class="text-caption text-truncate">
+                  Id: {{ currentItem.item_id }}
+                </div>
               </div>
             </v-card>
             <div class="text-body-1 mt-12 font-weight-medium">

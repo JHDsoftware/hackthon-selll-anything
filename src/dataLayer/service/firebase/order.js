@@ -115,28 +115,20 @@ export async function getUserActiveOrderList() {
 }
 
 export function getOrderByList(orderList) {
-    return Object.values(groupBy(orderList, (it) => it.item_id + '!!!' + it.side + '!!!' + it.user_id + '!!!' + it.price)).map(it => {
+    const list = Object.values(groupBy(orderList, (it) => it.item_id + '!!!' + it.side + '!!!' + it.user_id + '!!!' + it.price)).map(it => {
 
         return it.reduce((obj, i) => {
-            console.log(it.quantity)
             return {
                 ...i, quantity: parseInt(obj?.quantity ?? 0) + parseInt(i.quantity)
             }
         }, null)
     }).filter(it => it.quantity > 0)
+    return sortBy(list, (it) => -it.timestamp.seconds)
 }
 
 export async function getActiveOrder() {
     const orderList = await getOrderList()
-    return Object.values(groupBy(orderList, (it) => it.item_id + '!!!' + it.side + '!!!' + it.user_id + '!!!' + it.price)).map(it => {
-
-        return it.reduce((obj, i) => {
-            console.log(it.quantity)
-            return {
-                ...i, quantity: parseInt(obj?.quantity ?? 0) + parseInt(i.quantity)
-            }
-        }, null)
-    }).filter(it => it.quantity > 0)
+    return getOrderByList(orderList)
 
 }
 
