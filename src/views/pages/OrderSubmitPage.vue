@@ -142,6 +142,7 @@
             </div>
             <div class="mt-4 d-flex">
               <v-card @click="buyOrSell='buy'"
+                      v-on:click="scrollToElement()"
                       elevation="0"
                       :color="buyOrSell==='buy'?'primary lighten-4':''"
                       width="144"
@@ -158,6 +159,7 @@
               <v-card elevation="0"
                       class="ml-4"
                       @click="buyOrSell='sell'"
+                      v-on:click="scrollToElement()"
                       :color="buyOrSell==='sell'?'primary lighten-4':''"
                       width="144"
                       style="border-radius: 16px">
@@ -174,7 +176,7 @@
             </div>
             <template v-if="buyOrSell">
               <div
-                  class="mt-2 ">
+                  class="mt-2">
                 <div class="text-body-1 mt-12 font-weight-medium">
                   Current market status
                 </div>
@@ -243,7 +245,7 @@
                 <v-icon right>mdi-check</v-icon>
               </v-btn>
             </template>
-
+            <div id="goDown"></div>
           </div>
         </template>
 
@@ -294,6 +296,15 @@ export default {
     };
   },
   methods: {
+    scrollToElement() {
+      const el = document.getElementById('goDown')
+      if (el) {
+        setTimeout(() => {
+          el.scrollIntoView({behavior: "smooth"})
+        }, 10)
+
+      }
+    },
     async reloadItems() {
       this.items = await getItems()
       console.log(this.items, 'items')

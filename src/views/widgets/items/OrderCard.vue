@@ -33,7 +33,6 @@
 
 
         <v-spacer></v-spacer>
-
       </div>
 
 
@@ -46,7 +45,7 @@ export default {
   name: "OrderCard",
   props: {
     t: {}
-  }
+  },
 }
 </script>
 

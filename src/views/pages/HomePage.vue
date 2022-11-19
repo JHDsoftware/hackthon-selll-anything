@@ -41,7 +41,7 @@
           </v-btn>
           <v-btn
               elevation="0"
-              @click="toNewOffer"
+              @click="showNewOfferDialog=true"
               color="success black--text lighten-4"
               small>
             <v-icon left small>mdi-plus-circle</v-icon>
@@ -50,7 +50,7 @@
         </div>
       </template>
     </v-app-bar>
-    <v-main v-scroll="onScroll" class="overflow-y-auto" style="background: #f0f0f0;min-height: calc(100vh)">
+    <v-main v-scroll="onScroll" class="overflow-y-auto"  style="background: #f0f0f0;min-height: calc(100vh)" >
       <div class="px-6">
         <div style="width: 100%" class="pa-6 py-10 mb-4 d-flex align-center justify-center flex-column">
           <div class="display-1">Explore, Trade and Share</div>
@@ -132,15 +132,19 @@
         <my-page @close="showUserPanel=false"></my-page>
       </v-card>
     </v-dialog>
+    <v-dialog width="300" v-model="rechargeDialog">
+
+    </v-dialog>
+
   </div>
 </template>
 
 <script>
 import LogoDisplay from "@/views/widgets/LogoDisplay";
 import VersionDisplay from "@/views/widgets/VersionDisplay";
-import OrderCard from "@/views/widgets/items/OrderCard";
 import MyPage from "@/views/pages/MyPage";
 import {getCurrentUserId} from "@/dataLayer/service/firebase/user";
+import OrderCard from "@/views/widgets/items/OrderCard";
 
 export default {
   name: "HomePage",
@@ -159,7 +163,7 @@ export default {
   },
 
   methods: {
-    gotoSalePage() {
+    gotoSalePage () {
 
     },
 
