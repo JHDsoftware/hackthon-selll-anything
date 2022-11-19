@@ -1,4 +1,4 @@
-import { doc, setDoc} from 'firebase/firestore'
+import {doc, setDoc} from 'firebase/firestore'
 import {FireBaseAuth, FireBaseStore} from '@/plugins/google-fire-base'
 
 const userDBPath = 'user'
@@ -17,4 +17,9 @@ export async function login(id, displayName) {
 export function getCurrentUserId() {
     return FireBaseAuth.currentUser?.uid
 }
+
+export function getCurrentUser() {
+    return FireBaseAuth.currentUser
+}
+
 

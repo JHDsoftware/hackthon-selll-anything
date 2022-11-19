@@ -129,56 +129,7 @@
     </v-dialog>
     <v-dialog fullscreen v-model="showUserPanel">
       <v-card style="width: 100vw;height: 100vh">
-        <div class="pa-6 d-flex align-center flex-column justify-center fill-height">
-          <v-avatar size="80">
-            <v-img :src="'https://api.multiavatar.com/'+userId+'.svg'"></v-img>
-          </v-avatar>
-          <span class="text-body-2 mt-2">
-              UID: {{ userId }}
-        </span>
-          <div class="mt-8" style="width: 300px">
-            <span class="text-body-2">Name:</span>
-            <v-text-field
-                v-model="userName"
-                rounded
-                hide-details
-                autofocus
-                filled
-                placeholder="Input New Name"
-            />
-          </div>
-          <div class="mt-4" style="width: 300px">
-            <span class="text-body-2">Wallet: </span>
-            <div class="d-flex">
-              <v-card-title class="ml-1">
-                {{ 1000 | priceDisplay }}
-              </v-card-title>
-              <v-spacer></v-spacer>
-              <v-btn class="mt-2" elevation="0" @click="rechargeDialog = true">
-                Recharge
-              </v-btn>
-            </div>
-
-          </div>
-          <div class="mt-4" style="width: 300px">
-            <span class="text-body-2">Prize:</span>
-            <v-card-title>
-
-            </v-card-title>
-          </div>
-          <div class="d-flex mt-2" style="width: 300px">
-            <v-btn @click="saveUserInfo" elevation="0" rounded>
-              <v-icon left>mdi-magnify</v-icon>
-              Log out
-            </v-btn>
-            <v-spacer></v-spacer>
-            <v-btn @click="saveUserInfo" elevation="0" rounded>
-              <v-icon left>mdi-magnify</v-icon>
-              Save
-            </v-btn>
-          </div>
-
-        </div>
+        <my-page></my-page>
       </v-card>
     </v-dialog>
     <v-dialog width="300" v-model="rechargeDialog">
@@ -191,17 +142,14 @@
 <script>
 import LogoDisplay from "@/views/widgets/LogoDisplay";
 import VersionDisplay from "@/views/widgets/VersionDisplay";
-import {getCurrentUserId} from "@/dataLayer/service/firebase/user";
 import OrderCard from "@/views/widgets/items/OrderCard";
+import MyPage from "@/views/pages/MyPage";
 
 export default {
   name: "HomePage",
-  components: {OrderCard, VersionDisplay, LogoDisplay},
+  components: {MyPage, OrderCard, VersionDisplay, LogoDisplay},
   data: function () {
     return {
-      rechargeDialog: false,
-      userId: getCurrentUserId(),
-      userName: "James Bond",
       showSearchDialog: false,
       searchText: '',
       searchTextModel: '',
@@ -216,9 +164,7 @@ export default {
     gotoSalePage() {
 
     },
-    saveUserInfo() {
-      this.showUserPanel = false
-    },
+
     onScroll(e) {
       this.offsetTop = e.target.scrollingElement.scrollTop
     },

@@ -54,7 +54,7 @@
             <div style="width: 100%" class="d-flex justify-center">
               <v-card
                   width="144" elevation="0"
-                  color="#f6f6f6"
+                  color="grey lighten-2"
                   style="position: relative"
                   class="my-4">
                 <div style="position: absolute;z-index: 1;width: 100%">
@@ -104,7 +104,7 @@
             <v-text-field
                 placeholder="Something more you want to tell the people about this" rounded
                 filled/>
-            <back-step-button class="mr-2"/>
+            <back-step-button @click="step=1" class="mr-2"/>
             <next-step-button @click="step=2"/>
           </div>
         </template>
@@ -225,7 +225,7 @@ export default {
   data: function () {
     return {
 
-      step: 2,
+      step: 0,
       file: null,
       items: ['apple', 'banana', 'banana2'],
       selectedItem: null,
