@@ -1,5 +1,7 @@
 import {child, get, getDatabase, push, ref, remove, set} from "firebase/database";
 import {GlobalDB} from "@/dataLayer/service/firebase/database";
+import {collection, deleteDoc, doc, getDoc, getDocs, query, serverTimestamp, setDoc, where} from "firebase/firestore";
+import {resultOf} from "@/dataLayer/service/firebase/queryUtils";
 
 /**
  * 添加order
@@ -14,23 +16,28 @@ import {GlobalDB} from "@/dataLayer/service/firebase/database";
  * @param payment
  * @return
  */
-export function addOrder(itemId, priceLow, priceHigh,
+export async function addOrder(itemId, priceLow, priceHigh,
                          quantity, fulfillQuantity, status, side, userId, payment) {
-    const db = getDatabase();
-    const newOrderId = push(child(ref(db), 'order')).key;
-    set(ref(db, 'order/' + newOrderId), {
-        order_id: newOrderId,
-        item_id: itemId,
-        price_low: priceLow,
-        priceHigh: priceHigh,
-        quantity: quantity,
-        fulfilled_quantity: fulfillQuantity,
-        side: side,
-        user_id: userId,
-        status: status,
-        payment: payment,
-        timestamp: Date.now(),
-    });
+    try {
+        const newOrderId = doc(collection(GlobalDB, "order"));
+
+        await setDoc(newOrderId,{
+            order_id: newOrderId,
+            item_id: itemId,
+            price_low: priceLow,
+            priceHigh: priceHigh,
+            quantity: quantity,
+            fulfilled_quantity: fulfillQuantity,
+            side: side,
+            user_id: userId,
+            status: status,
+            payment: payment,
+            timestamp: serverTimestamp(),
+        });
+        console.log("Document written with ID: ", newOrderId);
+    } catch (e) {
+        console.error("Error adding document: ", e);
+    }
 }
 
 /**
@@ -38,10 +45,19 @@ export function addOrder(itemId, priceLow, priceHigh,
  * @param orderId
  * @return
  */
-export function removeOrder(orderId) {
-    const db = getDatabase();
-    remove(ref(db, 'order/' + orderId));
+export async function removeOrder(orderId) {
+    await deleteDoc(doc(GlobalDB, "order", orderId));
 }
+
+/**
+ * 查询orders list
+ * @return {Promise<void>}
+ */
+export async function getOrderList() {
+    return await resultOf(collection(GlobalDB, "order"));
+
+}
+
 
 /**
  * 根据order_id查询一个order
@@ -49,9 +65,17 @@ export function removeOrder(orderId) {
  * @return {Promise<void>}
  */
 export async function getOrderOne(orderId) {
-    const db = getDatabase();
-    const snapshot = await get(ref(db, '/order/' + orderId))
-    return snapshot.val();
+
+    const docRef = doc(GlobalDB, "order", orderId);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+        console.log("Order data:", docSnap.data());
+    } else {
+        // doc.data() will be undefined in this case
+        console.log("No such order!");
+    }
+    return docSnap;
 }
 
 /**
@@ -61,8 +85,17 @@ export async function getOrderOne(orderId) {
  * @return {orders}
  */
 export async function getOrdersByMatch(itemId, side) {
-    const db = getDatabase();
-    return db.collection('order').where('item_id', '==', itemId).where('side', '==', side).get();
+    const q = query(collection(GlobalDB, "order"), where("item_id", "==", itemId));
+
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        console.log(doc.id, " => ", doc.data());
+    });
+    return querySnapshot;
+
+
+   // return db.collection('order').where('item_id', '==', itemId).where('side', '==', side).get();
 }
 
 /**
