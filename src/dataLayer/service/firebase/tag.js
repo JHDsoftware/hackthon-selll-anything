@@ -1,18 +1,24 @@
-import {child, getDatabase, push, ref, remove, set} from "firebase/database";
+import {collection, deleteDoc, doc, setDoc} from "firebase/firestore";
+import {GlobalDB} from "@/dataLayer/service/firebase/database";
 
 /**
  * 添加tag
  * @param tagName
  * @return
  */
-export function addTag(tagName) {
-    const db = getDatabase();
-    const newTagId = push(child(ref(db), 'tag')).key;
-    set(ref(db, 'tag/' + newTagId), {
-        tag_id: newTagId,
-        tag_name: tagName,
-        timestamp: Date.now(),
-    });
+export async function addTag(tagName) {
+    try {
+        const newTagId = doc(collection(GlobalDB, "tag"));
+        await setDoc(newTagId, {
+            tag_id: newTagId,
+            tag_name: tagName,
+            timestamp: Date.now(),
+        });
+        console.log("Document written with ID: ", newTagId);
+    } catch (e) {
+        console.error("Error adding document: ", e);
+    }
+
 }
 
 /**
@@ -20,8 +26,10 @@ export function addTag(tagName) {
  * @param tagId
  * @return
  */
-export function removeTag(tagId) {
-    const db = getDatabase();
-    remove(ref(db, 'tag/' + tagId));
+export async function removeTag(tagId) {
+
+    await deleteDoc(doc(GlobalDB, "tag", tagId));
+
 }
+
   

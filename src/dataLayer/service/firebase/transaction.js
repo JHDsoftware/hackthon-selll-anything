@@ -1,4 +1,5 @@
-import {child, get, getDatabase, push, ref, remove, set} from "firebase/database";
+import {collection, deleteDoc, doc, getDoc, getDocs, query, setDoc, where} from "firebase/firestore";
+import {GlobalDB} from "@/dataLayer/service/firebase/database";
 
 /**
  * 添加transaction
@@ -13,22 +14,28 @@ import {child, get, getDatabase, push, ref, remove, set} from "firebase/database
  * @param payment
  * @return
  */
-export function addTran(orderBuyId, orderSellId, userBuyId, userSellId, itemId, status, price, quantity, payment) {
-    const db = getDatabase();
-    const newTranId = push(child(ref(db), 'transaction')).key;
-    set(ref(db, 'transaction/' + newTranId), {
-        transaction_id: newTranId,
-        order_buy_id: orderBuyId,
-        order_sell_id: orderSellId,
-        user_sell_id: userSellId,
-        user_buy_id: userBuyId,
-        item_id: itemId,
-        price: price,
-        quantity: quantity,
-        status: status,
-        payment: payment,
-        timestamp: Date.now(),
-    });
+export async function addTran(orderBuyId, orderSellId, userBuyId, userSellId, itemId, status, price, quantity, payment) {
+    try {
+        const newTranId = doc(collection(GlobalDB, "transaction"));
+
+        await setDoc(newTranId, {
+            transaction_id: newTranId,
+            order_buy_id: orderBuyId,
+            order_sell_id: orderSellId,
+            user_sell_id: userSellId,
+            user_buy_id: userBuyId,
+            item_id: itemId,
+            price: price,
+            quantity: quantity,
+            status: status,
+            payment: payment,
+            timestamp: Date.now(),
+        });
+        console.log("Document written with ID: ", newTranId);
+    } catch (e) {
+        console.error("Error adding document: ", e);
+    }
+
 }
 
 /**
@@ -36,9 +43,10 @@ export function addTran(orderBuyId, orderSellId, userBuyId, userSellId, itemId, 
  * @param tranId
  * @return
  */
-export function removeTran(tranId) {
-    const db = getDatabase();
-    remove(ref(db, 'transaction/' + tranId));
+export async function removeTran(tranId) {
+
+    await deleteDoc(doc(GlobalDB, "transaction", tranId));
+
 }
 
 /**
@@ -47,10 +55,16 @@ export function removeTran(tranId) {
  * @return {Promise<void>}
  */
 export async function getTranOne(tranId) {
-    const db = getDatabase();
-    const snapshot = await get(ref(db, '/transaction/' + tranId))
-    const transaction = snapshot.val();
-    return transaction;
+    const docRef = doc(GlobalDB, "transaction", tranId);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+        console.log("Document data:", docSnap.data());
+    } else {
+        // doc.data() will be undefined in this case
+        console.log("No such document!");
+    }
+    return docSnap;
 }
 
 /**
@@ -60,9 +74,14 @@ export async function getTranOne(tranId) {
  * @return {orders}
  */
 export async function getTransByItem(itemId) {
-    const db = getDatabase();
-    const transactions = db.collection('transaction').where('item_id', '==', itemId).get()
-    return transactions;
+    const q = query(collection(GlobalDB, "transaction"), where("item_id", "==", itemId));
+
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        console.log(doc.id, " => ", doc.data());
+    });
+    return querySnapshot;
 }
 
 /**
@@ -72,10 +91,15 @@ export async function getTransByItem(itemId) {
  * @return {Promise<void>}
  */
 export async function getTransByBuyer(userId, status) {
-    const db = getDatabase();
-    const trans = db.collection('transaction').where('user_buy_id', '==', userId).where('status', '==', status).get()
+    const q = query(collection(GlobalDB, "transaction"), where("user_id", "==", userId), where('status', '==', status));
 
-    return trans;
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        console.log(doc.id, " => ", doc.data());
+    });
+    return querySnapshot;
+
 }
 
 /**
@@ -85,8 +109,13 @@ export async function getTransByBuyer(userId, status) {
  * @return {Promise<void>}
  */
 export async function getTransBySeller(userId, status) {
-    const db = getDatabase();
-    const trans = db.collection('transaction').where('user_sell_id', '==', userId).where('status', '==', status).get()
+    const q = query(collection(GlobalDB, "transaction"), where("user_sell_id", "==", userId), where('status', '==', status));
 
-    return trans;
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        console.log(doc.id, " => ", doc.data());
+    });
+    return querySnapshot;
+
 }
