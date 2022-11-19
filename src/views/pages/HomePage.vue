@@ -64,7 +64,13 @@
       </div>
     </v-main>
     <v-dialog fullscreen v-model="showSearchDialog">
-      <v-card class="pa-4"></v-card>
+      <v-card class="pa-4" style="width: 100vw;height: 100vh">
+        <div class="pa-6">
+          <page-title>
+            Search
+          </page-title>
+        </div>
+      </v-card>
     </v-dialog>
   </div>
 </template>
@@ -74,10 +80,11 @@ import LogoDisplay from "@/views/widgets/LogoDisplay";
 import VersionDisplay from "@/views/widgets/VersionDisplay";
 import {getCurrentUserId} from "@/dataLayer/service/firebase/user";
 import OrderCard from "@/views/widgets/items/OrderCard";
+import PageTitle from "@/views/widgets/PageTitle";
 
 export default {
   name: "HomePage",
-  components: {OrderCard, VersionDisplay, LogoDisplay},
+  components: {PageTitle, OrderCard, VersionDisplay, LogoDisplay},
   data: function () {
     return {
       userId: getCurrentUserId(),
