@@ -41,7 +41,7 @@
           </v-btn>
           <v-btn
               elevation="0"
-              @click="showNewOfferDialog=true"
+              @click="toNewOffer"
               color="success black--text lighten-4"
               small>
             <v-icon left small>mdi-plus-circle</v-icon>
@@ -145,6 +145,7 @@ import VersionDisplay from "@/views/widgets/VersionDisplay";
 import MyPage from "@/views/pages/MyPage";
 import {getCurrentUserId} from "@/dataLayer/service/firebase/user";
 import OrderCard from "@/views/widgets/items/OrderCard";
+import router from "@/router";
 
 export default {
   name: "HomePage",
@@ -164,7 +165,7 @@ export default {
 
   methods: {
     gotoSalePage () {
-
+      router.push('orderList')
     },
 
     onScroll(e) {
