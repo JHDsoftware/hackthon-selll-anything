@@ -19,7 +19,7 @@ export async function addTran(orderBuyId, orderSellId, userBuyId, userSellId, it
         const newTranId = doc(collection(GlobalDB, "transaction"));
 
         await setDoc(newTranId, {
-            transaction_id: newTranId,
+            transaction_id: newTranId.id,
             order_buy_id: orderBuyId,
             order_sell_id: orderSellId,
             user_sell_id: userSellId,

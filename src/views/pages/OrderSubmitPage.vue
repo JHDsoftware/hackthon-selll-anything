@@ -141,8 +141,7 @@
               I would like to...
             </div>
             <div class="mt-4 d-flex">
-              <v-card @click="buyOrSell='buy'"
-                      v-on:click="scrollToElement()"
+              <v-card @click="buyOrSell='buy'; scrollToElement(); clearPriceAndData(); getItemDetail()"
                       elevation="0"
                       :color="buyOrSell==='buy'?'primary lighten-4':''"
                       width="144"
@@ -158,8 +157,7 @@
               </v-card>
               <v-card elevation="0"
                       class="ml-4"
-                      @click="buyOrSell='sell'"
-                      v-on:click="scrollToElement()"
+                      @click="buyOrSell='sell'; scrollToElement(); clearPriceAndData(); getItemDetail()"
                       :color="buyOrSell==='sell'?'primary lighten-4':''"
                       width="144"
                       style="border-radius: 16px">
@@ -187,7 +185,7 @@
                       <v-icon small color="warning darken-2">mdi-finance</v-icon>
                       <v-spacer></v-spacer>
                       <div class="text-body-1">
-                        {{ 15.95 | priceDisplay }}
+                        {{ selectedItemDetail.avgPrice | priceDisplay }}
                       </div>
                     </div>
                   </v-card>
@@ -197,7 +195,7 @@
                       <v-icon small color="success darken-2">mdi-server</v-icon>
                       <v-spacer></v-spacer>
                       <div class="text-body-1">
-                        {{ 125 }}
+                        {{ selectedItemDetail.totalStock }}
                       </div>
                     </div>
                   </v-card>
@@ -207,7 +205,7 @@
                       <v-icon small color="error darken-2">mdi-cart-percent</v-icon>
                       <v-spacer></v-spacer>
                       <div class="text-body-1">
-                        {{ 12.5| priceDisplay }}(12)
+                        {{ selectedItemDetail.minPrice| priceDisplay }}({{selectedItemDetail.minCount}})
                       </div>
                     </div>
                   </v-card>
@@ -252,7 +250,7 @@
                 </v-text-field>
               </div>
 
-              <v-btn @click="submitOffer" height="52"
+              <v-btn :disabled="!submitRule" @click="submitOffer" height="52"
                      rounded
                      elevation="0"
                      color="primary lighten-4 black--text">
@@ -276,7 +274,7 @@ import NextStepButton from "@/views/widgets/NextStepButton";
 import BackStepButton from "@/views/widgets/BackStepButton";
 import {uploadImage} from "@/dataLayer/service/firebase/uploadImage";
 import {addItem, getItems} from "@/dataLayer/service/firebase/item";
-import {addOrder, SideOption} from "@/dataLayer/service/firebase/order";
+import {addOrder, getItemDetail, SideOption} from "@/dataLayer/service/firebase/order";
 
 export default {
   name: "OrderSubmitPage",
@@ -290,7 +288,7 @@ export default {
     amount(val) {
       if (this.isBuy && val) {
         setTimeout(() => {
-          this.rightNowPrice = 12.5
+          this.rightNowPrice = this.selectedItemDetail.minPrice
         }, 2000)
 
       } else {
@@ -309,6 +307,9 @@ export default {
     currentItem: function () {
       console.log(this.items, this.selectedItemId)
       return this.items.find(it => it.item_id === this.selectedItemId)
+    },
+    submitRule: function () {
+      return this.amount !== 0 && this.amount !== "0" && this.amount !== "" && this.amount !== null && this.price !== 0 && this.price !== "0" && this.price !== "" && this.price !== null
     }
   },
   data: function () {
@@ -326,9 +327,18 @@ export default {
       amount: '',
       rightNowPrice: '',
       price: '',
+      selectedItemDetail: ''
     };
   },
   methods: {
+    async getItemDetail () {
+      this.selectedItemDetail = await getItemDetail(this.selectedItemId, this.isBuy)
+      console.log(this.selectedItemDetail, "detail")
+    },
+    clearPriceAndData () {
+      this.price = ''
+      this.amount = ''
+    },
     scrollToElement() {
       const el = document.getElementById('goDown')
       if (el) {
@@ -356,6 +366,8 @@ export default {
     async confirmAddItem() {
       const imageUrl = await uploadImage(this.file)
       const id = await addItem(this.itemName, this.itemDesc, imageUrl, []);
+      console.log(id)
+      console.log("Uploaded Image Id")
       await this.reloadItems()
       this.selectedItemId = id
       this.step = 2
