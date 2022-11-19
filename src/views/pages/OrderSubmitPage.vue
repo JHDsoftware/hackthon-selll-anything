@@ -137,7 +137,11 @@
               I would like to...
             </div>
             <div class="mt-4 d-flex">
-              <v-card elevation="0" width="144" style="border-radius: 16px">
+              <v-card @click="buyOrSell='buy'"
+                      elevation="0"
+                      :color="buyOrSell==='buy'?'primary lighten-4':''"
+                      width="144"
+                      style="border-radius: 16px">
                 <v-responsive :aspect-ratio="1">
                   <div style="width: 100%;height: 100%;" class="d-flex align-center justify-center flex-column">
                     <v-icon size="36">mdi-basket-plus</v-icon>
@@ -149,7 +153,8 @@
               </v-card>
               <v-card elevation="0"
                       class="ml-4"
-                      color="primary lighten-4"
+                      @click="buyOrSell='sell'"
+                      :color="buyOrSell==='sell'?'primary lighten-4':''"
                       width="144"
                       style="border-radius: 16px">
                 <v-responsive :aspect-ratio="1">
@@ -187,7 +192,7 @@
                   rounded filled>
               </v-text-field>
             </div>
-            <v-btn height="52" rounded elevation="0"
+            <v-btn @click="submitOffer" height="52" rounded elevation="0"
                    color="primary lighten-4 black--text">
               Submit Offer
               <v-icon right>mdi-check</v-icon>
@@ -219,6 +224,9 @@ export default {
     }
   },
   computed: {
+    isBuy: function () {
+      return this.buyOrSell === 'buy'
+    },
     uploadUrl: function () {
       console.log(this.file)
       return this.file ? URL.createObjectURL(this.file) : null
@@ -234,9 +242,13 @@ export default {
       selectedItem: null,
       searchInput: '',
       lastSearchInput: '',
+      buyOrSell: null,
     };
   },
   methods: {
+    submitOffer() {
+      this.$router.push('/loading')
+    },
     startAddItem() {
       this.itemName = this.lastSearchInput
       this.itemDesc = ''
