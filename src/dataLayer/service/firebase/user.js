@@ -25,12 +25,10 @@ export function getCurrentUser() {
 
 /**
  * 添加用户
- * @param user_id
- * @param displayName
+ * @param name
  * @param email
- * @param password
+ * @param psw
  * @param balance
- * @param timestamp
  * @return
  */
 export function writeUserData(name, email, psw, balance) {
