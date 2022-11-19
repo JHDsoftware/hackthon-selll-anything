@@ -57,9 +57,10 @@ export async function addOrder(itemId, price, quantity, side) {
         console.log(requiredQuantity)
         const [buyer, seller] = isBuy ? [getCurrentUserId(), record.user_id] : [record.user_id, getCurrentUserId()]
         const insertQuantity = Math.min(requiredQuantity, record.quantity)
-        await addTran(buyer, seller, itemId, record.price, insertQuantity)
+        const checkOutPrice = isBuy ? Math.min(record.price, price) : Math.max(record.price, price)
+        await addTran(buyer, seller, itemId, checkOutPrice, insertQuantity)
         await addOrderInternal(itemId, record.price, -insertQuantity, sideReverse, OperationType.FullFilled, record.user_id)
-        await addOrderInternal(itemId, record.price, -insertQuantity, side, OperationType.FullFilled)
+        await addOrderInternal(itemId, price, -insertQuantity, side, OperationType.FullFilled)
         requiredQuantity -= insertQuantity
         if (requiredQuantity === 0) {
             break
@@ -96,7 +97,7 @@ export async function getOrderList() {
 
 export async function getActiveOrder() {
     const orderList = await getOrderList()
-    return Object.values(groupBy(orderList, (it) => it.side + '!!!' + it.user_id)).map(it => {
+    return Object.values(groupBy(orderList, (it) => it.side + '!!!' + it.user_id + '!!!' + it.price)).map(it => {
         return it.reduce((obj, i) => {
             return {
                 ...i, quantity: parseInt(obj?.quantity ?? 0) + parseInt(i.quantity)
