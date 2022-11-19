@@ -40,7 +40,6 @@ export async function addOrder(itemId, price, quantity, side) {
         return it.side === sideReverse && (isBuy ? it.price <= price : it.price >= price)
     });
     orderBy(items, ['price'], [isBuy ? 'asc' : 'desc'])
-    console.log(items, 'items')
 
     const group = Object.values(groupBy(items, (it) => it.user_id + '!!!' + it.price)).map(it => {
         return it.reduce((obj, i) => {
@@ -49,12 +48,10 @@ export async function addOrder(itemId, price, quantity, side) {
             }
         }, null)
     }).filter(it => it.quantity > 0)
-    console.log(group)
 
     let requiredQuantity = quantity
 
     for (const record of group) {
-        console.log(requiredQuantity)
         const [buyer, seller] = isBuy ? [getCurrentUserId(), record.user_id] : [record.user_id, getCurrentUserId()]
         const insertQuantity = Math.min(requiredQuantity, record.quantity)
         const checkOutPrice = isBuy ? Math.min(record.price, price) : Math.max(record.price, price)
@@ -91,8 +88,30 @@ export async function removeOrder(orderId) {
  * 查询orders list
  * @return {Promise<void>}
  */
+export async function getUserOrderList() {
+    return await resultOf(query(collection(GlobalDB, "order"), where("user_id", "==", getCurrentUserId())));
+}
+ 
+
+/**
+ * 查询orders list
+ * @return {Promise<void>}
+ */
 export async function getOrderList() {
     return await resultOf(collection(GlobalDB, "order"));
+}
+
+export async function getUserActiveOrderList() {
+    const orderList = await getUserOrderList()
+    return Object.values(groupBy(orderList, (it) => it.item_id + '!!!' + it.side + '!!!' + it.user_id + '!!!' + it.price)).map(it => {
+
+        return it.reduce((obj, i) => {
+            console.log(it.quantity)
+            return {
+                ...i, quantity: parseInt(obj?.quantity ?? 0) + parseInt(i.quantity)
+            }
+        }, null)
+    }).filter(it => it.quantity > 0)
 }
 
 export async function getActiveOrder() {

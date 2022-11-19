@@ -1,6 +1,8 @@
 import {collection, deleteDoc, doc, query, setDoc, where} from "firebase/firestore";
 import {GlobalDB} from "@/plugins/google-fire-base";
 import {docContentOf, resultOf} from "@/dataLayer/service/firebase/queryUtils";
+import {getCurrentUserId} from "@/dataLayer/service/firebase/user";
+import {orderBy} from "lodash-es";
 
 /**
  * 添加transaction
@@ -86,13 +88,15 @@ export async function getTransByItem(itemId) {
  * @param userId
  * @return {Promise<void>}
  */
-export async function getTransByUser(uerId) {
-    return await Promise.all([
-        resultOf(query(collection(GlobalDB, "transaction"),
-            where("user_sell_id", "==", uerId))),
-        resultOf(query(collection(GlobalDB, "transaction"),
-            where("user_buy_id", "==", uerId))),
-    ])
+export async function getTransByUser() {
+    const userId = getCurrentUserId()
+    const result1 = await resultOf(query(collection(GlobalDB, "transaction"),
+        where("user_sell_id", "==", userId)))
+    const result2 = await resultOf(query(collection(GlobalDB, "transaction"),
+        where("user_buy_id", "==", userId)))
+    const res = [...result1, ...result2]
+    orderBy(res, [(it) => it.timestamp.seconds], ['desc'])
+    return res
 
 
 }

@@ -42,7 +42,7 @@
       <template v-if="tab===0">
         <div class="py-2">
           <v-list three-line>
-            <order-list-item>
+            <order-list-item :item="t" v-for="t in activeOrder" :key="t.item_id">
               <v-list-item-action>
                 <v-btn icon>
                   <v-icon>mdi-pencil</v-icon>
@@ -55,23 +55,26 @@
       <template v-else-if="tab===1">
         <div class="py-2">
           <v-list three-line>
-            <order-list-item>
+            <order-list-item :item="t" v-for="t in transactions" :key="t.transaction_id">
               <template>
                 <v-list-item-action-text>
-                  from
-                  <v-avatar size="16">
-                    <v-img :src="'https://api.multiavatar.com/'+123+'.svg'"></v-img>
-                  </v-avatar>
-                </v-list-item-action-text>
-              </template>
-            </order-list-item>
-            <order-list-item>
-              <template>
-                <v-list-item-action-text>
-                  to
-                  <v-avatar size="16">
-                    <v-img :src="'https://api.multiavatar.com/'+123+'.svg'"></v-img>
-                  </v-avatar>
+                  <div>
+                    <div>
+                      from
+                      <v-avatar size="16">
+                        <v-img :src="'https://api.multiavatar.com/'+t.seller_user_id+'.svg'"></v-img>
+                      </v-avatar>
+                    </div>
+                    <div>
+                      <div>
+                        to
+                        <v-avatar size="16">
+                          <v-img :src="'https://api.multiavatar.com/'+t.buyer_user_id+'.svg'"></v-img>
+                        </v-avatar>
+                      </div>
+                    </div>
+                  </div>
+
                 </v-list-item-action-text>
               </template>
             </order-list-item>
@@ -81,29 +84,13 @@
       <template v-else>
         <div class="py-2">
           <v-list three-line>
-            <order-list-item>
+            <order-list-item :item="t" v-for="t in logs" :key="t.order_id">
               <template>
                 <template>
                   <v-list-item-action-text>
-                    <span class="success--text text--darken-2">Add</span>
+                    <span class="success--text text--darken-2">{{ t.type }}</span>
                   </v-list-item-action-text>
                 </template>
-              </template>
-            </order-list-item>
-            <order-list-item>
-              <template>
-                <template>
-                  <v-list-item-action-text>
-                    <span class="error--text text--darken-2">Delete</span>
-                  </v-list-item-action-text>
-                </template>
-              </template>
-            </order-list-item>
-            <order-list-item>
-              <template>
-                <v-list-item-action-text>
-                  <span>Fullfilled</span>
-                </v-list-item-action-text>
               </template>
             </order-list-item>
           </v-list>
@@ -117,6 +104,10 @@
 import {getCurrentUserId} from "@/dataLayer/service/firebase/user";
 import PageTitle from "@/views/widgets/PageTitle";
 import OrderListItem from "@/views/widgets/items/OrderListItem";
+import {getUserActiveOrderList, getUserOrderList} from "@/dataLayer/service/firebase/order";
+import {keyBy} from "lodash-es";
+import {getItems} from "@/dataLayer/service/firebase/item";
+import {getTransByUser} from "@/dataLayer/service/firebase/transaction";
 
 export default {
   components: {OrderListItem, PageTitle},
@@ -124,11 +115,47 @@ export default {
   computed: {},
   data: () => {
     return {
-      tab: 2,
+      tab: 0,
       userId: getCurrentUserId(),
+      logs: [],
+      activeOrder: [],
+      transactions: [],
+      itemDict: {},
+    }
+  },
+  props: {
+    show: {}
+  },
+  watch: {
+    show(val) {
+      if (val) {
+        this.refreshData()
+      }
     }
   },
   methods: {
+    async refreshData() {
+      this.itemDict = keyBy(await getItems(), 'item_id')
+      this.logs = (await getUserOrderList()).map(it => {
+        return {
+          ...(this.itemDict[it.item_id]),
+          ...it
+        }
+      })
+      this.transactions = (await getTransByUser()).map(it => {
+        return {
+          ...(this.itemDict[it.item_id]),
+          ...it
+        }
+      })
+      this.activeOrder = (await getUserActiveOrderList()).map(it => {
+        return {
+          ...(this.itemDict[it.item_id]),
+          ...it
+        }
+      })
+      console.log(this.transactions)
+    },
     goBackPage() {
       this.$emit('close')
     }
