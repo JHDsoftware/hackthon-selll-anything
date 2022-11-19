@@ -20,7 +20,7 @@
       <template #extension>
         <div class="d-flex align-center">
           <v-btn light
-                 @click="showSearchDialog=true"
+                 @click="startSearch"
                  elevation="0"
                  class="mr-2"
                  small
@@ -64,11 +64,48 @@
       </div>
     </v-main>
     <v-dialog fullscreen v-model="showSearchDialog">
-      <v-card class="pa-4" style="width: 100vw;height: 100vh">
-        <div class="pa-6">
-          <page-title>
-            Search
-          </page-title>
+      <v-card style="width: 100vw;height: 100vh">
+        <div class="pa-6 d-flex align-center flex-column justify-center fill-height">
+          <template v-if="!loading">
+            <div class="text-h5">
+              Search
+            </div>
+            <div class="mt-8" style="width: 300px">
+              <v-text-field
+                  v-model="searchTextModel"
+                  rounded
+                  hide-details
+                  autofocus
+                  filled
+                  placeholder="e.g. A Cute Toaster......"
+              />
+            </div>
+          </template>
+          <template v-else>
+            <div class="text-h5">
+              Rescuring results from 🌋
+            </div>
+          </template>
+
+          <div class="text-caption mt-2 text--secondary">
+            {{ message }}
+          </div>
+
+          <div class="d-flex mt-6">
+            <v-btn
+                @click="showSearchDialog=false"
+                class="mr-2"
+                icon
+                style="background: #f6f6f6"
+            >
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+            <v-btn :loading="loading" @click="confirmSearch" elevation="0" rounded>
+              <v-icon left>mdi-magnify</v-icon>
+              Search
+            </v-btn>
+          </div>
+
         </div>
       </v-card>
     </v-dialog>
@@ -80,17 +117,40 @@ import LogoDisplay from "@/views/widgets/LogoDisplay";
 import VersionDisplay from "@/views/widgets/VersionDisplay";
 import {getCurrentUserId} from "@/dataLayer/service/firebase/user";
 import OrderCard from "@/views/widgets/items/OrderCard";
-import PageTitle from "@/views/widgets/PageTitle";
 
 export default {
   name: "HomePage",
-  components: {PageTitle, OrderCard, VersionDisplay, LogoDisplay},
+  components: {OrderCard, VersionDisplay, LogoDisplay},
   data: function () {
     return {
       userId: getCurrentUserId(),
-      showSearchDialog: false,
+      showSearchDialog: true,
       showNewOfferDialog: false,
+      searchText: '',
+      searchTextModel: '',
+      message: '',
+      loading: false
     };
+  },
+  methods: {
+    startSearch() {
+      this.searchTextModel = ''
+      this.message = ''
+      this.showSearchDialog = true
+    },
+    confirmSearch() {
+      if (this.searchTextModel) {
+        this.searchText = this.searchTextModel
+        this.loading = true
+        setTimeout(() => {
+          this.loading = false
+          this.showSearchDialog = false
+        }, 2000)
+      } else {
+        this.message = 'please input some text'
+      }
+
+    }
   }
 }
 </script>
