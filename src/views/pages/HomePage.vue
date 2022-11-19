@@ -6,6 +6,7 @@
       </div>
       <v-spacer/>
       <v-card
+          @click="showUserPanel = true"
           class="pa-1 d-flex align-center rounded-pill"
           elevation="0">
         <v-avatar size="30" class="mr-4">
@@ -117,6 +118,47 @@
         </div>
       </v-card>
     </v-dialog>
+    <v-dialog fullscreen v-model="showUserPanel">
+      <v-card style="width: 100vw;height: 100vh">
+        <div class="pa-6 d-flex align-center flex-column justify-center fill-height">
+          <v-avatar size="80">
+            <v-img :src="'https://api.multiavatar.com/'+userId+'.svg'"></v-img>
+          </v-avatar>
+          <span class="text-body-2 mt-2">
+              UID: {{userId}}
+        </span>
+            <div class="mt-8" style="width: 300px">
+              <v-text-field
+                  v-model="userName"
+                  rounded
+                  hide-details
+                  autofocus
+                  filled
+                  placeholder="Input New Name"
+              />
+            </div>
+          <div class="mt-8" style="width: 300px">
+            <v-card-title>
+              Wallet: {{1000 | priceDisplay}}
+            </v-card-title>
+          </div>
+
+          <div class="text-caption mt-2 text--secondary">
+            {{ message }}
+          </div>
+
+          <v-btn @click="saveUserInfo" elevation="0" rounded>
+            <v-icon left>mdi-magnify</v-icon>
+            Save
+          </v-btn>
+          <v-btn @click="saveUserInfo"  class="mt-2" elevation="0" rounded>
+            <v-icon left>mdi-magnify</v-icon>
+            Log out
+          </v-btn>
+        </div>
+      </v-card>
+    </v-dialog>
+
   </div>
 </template>
 
@@ -132,18 +174,23 @@ export default {
   data: function () {
     return {
       userId: getCurrentUserId(),
+      userName: "James Bond",
       showSearchDialog: false,
       showNewOfferDialog: false,
       searchText: '',
       searchTextModel: '',
       message: '',
       loading: false,
-      offsetTop: 0
+      offsetTop: 0,
+      showUserPanel: false
     };
   },
 
   methods: {
-      onScroll (e) {
+    saveUserInfo () {
+      this.showUserPanel = false
+    },
+    onScroll (e) {
       this.offsetTop = e.target.scrollingElement.scrollTop
     },
     toTop () {
