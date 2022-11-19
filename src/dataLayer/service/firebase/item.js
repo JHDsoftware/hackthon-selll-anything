@@ -5,10 +5,10 @@ import {child, get, getDatabase, push, ref, remove, set} from "firebase/database
  * @param itemName
  * @param desc
  * @param imageUrl
- * @param tagId(list)
+ * @param tagIds
  * @return
  */
-export async function addItem(itemName, desc, imageUrl, tagId) {
+export async function addItem(itemName, desc, imageUrl, tagIds) {
     const db = getDatabase();
     const newItemId = push(child(ref(db), 'item')).key;
     return await set(ref(db, 'item/' + newItemId), {
@@ -16,7 +16,7 @@ export async function addItem(itemName, desc, imageUrl, tagId) {
         item_name: itemName,
         description: desc,
         imageUrl: imageUrl,
-        tag_id: tagId,
+        tag_id: tagIds,
         timestamp: Date.now(),
     })
 }
