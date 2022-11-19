@@ -3,13 +3,15 @@ import VueRouter from 'vue-router'
 import LoginPage from "@/views/pages/LoginPage";
 import MyPage from "@/views/pages/MyPage";
 import OrderListPage from "@/views/pages/OrderListPage";
+import HomePage from "@/views/pages/HomePage";
+import {getCurrentUserId} from "@/dataLayer/service/firebase/user";
 
 Vue.use(VueRouter)
 
 const routes = [{
-    path: '/', name: 'login', component: LoginPage
+    path: '/login', name: 'login', component: LoginPage
 }, {
-    path: '/home', name: 'home', component: HomePage
+    path: '/', name: 'home', component: HomePage
 }, {
     path: '/my', name: 'my', component: MyPage
 }, {

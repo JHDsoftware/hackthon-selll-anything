@@ -1,16 +1,19 @@
 import {getAnalytics} from 'firebase/analytics'
-import firebase from 'firebase/compat'
+import firebase from 'firebase/compat/app'
 import {login} from '@/dataLayer/service/firebase/user'
 import router from '@/router'
-import store from '@/store'
+import 'firebase/compat/firestore';
+import 'firebase/compat/auth';
+
 import {
     createUserWithEmailAndPassword,
     GoogleAuthProvider,
+    OAuthProvider,
     sendPasswordResetEmail,
     signInWithEmailAndPassword,
-    signInWithRedirect,
-    OAuthProvider
+    signInWithRedirect
 } from 'firebase/auth'
+import {signInAnonymously} from "@firebase/auth";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -33,8 +36,8 @@ FireBaseAuth.useDeviceLanguage()
 FireBaseAuth.onAuthStateChanged(user => {
     if (user?.uid) {
         login(user.uid, user.displayName)
+        router.push('/')
     } else {
-        store.commit('loginStateReady')
         router.push('/login')
     }
 })
@@ -47,6 +50,10 @@ export async function loginWithGoogle() {
 export async function loginWithApple() {
     const provider = new OAuthProvider('apple.com')
     return await signInWithRedirect(FireBaseAuth, provider)
+}
+
+export async function loginUseGuest() {
+    return await signInAnonymously(FireBaseAuth)
 }
 
 export async function loginWithEmailAndPassword(email, password) {
