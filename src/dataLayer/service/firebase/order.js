@@ -1,34 +1,33 @@
 import {GlobalDB} from "@/dataLayer/service/firebase/database";
 import {collection, deleteDoc, doc, getDoc, getDocs, query, serverTimestamp, setDoc, where} from "firebase/firestore";
 import {resultOf} from "@/dataLayer/service/firebase/queryUtils";
+import {getCurrentUserId} from "@/dataLayer/service/firebase/user";
 
 /**
  * 添加order
  * @param itemId
- * @param priceLow
- * @param priceHigh
+ * @param price
  * @param quantity
  * @param fulfillQuantity
- * @param status(boolean)
  * @param side
  * @param userId
- * @param payment
  * @return
  */
-export async function addOrder(itemId, priceLow, priceHigh,
-                               quantity, fulfillQuantity, side, userId, payment) {
+export async function addOrder(itemId, price,
+                               quantity,
+                               fulfillQuantity,
+                               side, userId) {
     try {
         const newOrderId = doc(collection(GlobalDB, "order"));
 
         await setDoc(newOrderId, {
             order_id: newOrderId,
             item_id: itemId,
-            price_low: priceLow,
-            priceHigh: priceHigh,
+            price: price,
             quantity: quantity,
             fulfilled_quantity: fulfillQuantity,
             side: side,
-            user_id: userId,
+            user_id: getCurrentUserId(),
             timestamp: serverTimestamp(),
         });
         console.log("Document written with ID: ", newOrderId);
