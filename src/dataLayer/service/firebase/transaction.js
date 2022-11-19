@@ -82,39 +82,17 @@ export async function getTransByItem(itemId) {
 }
 
 /**
- * 查询买家用户的多个transactions
- * @param userid
- * @param status
+ * 查询用户的多个transactions
+ * @param userId
  * @return {Promise<void>}
  */
-export async function getTransByBuyer(userId, status) {
-    // const q = query(collection(GlobalDB, "transaction"), where("user_id", "==", userId), where('status', '==', status));
-    //
-    // const querySnapshot = await getDocs(q);
-    // querySnapshot.forEach((doc) => {
-    //     // doc.data() is never undefined for query doc snapshots
-    //     console.log(doc.id, " => ", doc.data());
-    // });
-    // return querySnapshot;
-    return await resultOf(query(collection(GlobalDB, "transaction"), where("user_id", "==", userId), where('status', '==', status)));
+export async function getTransByUser(uerId) {
+    return await Promise.all([
+        resultOf(query(collection(GlobalDB, "transaction"),
+            where("user_sell_id", "==", uerId))),
+        resultOf(query(collection(GlobalDB, "transaction"),
+            where("user_buy_id", "==", uerId))),
+    ])
 
-}
-
-/**
- * 查询卖家用户的多个transactions
- * @param userid
- * @param status
- * @return {Promise<void>}
- */
-export async function getTransBySeller(userId, status) {
-    //const q = query(collection(GlobalDB, "transaction"), where("user_sell_id", "==", userId), where('status', '==', status));
-
-    // const querySnapshot = await getDocs(q);
-    // querySnapshot.forEach((doc) => {
-    //     // doc.data() is never undefined for query doc snapshots
-    //     console.log(doc.id, " => ", doc.data());
-    // });
-    // return querySnapshot;
-    return await resultOf(query(collection(GlobalDB, "transaction"), where("user__sell_id", "==", userId), where('status', '==', status)));
 
 }
