@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-app-bar hide-on-scroll app elevation="0">
+    <v-app-bar app elevation="0" hide-on-scroll :dark="offsetTop > 0">
       <div>
         <logo-display/>
       </div>
@@ -40,7 +40,7 @@
         </div>
       </template>
     </v-app-bar>
-    <v-main style="background: #f0f0f0;min-height: calc(100vh)">
+    <v-main v-scroll="onScroll" class="overflow-y-auto"  style="background: #f0f0f0;min-height: calc(100vh)" >
       <div class="px-6">
         <div style="width: 100%" class="pa-6 py-10 mb-4 d-flex align-center justify-center flex-column">
           <div class="display-1">Explore, Trade and Share</div>
@@ -54,12 +54,19 @@
           />
         </div>
         <version-display/>
-        <div style="position: fixed; bottom: 36px;right: 36px;">
-          <v-card dark class="pa-2">
-            @QinCHAO<br>
-            此处要有一个<br>
-            回到最顶部按钮
-          </v-card>
+        <div v-if="offsetTop>0" style="position: fixed; bottom: 36px;right: 36px;">
+          <v-btn
+              class="mx-2"
+              fab
+              dark
+              large
+              color="primary"
+              @click="toTop()"
+          >
+            <v-icon dark>
+              mdi-arrow-up
+            </v-icon>
+          </v-btn>
         </div>
       </div>
     </v-main>
@@ -90,7 +97,19 @@ export default {
       userId: getCurrentUserId(),
       showSearchDialog: false,
       showNewOfferDialog: false,
+      offsetTop: 0
     };
+  },
+  methods: {
+    onScroll (e) {
+      this.offsetTop = e.target.scrollingElement.scrollTop
+    },
+    toTop () {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      })
+    }
   }
 }
 </script>
