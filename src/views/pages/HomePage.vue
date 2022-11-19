@@ -46,6 +46,15 @@
             <v-icon left small>mdi-plus-circle</v-icon>
             new Offer
           </v-btn>
+          <v-btn
+              elevation="0"
+              class="ml-2"
+              @click="gotoSalePage"
+              color="warning black--text lighten-4"
+              small>
+            <v-icon left small>mdi-plus-circle</v-icon>
+            Exist Order
+          </v-btn>
         </div>
       </template>
     </v-app-bar>
@@ -57,7 +66,7 @@
         </div>
         <div style="display: grid;grid-template-columns: repeat(auto-fit,minmax(180px,1fr));grid-gap: 12px">
           <order-card
-              v-for="t in 24"
+              v-for="t in orderList"
               :key="t"
               :t="t"
           />
@@ -79,9 +88,6 @@
         </div>
       </div>
     </v-main>
-    <v-navigation-drawer width="340" app right v-model="showMyOrders">
-      <order-list-page></order-list-page>
-    </v-navigation-drawer>
     <v-dialog fullscreen v-model="showSearchDialog">
       <v-card style="width: 100vw;height: 100vh">
         <div class="pa-6 d-flex align-center flex-column justify-center fill-height">
@@ -144,11 +150,14 @@ import MyPage from "@/views/pages/MyPage";
 import {getCurrentUserId} from "@/dataLayer/service/firebase/user";
 import OrderCard from "@/views/widgets/items/OrderCard";
 import router from "@/router";
-import OrderListPage from "@/views/pages/OrderListPage";
+import {getOrderList} from "@/dataLayer/service/firebase/order";
 
 export default {
   name: "HomePage",
-  components: {OrderListPage, MyPage, OrderCard, VersionDisplay, LogoDisplay},
+  components: {MyPage, OrderCard, VersionDisplay, LogoDisplay},
+  async mounted (){
+    this.orderList = await getOrderList()
+  },
   data: function () {
     return {
       showSearchDialog: false,
@@ -158,7 +167,6 @@ export default {
       loading: false,
       offsetTop: 0,
       showUserPanel: false,
-      showMyOrders: true,
       userId: getCurrentUserId(),
       orderList: [],
     };

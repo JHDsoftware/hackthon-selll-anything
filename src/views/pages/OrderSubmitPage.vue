@@ -107,7 +107,7 @@
                 placeholder="Something more you want to tell the people about this" rounded
                 filled/>
             <back-step-button @click="step=1" class="mr-2"/>
-            <next-step-button :disabled="!(itemDesc&&itemName&&file)" @click="confirmAddItem"/>
+            <next-step-button :disabled="!(itemDesc&&itemName&&file)" :loading="loading" @click="confirmAddItem"/>
           </div>
         </template>
         <template v-else-if="step===2">
@@ -327,12 +327,15 @@ export default {
       amount: '',
       rightNowPrice: '',
       price: '',
+      loading: false,
       selectedItemDetail: ''
     };
   },
   methods: {
     async getItemDetail () {
-      this.selectedItemDetail = await getItemDetail(this.selectedItemId, this.isBuy)
+      console.log(this.buyOrSell, "buy or sell")
+      console.log(this.selectedItemId, "selectedItemId")
+      this.selectedItemDetail = await getItemDetail(this.selectedItemId, this.buyOrSell)
       console.log(this.selectedItemDetail, "detail")
     },
     clearPriceAndData () {
@@ -364,11 +367,13 @@ export default {
       this.step = 1
     },
     async confirmAddItem() {
+      this.loading = true
       const imageUrl = await uploadImage(this.file)
       const id = await addItem(this.itemName, this.itemDesc, imageUrl, []);
       console.log(id)
       console.log("Uploaded Image Id")
       await this.reloadItems()
+      this.loading = false
       this.selectedItemId = id
       this.step = 2
     },

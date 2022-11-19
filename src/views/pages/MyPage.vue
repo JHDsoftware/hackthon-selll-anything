@@ -13,9 +13,9 @@
       {{ userId }}
     </div>
     <div class="mt-8"
-         style="display: grid;grid-gap:8px;grid-template-columns: repeat(3,minmax(0,1fr))">
+         style="display: grid;grid-gap:8px;grid-template-columns: repeat(2,minmax(0,1fr))">
       <v-card
-          width="84" @click="rechargeDialog = true"
+          width="112" @click="rechargeDialog = true"
           class="pa-2" elevation="0" color="#f6f6f6">
         <v-responsive :aspect-ratio="1">
           <div style="width: 100%;height: 100%" class="d-flex flex-column justify-center align-center">
@@ -23,18 +23,6 @@
             <div class="d-flex mt-1">
               <div class="text-caption">
                 {{ 1000 | priceDisplay }}
-              </div>
-            </div>
-          </div>
-        </v-responsive>
-      </v-card>
-      <v-card class="pa-2" elevation="0" color="#f6f6f6">
-        <v-responsive :aspect-ratio="1">
-          <div style="width: 100%;height: 100%" class="d-flex flex-column justify-center align-center">
-            <v-icon>mdi-teddy-bear</v-icon>
-            <div class="d-flex mt-1">
-              <div class="text-caption">
-                Prizes
               </div>
             </div>
           </div>
@@ -82,7 +70,7 @@
             <v-img max-width="70px" max-length="110px" src="@/assets/paypal_name.png"></v-img>
           </v-btn>
           <v-btn :disabled="payRule" class="mt-3" block width="100%" color="orange" @click="rechargeDialog=false">
-            <v-img class="mx-" max-width="20px" max-length="30px" src="@/assets/kreditkarte.png"></v-img>
+            <v-img class="mx-1" max-width="20px" max-length="30px" src="@/assets/kreditkarte.png"></v-img>
             Master Card
           </v-btn>
         <v-btn class="mt-3"  block width="100%" @click="rechargeDialog=false">
