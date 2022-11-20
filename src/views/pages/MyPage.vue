@@ -74,9 +74,8 @@
             Redem your voucher NFT now!
           </div>
           <wallet-multi-button ref="wallet" :wallets="wallets" auto-connect/>
-          <v-btn class="mt-4" elevation="0" @click="createNFT"
-          >Redem Now
-          </v-btn>
+          <ambition-button contractaddress="6Ahjs5AkAHR11eQcd64xBRmX6CaSmXPaoB4uDxtxGKxq"></ambition-button>
+
         </template>
         <template v-else>
           <div style="width: 100%" class="d-flex align-center flex-column justify-center">
@@ -152,6 +151,7 @@ export default {
   data: function () {
     return {
       myWallet: 1000,
+      initialed: false,
       wallets: [
         new CoinbaseWalletAdapter(),
         new PhantomWalletAdapter(),
@@ -163,7 +163,7 @@ export default {
       rechargeDialog: false,
       user: getCurrentUser(),
       nftList: [],
-      success: true,
+      success: false,
       store: null,
     };
   },
@@ -187,6 +187,16 @@ export default {
           const res = await solana(this.rechargeAmount ?? 0.001, this.$refs.solona)
           await findReference(connection, res, {finality: 'confirmed'})
           this.success = true
+          const script = document.createElement("script");
+          script.type = "text/javascript";
+          script.src = "https://cdn.jsdelivr.net/gh/ambition-so/embed-prod-build@main/bundle.v1.1.3.js";
+
+          const script2 = document.createElement("script");
+          script2.type = "text/javascript";
+          script2.src = "https://cdn.tailwindcss.com";
+
+          document.head.append(script);
+          document.head.append(script2);
 
         }
 
@@ -213,7 +223,9 @@ export default {
     },
   },
   mounted() {
-    localStorage.getItem("wallet") ? this.myWallet = parseFloat(localStorage.getItem("wallet")) : this.myWallet = 1000
+    localStorage.getItem("wallet") ?
+        this.myWallet = parseFloat(localStorage.getItem("wallet")) : this.myWallet = 1000
+
   }
 }
 </script>
