@@ -43,12 +43,12 @@
         <div class="py-2">
           <v-list three-line>
             <order-list-item
-                @click="showChangeNumberDialog=true"
+
                 :item="t" v-for="t in activeOrder"
                 :key="t.item_id"
             >
               <v-list-item-action>
-                <v-btn icon>
+                <v-btn @click="showChangeNumberDialog=true" icon>
                   <v-icon>mdi-pencil</v-icon>
                 </v-btn>
               </v-list-item-action>
@@ -101,24 +101,34 @@
         </div>
       </template>
     </div>
-    <v-dialog fullscreen
-              v-model="showChangeNumberDialog"
+    <v-dialog
+        max-width="400px"
+        v-model="showChangeNumberDialog"
     >
       <v-card elevation="0" class="pa-4">
         <v-card
-            class="pa-4 d-flex align-center justify-center"
-            color="#f6f6f6"
+            class="pa-4 d-flex align-center justify-center text-h5"
             elevation="0"
+            height="72"
+            color="#f6f6f6"
         >
           {{ input }}
         </v-card>
-        <div style="display: grid;
+        <div
+            class="mt-2"
+            style="display: grid;
         grid-template-columns: repeat(4,minmax(0,1fr));
         grid-gap: 4px;">
-          <v-card color="white" :key="key" v-for="key in keys">
+          <v-card
+              @click="inputK(key)"
+              elevation="0"
+              color="#f6f6f6"
+              :key="key"
+              v-for="key in keys"
+          >
             <v-responsive :aspect-ratio="1">
               <div style="height: 100%;width: 100%"
-                   class="d-flex align-center justify-center">
+                   class="d-flex align-center justify-center text-h5">
                 {{ key }}
               </div>
             </v-responsive>
@@ -171,9 +181,8 @@ export default {
       }
     }
   },
-  async mounted () {
+  async mounted() {
     await this.refreshData()
-    console.log(this.transactions)
   },
   methods: {
     inputK(key) {
