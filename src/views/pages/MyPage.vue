@@ -73,7 +73,6 @@
           <div class="text-body-2 mb-4">
             Redem your voucher NFT now!
           </div>
-          <wallet-multi-button ref="wallet" :wallets="wallets" auto-connect/>
           <ambition-button contractaddress="6Ahjs5AkAHR11eQcd64xBRmX6CaSmXPaoB4uDxtxGKxq"></ambition-button>
 
         </template>
@@ -118,19 +117,8 @@ import {FireBaseAuth} from "@/plugins/google-fire-base";
 import {connection, solana} from "@/plugins/Solana";
 import {findReference} from "@solana/pay";
 import 'solana-wallets-vue-2/styles.css'
-import {WalletMultiButton} from "solana-wallets-vue-2/src/library";
-import {
-  CoinbaseWalletAdapter,
-  GlowWalletAdapter,
-  PhantomWalletAdapter,
-  SlopeWalletAdapter,
-  TorusWalletAdapter
-} from "@solana/wallet-adapter-wallets";
 
 export default {
-  components: {
-    WalletMultiButton
-  },
   name: "MyPage",
   computed: {
     userId() {
@@ -152,13 +140,6 @@ export default {
     return {
       myWallet: 1000,
       initialed: false,
-      wallets: [
-        new CoinbaseWalletAdapter(),
-        new PhantomWalletAdapter(),
-        new GlowWalletAdapter(),
-        new SlopeWalletAdapter(),
-        new TorusWalletAdapter(),
-      ],
       rechargeAmount: null,
       rechargeDialog: false,
       user: getCurrentUser(),
