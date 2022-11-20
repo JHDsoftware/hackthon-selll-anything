@@ -117,7 +117,6 @@
 import {getCurrentUser} from "@/dataLayer/service/firebase/user";
 import {FireBaseAuth} from "@/plugins/google-fire-base";
 import {connection, solana} from "@/plugins/Solana";
-import {v4 as uuidv4} from 'uuid';
 import {findReference} from "@solana/pay";
 import 'solana-wallets-vue-2/styles.css'
 import {WalletMultiButton} from "solana-wallets-vue-2/src/library";
@@ -128,7 +127,6 @@ import {
   SlopeWalletAdapter,
   TorusWalletAdapter
 } from "@solana/wallet-adapter-wallets";
-import {bundlrStorage, keypairIdentity, Metaplex} from "@metaplex-foundation/js";
 
 export default {
   components: {
@@ -177,27 +175,9 @@ export default {
       }
       this.store = store
 
-      const owner = store?.publicKey
-      const metaplex = Metaplex.make(connection)
-          .use(keypairIdentity(owner))
-          .use(bundlrStorage());
-      const {uri} = await metaplex.nfts().uploadMetadata({
-        name: "TradeAny Coupon",
-        description: "A very good Coupon which can save 0.005 SOL",
-        image: "https://random.imagecdn.app/500/500",
-      });
-      const res = await metaplex.nfts().create({
-        uri,
-        name: "TAC#" + uuidv4(),
-        tokenOwner: owner
-      })
-      console.log(res)
-      this.refreshNftList(metaplex)
     },
-    async refreshNftList(metaplex) {
-      this.nftList = await metaplex.nfts().findAllByOwner({
-        owner: this.$refs.wallet.walletStore?.publicKey
-      });
+    async refreshNftList() {
+      this.nftList = []
     },
     async refreshQrCode() {
       this.$nextTick(async () => {
