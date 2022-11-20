@@ -128,7 +128,7 @@ import {
   SlopeWalletAdapter,
   TorusWalletAdapter
 } from "@solana/wallet-adapter-wallets";
-import {keypairIdentity, Metaplex} from "@metaplex-foundation/js";
+import {bundlrStorage, keypairIdentity, Metaplex} from "@metaplex-foundation/js";
 
 export default {
   components: {
@@ -180,6 +180,7 @@ export default {
       const owner = store?.publicKey
       const metaplex = Metaplex.make(connection)
           .use(keypairIdentity(owner))
+          .use(bundlrStorage());
       const {uri} = await metaplex.nfts().uploadMetadata({
         name: "TradeAny Coupon",
         description: "A very good Coupon which can save 0.005 SOL",
