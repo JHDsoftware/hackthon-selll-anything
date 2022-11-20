@@ -43,12 +43,11 @@
         <div class="py-2">
           <v-list three-line>
             <order-list-item
-
                 :item="t" v-for="t in activeOrder"
                 :key="t.item_id"
             >
               <v-list-item-action>
-                <v-btn @click="showChangeNumberDialog=true" icon>
+                <v-btn @click="startEditNumber(t.item_id,t.price)" icon>
                   <v-icon>mdi-pencil</v-icon>
                 </v-btn>
               </v-list-item-action>
@@ -106,34 +105,40 @@
         v-model="showChangeNumberDialog"
     >
       <v-card elevation="0" class="pa-4">
-        <v-card
-            class="pa-4 d-flex align-center justify-center text-h5"
-            elevation="0"
-            height="72"
-            color="#f6f6f6"
-        >
-          {{ input }}
-        </v-card>
-        <div
-            class="mt-2"
-            style="display: grid;
+        <div v-if="loading" style="height: 400px;" class="d-flex align-center justify-center">
+          <v-progress-circular indeterminate></v-progress-circular>
+        </div>
+        <template v-else>
+          <v-card
+              class="pa-4 d-flex align-center justify-center text-h5"
+              elevation="0"
+              height="72"
+              color="#f6f6f6"
+          >
+            {{ input || 'Please input New Quantity' }}
+          </v-card>
+          <div
+              class="mt-2"
+              style="display: grid;
         grid-template-columns: repeat(4,minmax(0,1fr));
         grid-gap: 4px;">
-          <v-card
-              @click="inputK(key)"
-              elevation="0"
-              color="#f6f6f6"
-              :key="key"
-              v-for="key in keys"
-          >
-            <v-responsive :aspect-ratio="1">
-              <div style="height: 100%;width: 100%"
-                   class="d-flex align-center justify-center text-h5">
-                {{ key }}
-              </div>
-            </v-responsive>
-          </v-card>
-        </div>
+            <v-card
+                @click="inputK(key)"
+                elevation="0"
+                color="#f6f6f6"
+                :key="index"
+                v-for="(key,index) in keys"
+            >
+              <v-responsive :aspect-ratio="1">
+                <div style="height: 100%;width: 100%"
+                     class="d-flex align-center justify-center text-h5">
+                  {{ key }}
+                </div>
+              </v-responsive>
+            </v-card>
+          </div>
+        </template>
+
       </v-card>
     </v-dialog>
   </div>
@@ -143,7 +148,7 @@
 import {getCurrentUserId} from "@/dataLayer/service/firebase/user";
 import PageTitle from "@/views/widgets/PageTitle";
 import OrderListItem from "@/views/widgets/items/OrderListItem";
-import {getUserActiveOrderList, getUserOrderList} from "@/dataLayer/service/firebase/order";
+import {addOrder, getUserActiveOrderList, getUserOrderList, reduceOrder} from "@/dataLayer/service/firebase/order";
 import {keyBy} from "lodash-es";
 import {getItems} from "@/dataLayer/service/firebase/item";
 import {getTransByUser} from "@/dataLayer/service/firebase/transaction";
@@ -168,7 +173,10 @@ export default {
       itemDict: {},
       keys,
       input: '',
-      showChangeNumberDialog: false
+      showChangeNumberDialog: false,
+      selectedItemId: null,
+      selectedPrice: null,
+      loading: false,
     }
   },
   props: {
@@ -185,9 +193,33 @@ export default {
     await this.refreshData()
   },
   methods: {
+    async confirmEdit() {
+      this.loading = true
+      const newNumber = parseInt(this.input)
+      const target = this.activeOrder.find(it => it.item_id === this.selectedItemId)
+      const change = newNumber - target.quantity
+      if (change > 0) {
+        addOrder(target.item_id, target.price, change, target.side)
+      } else {
+        if (change + target.quantity >= 0) {
+          reduceOrder(target.item_id, target.price, change, target.side)
+        }
+      }
+      this.input = ''
+      await this.refreshData()
+      this.loading = false
+
+      this.showChangeNumberDialog = false
+    },
+    startEditNumber(itemId, price) {
+      this.selectedPrice = price
+      this.selectedItemId = itemId
+      this.showChangeNumberDialog = true
+    },
     inputK(key) {
       switch (key) {
         case 'OK':
+          this.confirmEdit()
           break
         case 'C':
           this.input = ''

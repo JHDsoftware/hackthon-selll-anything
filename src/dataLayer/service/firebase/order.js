@@ -21,6 +21,10 @@ export async function addOrderInternal(itemId, price, quantity, side, type = Ope
 
 }
 
+export async function reduceOrder(itemId, price, quantity, side) {
+    return addOrderInternal(itemId, price, quantity, side, OperationType.Del)
+}
+
 /**
  * 添加order
  * @param itemId

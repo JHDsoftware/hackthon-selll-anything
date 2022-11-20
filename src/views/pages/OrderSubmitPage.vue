@@ -236,7 +236,7 @@
                       @click="price=rightNowPrice">Apply</a>
                 </template>
                 <template v-else>
-                  <v-progress-circular size="12"/>
+                  <v-progress-circular indeterminate size="14"/>
                 </template>
 
               </div>
