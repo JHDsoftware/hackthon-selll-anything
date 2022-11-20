@@ -20,7 +20,7 @@
           <div style="width: 100%;height: 100%" class="d-flex flex-column justify-center align-center">
             <v-icon>mdi-wallet</v-icon>
             <div class="d-flex mt-1">
-              <div class="text-caption">
+              <div class="text-caption text-truncate">
                 {{ myWallet | priceDisplay }}
               </div>
             </div>
@@ -65,7 +65,7 @@
     </div>
     <v-dialog transition="dialog-bottom-transition"
               max-width="400" min-height="450" v-model="rechargeDialog">
-      <v-card class="px-5 py-12 d-flex align-center justify-center flex-column">
+      <v-card dark class="px-5 py-6 d-flex align-center justify-center flex-column">
         <template v-if="success">
           <div class="text-body-1">
             Payment Success
@@ -73,9 +73,10 @@
           <div class="text-body-2 mb-4">
             Redem your voucher NFT now!
           </div>
-          <wallet-multi-button ref="wallet" :wallets="wallets" auto-connect/>
-          <ambition-button contractaddress="6Ahjs5AkAHR11eQcd64xBRmX6CaSmXPaoB4uDxtxGKxq"></ambition-button>
-
+          <wallet-multi-button ref="wallet" :wallets="wallets"/>
+          <v-btn icon @click="finish">
+            <v-icon>mdi-check</v-icon>
+          </v-btn>
         </template>
         <template v-else>
           <div style="width: 100%" class="d-flex align-center flex-column justify-center">
@@ -88,25 +89,48 @@
 
           </div>
 
-          <div class="mt-4 d-flex">
-
-            <v-text-field
-                v-model="rechargeAmount"
-                placeholder="recharge price, e.g. 123.5"
-                type="number" step="0.01" min="0"
-                rounded filled>
-              <template #append>
-                <div class="mt-1">
-                  Sol
-                </div>
-              </template>
-            </v-text-field>
+          <div class="mt-0 d-flex align-center justify-center flex-column" style="width: 350px">
+            <div class="text-caption">
+              Input amount for SOL
+            </div>
+            <v-card
+                class="pa-4 d-flex align-center justify-center text-h3"
+                elevation="0"
+            >
+              {{ rechargeAmount || '0' }}
+            </v-card>
+            <div
+                class="mt-2"
+                style="display: grid;
+        grid-template-columns: repeat(4,minmax(0,1fr));
+        grid-gap: 12px;width: 300px">
+              <v-card
+                  style="border-radius: 50%"
+                  @click="inputK(key)"
+                  elevation="0"
+                  color="#424242"
+                  :key="index"
+                  v-for="(key,index) in keys"
+              >
+                <v-responsive :aspect-ratio="1">
+                  <div style="height: 100%;width: 100%"
+                       class="d-flex align-center justify-center text-h5">
+                    {{ key }}
+                  </div>
+                </v-responsive>
+              </v-card>
+            </div>
           </div>
-          <v-btn icon elevation="0" class="mt-3" @click="rechargeDialog=false; rechargeAmount=''">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
         </template>
 
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="celebrate" max-width="400px">
+      <v-card>
+        <lottie-web-vue-esm
+            loop
+            :animation-data="require('@/assets/firework.json')"
+        />
       </v-card>
     </v-dialog>
   </div>
@@ -126,10 +150,20 @@ import {
   SlopeWalletAdapter,
   TorusWalletAdapter
 } from "@solana/wallet-adapter-wallets";
+import LottieWebVueEsm from "lottie-web-vue";
+import {bundlrStorage, keypairIdentity, Metaplex} from "@metaplex-foundation/js";
+import {v4 as uuidv4} from 'uuid';
 
+const keys = [
+  "7", "8", "9", "C",
+  "4", "5", "6", "",
+  "1", "2", "3", "",
+  ".", "0", "X", "OK"
+]
 export default {
   components: {
-    WalletMultiButton
+    WalletMultiButton,
+    LottieWebVueEsm,
   },
   name: "MyPage",
   computed: {
@@ -143,15 +177,12 @@ export default {
       return this.$refs?.wallet?.walletStore?.connected
     }
   },
-  watch: {
-    rechargeAmount() {
-      this.refreshQrCode()
-    },
-  },
   data: function () {
     return {
-      myWallet: 1000,
+      keys,
+      myWallet: 3,
       initialed: false,
+
       wallets: [
         new CoinbaseWalletAdapter(),
         new PhantomWalletAdapter(),
@@ -159,25 +190,66 @@ export default {
         new SlopeWalletAdapter(),
         new TorusWalletAdapter(),
       ],
-      rechargeAmount: null,
+      rechargeAmount: '',
       rechargeDialog: false,
       user: getCurrentUser(),
       nftList: [],
       success: false,
       store: null,
+      celebrate: false
     };
   },
   methods: {
+    inputK(key) {
+      switch (key) {
+        case 'OK':
+          this.refreshQrCode()
+          break
+        case 'C':
+          this.rechargeAmount = ''
+          break
+        case 'X':
+          this.rechargeDialog = false
+          break
+        default:
+          this.rechargeAmount += key
+      }
+    },
+    finish() {
+      this.celebrate = true
+      setTimeout(() => {
+        this.celebrate = false
+        this.createNFT()
+      }, 300)
+    },
     async createNFT() {
       const store = this.$refs.wallet.walletStore
       if (!store.connected) {
         await store.connect()
       }
       this.store = store
-
+      const owner = store?.publicKey
+      const metaplex = Metaplex.make(connection)
+          .use(keypairIdentity(owner))
+          .use(bundlrStorage());
+      const {uri} = await metaplex.nfts().uploadMetadata({
+        name: "TradeAny Coupon",
+        description: "A very good Coupon which can save 0.005 SOL",
+        image: "https://random.imagecdn.app/500/500",
+      });
+      const res = await metaplex.nfts().create({
+        uri,
+        name: "TAC#" + uuidv4(),
+        tokenOwner: owner
+      })
+      console.log(res)
+      this.refreshNftList(metaplex)
     },
-    async refreshNftList() {
-      this.nftList = []
+    async refreshNftList(metaplex) {
+
+      this.nftList = await metaplex.nfts().findAllByOwner({
+        owner: this.$refs.wallet.walletStore?.publicKey
+      });
     },
     async refreshQrCode() {
       this.$nextTick(async () => {
@@ -194,6 +266,7 @@ export default {
             try {
               await findReference(connection, res, {finality: 'confirmed'})
               success = true
+              this.myWallet = parseFloat(this.myWallet) + parseFloat(this.rechargeAmount)
             } catch (e) {
               console.log(e)
             }
@@ -201,16 +274,6 @@ export default {
           }
           if (success) {
             this.success = true
-            const script = document.createElement("script");
-            script.type = "text/javascript";
-            script.src = "https://cdn.jsdelivr.net/gh/ambition-so/embed-prod-build@main/bundle.v1.1.3.js";
-
-            const script2 = document.createElement("script");
-            script2.type = "text/javascript";
-            script2.src = "https://cdn.tailwindcss.com";
-
-            document.head.append(script);
-            document.head.append(script2);
           } else {
             return
           }
@@ -223,8 +286,6 @@ export default {
     },
     async showSolana() {
       this.rechargeDialog = true
-      this.refreshQrCode()
-
     },
     updateMyWallet() {
       this.myWallet += parseFloat(this.rechargeAmount)
@@ -242,7 +303,7 @@ export default {
   },
   mounted() {
     localStorage.getItem("wallet") ?
-        this.myWallet = parseFloat(localStorage.getItem("wallet")) : this.myWallet = 1000
+        this.myWallet = parseFloat(localStorage.getItem("wallet")) : this.myWallet = 3
 
   }
 }

@@ -247,7 +247,7 @@
                     type="number" step="0.01" min="0"
                     rounded filled>
                   <template #append>
-                    <v-icon size="20">mdi-currency-eur</v-icon>
+                    <div class="mt-1">SOL</div>
                   </template>
                 </v-text-field>
               </div>
@@ -268,7 +268,6 @@
       </div>
     </div>
   </v-container>
-
 </template>
 
 <script>
