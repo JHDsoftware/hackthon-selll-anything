@@ -14,7 +14,7 @@
     <div class="mt-8"
          style="display: grid;grid-gap:8px;grid-template-columns: repeat(3,minmax(0,1fr))">
       <v-card
-          width="80" @click="rechargeDialog = true"
+          width="80" @click="showSolana"
           class="pa-2" elevation="0" color="#f6f6f6">
         <v-responsive :aspect-ratio="1">
           <div style="width: 100%;height: 100%" class="d-flex flex-column justify-center align-center">
@@ -31,7 +31,11 @@
           width="80"
           class="pa-2" elevation="0" color="#f6f6f6">
         <v-responsive :aspect-ratio="1">
-          <div style="width: 100%;height: 100%" class="d-flex flex-column justify-center align-center">
+          <div style="width: 100%;height: 100%"
+               class="d-flex
+               flex-column
+                justify-center
+                 align-center">
             <v-icon>mdi-trophy</v-icon>
             <div class="d-flex mt-1">
               <div class="text-caption">
@@ -60,13 +64,17 @@
       </v-btn>
     </div>
     <v-dialog transition="dialog-bottom-transition"
-              max-width="350" min-height="450" v-model="rechargeDialog">
-      <v-card class="px-5 py-3">
-          <span class="text-body-1 mt-12 font-weight-medium">
-            Recharge Amount
-          </span>
-        <v-spacer></v-spacer>
+              max-width="400" min-height="450" v-model="rechargeDialog">
+      <v-card class="px-5 py-12 d-flex align-center justify-center flex-column">
+        <div style="width: 100%" class="d-flex align-center flex-column justify-center">
+          <template v-if="success">
+            <v-icon>mdi-check</v-icon>
+          </template>
+          <template v-else>
+            <div ref="solona"></div>
+          </template>
 
+        </div>
         <div class="mt-4 d-flex">
           <v-text-field
               v-model="rechargeAmount"
@@ -74,21 +82,12 @@
               type="number" step="0.01" min="0"
               rounded filled>
             <template #append>
-              <v-icon size="20">mdi-currency-eur</v-icon>
+              Sol
             </template>
           </v-text-field>
         </div>
-        <v-spacer></v-spacer>
-        <v-btn elevation="0" :disabled="payRule" block width="100%" color="primary" @click="updateMyWallet()">
-          <v-img max-width="70px" max-length="110px" src="@/assets/paypal_name.png"></v-img>
-        </v-btn>
-        <v-btn elevation="0" :disabled="payRule" class="mt-3" block width="100%" color="orange"
-               @click="updateMyWallet()">
-          <v-img class="mx-1" max-width="20px" max-length="30px" src="@/assets/kreditkarte.png"></v-img>
-          Master Card
-        </v-btn>
-        <v-btn class="mt-3" block width="100%" @click="rechargeDialog=false; rechargeAmount=''">
-          Cancel
+        <v-btn icon elevation="0" class="mt-3" @click="rechargeDialog=false; rechargeAmount=''">
+          <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-card>
     </v-dialog>
@@ -98,6 +97,7 @@
 <script>
 import {getCurrentUser} from "@/dataLayer/service/firebase/user";
 import {FireBaseAuth} from "@/plugins/google-fire-base";
+import {solana} from "@/plugins/Solana";
 
 export default {
   name: "MyPage",
@@ -113,23 +113,47 @@ export default {
     }
   },
   watch: {
-    myWallet(val) {
-      return val
-    }
+    rechargeAmount() {
+      this.refreshQrCode()
+    },
   },
   data: function () {
     return {
       myWallet: 1000,
       rechargeAmount: null,
       rechargeDialog: false,
-      user: getCurrentUser()
+      user: getCurrentUser(),
+      success: false
     };
   },
   methods: {
+    async refreshQrCode() {
+
+
+      this.$nextTick(async () => {
+        if (this.$refs.solona) {
+          this.$refs.solona.innerHTML = ''
+          this.success = false
+          const res = await solana(this.rechargeAmount ?? 0.001, this.$refs.solona)
+          this.success = true
+          setTimeout(() => {
+            this.success = false
+          }, 2000)
+          console.log(res)
+        }
+
+
+      })
+    },
+    async showSolana() {
+      this.rechargeDialog = true
+      this.refreshQrCode()
+
+    },
     updateMyWallet() {
       this.myWallet += parseFloat(this.rechargeAmount)
       localStorage.setItem("wallet", this.myWallet)
-      this.rechargeAmount=''
+      this.rechargeAmount = ''
       this.rechargeDialog = false
     },
     logout() {
