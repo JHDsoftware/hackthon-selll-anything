@@ -116,7 +116,7 @@
 <script>
 import {getCurrentUser} from "@/dataLayer/service/firebase/user";
 import {FireBaseAuth} from "@/plugins/google-fire-base";
-import {connection, metaplex, solana} from "@/plugins/Solana";
+import {connection, solana} from "@/plugins/Solana";
 import {v4 as uuidv4} from 'uuid';
 import {findReference} from "@solana/pay";
 import 'solana-wallets-vue-2/styles.css'
@@ -192,9 +192,9 @@ export default {
         tokenOwner: owner
       })
       console.log(res)
-      this.refreshNftList()
+      this.refreshNftList(metaplex)
     },
-    async refreshNftList() {
+    async refreshNftList(metaplex) {
       this.nftList = await metaplex.nfts().findAllByOwner({
         owner: this.$refs.wallet.walletStore?.publicKey
       });
