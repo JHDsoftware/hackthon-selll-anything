@@ -75,7 +75,7 @@
           </div>
           <wallet-multi-button ref="wallet" :wallets="wallets" auto-connect/>
           <v-btn class="mt-4" elevation="0" @click="createNFT"
-                 :disabled="!walletReady">Redem Now
+          >Redem Now
           </v-btn>
         </template>
         <template v-else>
@@ -164,17 +164,23 @@ export default {
       rechargeDialog: false,
       user: getCurrentUser(),
       nftList: [],
-      success: true
+      success: true,
+      store: null,
     };
   },
   methods: {
     async createNFT() {
+      const store = this.$refs.wallet.walletStore
+      if (!store.connected) {
+        await store.connect()
+      }
+      this.store = store
       const {uri} = await metaplex.nfts().uploadMetadata({
         name: "TradeAny Coupon",
         description: "A very good Coupon which can save 0.005 SOL",
         image: "https://random.imagecdn.app/500/500",
       });
-      const owner = this.$refs.wallet.walletStore?.publicKey
+      const owner = store?.publicKey
       await metaplex.nfts().create({
         uri,
         name: "TAC#" + uuidv4(),
