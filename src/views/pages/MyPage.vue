@@ -70,10 +70,13 @@
           <div class="text-body-1">
             Payment Success
           </div>
-          <div class="text-body-2">
+          <div class="text-body-2 mb-4">
             Redem your voucher NFT now!
           </div>
           <wallet-multi-button ref="wallet" :wallets="wallets" auto-connect/>
+          <v-btn class="mt-4" elevation="0" @click="createNFT"
+                 :disabled="!walletReady">Redem Now
+          </v-btn>
         </template>
         <template v-else>
           <div style="width: 100%" class="d-flex align-center flex-column justify-center">
@@ -138,6 +141,9 @@ export default {
     userName() {
       return this.user.isAnonymous ? 'Guest' : this.user.displayName
     },
+    walletReady() {
+      return this.$refs?.wallet?.walletStore?.connected
+    }
   },
   watch: {
     rechargeAmount() {
@@ -174,12 +180,12 @@ export default {
         name: "TAC#" + uuidv4(),
         tokenOwner: owner
       })
+      this.refreshNftList()
     },
     async refreshNftList() {
       this.nftList = await metaplex.nfts().findAllByOwner({
-        owner: metaplex.identity().publicKey
+        owner: this.$refs.wallet.walletStore?.publicKey
       });
-      console.log(this.nftList)
     },
     async refreshQrCode() {
       this.$nextTick(async () => {
@@ -189,13 +195,7 @@ export default {
           const res = await solana(this.rechargeAmount ?? 0.001, this.$refs.solona)
           await findReference(connection, res, {finality: 'confirmed'})
           this.success = true
-          this.refreshNftList()
 
-          setTimeout(() => {
-            this.success = false
-            this.rechargeDialog = false
-          }, 2000)
-          console.log(res)
         }
 
 
