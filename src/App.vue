@@ -5,3 +5,8 @@
     </v-app>
   </div>
 </template>
+<style>
+body {
+  user-select: none;
+}
+</style>

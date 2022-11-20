@@ -110,10 +110,11 @@
         </div>
         <template v-else>
           <v-card
+              dark
               class="pa-4 d-flex align-center justify-center text-h5"
               elevation="0"
               height="72"
-              color="#f6f6f6"
+              color="black darken-2"
           >
             {{ input || 'Please input New Quantity' }}
           </v-card>

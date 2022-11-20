@@ -183,6 +183,7 @@ export default {
   },
 
   methods: {
+   
     gotoSalePage() {
       this.showMyOrders = true
     },
