@@ -7,6 +7,7 @@ module.exports = defineConfig({
                 "stream": require.resolve("stream-browserify"),
                 "path": require.resolve("path-browserify"),
                 "zlib": require.resolve("browserify-zlib"),
+                "buffer": require.resolve("buffer")
             }
         }
     }
