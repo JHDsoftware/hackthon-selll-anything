@@ -52,7 +52,7 @@
       </template>
     </v-app-bar>
     <v-main v-scroll="onScroll" class="overflow-y-auto" style="background: #f0f0f0;min-height: calc(100vh)">
-      <div class="px-6">
+      <div class="px-6 pb-12">
         <div style="width: 100%" class="pa-6 py-10 mb-4 d-flex align-center justify-center flex-column">
           <div class="display-1 text-center">Explore, Trade and Share</div>
           <div class="text-body-1 font-weight-black">Things that you love😋</div>
@@ -183,7 +183,7 @@ export default {
   },
 
   methods: {
-   
+
     gotoSalePage() {
       this.showMyOrders = true
     },

@@ -66,29 +66,45 @@
     <v-dialog transition="dialog-bottom-transition"
               max-width="400" min-height="450" v-model="rechargeDialog">
       <v-card class="px-5 py-12 d-flex align-center justify-center flex-column">
-        <div style="width: 100%" class="d-flex align-center flex-column justify-center">
-          <template v-if="success">
-            <v-icon>mdi-check</v-icon>
-          </template>
-          <template v-else>
-            <div ref="solona"></div>
-          </template>
-
-        </div>
-        <div class="mt-4 d-flex">
-          <v-text-field
-              v-model="rechargeAmount"
-              placeholder="recharge price, e.g. 123.5"
-              type="number" step="0.01" min="0"
-              rounded filled>
-            <template #append>
-              Sol
+        <template v-if="success">
+          <div class="text-body-1">
+            Payment Success
+          </div>
+          <div class="text-body-2">
+            Redem your voucher NFT now!
+          </div>
+          <wallet-multi-button ref="wallet" :wallets="wallets" auto-connect/>
+        </template>
+        <template v-else>
+          <div style="width: 100%" class="d-flex align-center flex-column justify-center">
+            <template v-if="success">
+              <v-icon size="64">mdi-check</v-icon>
             </template>
-          </v-text-field>
-        </div>
-        <v-btn icon elevation="0" class="mt-3" @click="rechargeDialog=false; rechargeAmount=''">
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
+            <template v-else>
+              <div ref="solona"></div>
+            </template>
+
+          </div>
+
+          <div class="mt-4 d-flex">
+
+            <v-text-field
+                v-model="rechargeAmount"
+                placeholder="recharge price, e.g. 123.5"
+                type="number" step="0.01" min="0"
+                rounded filled>
+              <template #append>
+                <div class="mt-1">
+                  Sol
+                </div>
+              </template>
+            </v-text-field>
+          </div>
+          <v-btn icon elevation="0" class="mt-3" @click="rechargeDialog=false; rechargeAmount=''">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </template>
+
       </v-card>
     </v-dialog>
   </div>
@@ -97,9 +113,23 @@
 <script>
 import {getCurrentUser} from "@/dataLayer/service/firebase/user";
 import {FireBaseAuth} from "@/plugins/google-fire-base";
-import {solana} from "@/plugins/Solana";
+import {connection, metaplex, solana} from "@/plugins/Solana";
+import {v4 as uuidv4} from 'uuid';
+import {findReference} from "@solana/pay";
+import 'solana-wallets-vue-2/styles.css'
+import {WalletMultiButton} from "solana-wallets-vue-2/src/library";
+import {
+  CoinbaseWalletAdapter,
+  GlowWalletAdapter,
+  PhantomWalletAdapter,
+  SlopeWalletAdapter,
+  TorusWalletAdapter
+} from "@solana/wallet-adapter-wallets";
 
 export default {
+  components: {
+    WalletMultiButton
+  },
   name: "MyPage",
   computed: {
     userId() {
@@ -108,9 +138,6 @@ export default {
     userName() {
       return this.user.isAnonymous ? 'Guest' : this.user.displayName
     },
-    payRule() {
-      return this.rechargeAmount === 0 || this.rechargeAmount === null || this.rechargeAmount === "" || this.rechargeAmount === "0"
-    }
   },
   watch: {
     rechargeAmount() {
@@ -120,24 +147,53 @@ export default {
   data: function () {
     return {
       myWallet: 1000,
+      wallets: [
+        new CoinbaseWalletAdapter(),
+        new PhantomWalletAdapter(),
+        new GlowWalletAdapter(),
+        new SlopeWalletAdapter(),
+        new TorusWalletAdapter(),
+      ],
       rechargeAmount: null,
       rechargeDialog: false,
       user: getCurrentUser(),
-      success: false
+      nftList: [],
+      success: true
     };
   },
   methods: {
+    async createNFT() {
+      const {uri} = await metaplex.nfts().uploadMetadata({
+        name: "TradeAny Coupon",
+        description: "A very good Coupon which can save 0.005 SOL",
+        image: "https://random.imagecdn.app/500/500",
+      });
+      const owner = this.$refs.wallet.walletStore?.publicKey
+      await metaplex.nfts().create({
+        uri,
+        name: "TAC#" + uuidv4(),
+        tokenOwner: owner
+      })
+    },
+    async refreshNftList() {
+      this.nftList = await metaplex.nfts().findAllByOwner({
+        owner: metaplex.identity().publicKey
+      });
+      console.log(this.nftList)
+    },
     async refreshQrCode() {
-
-
       this.$nextTick(async () => {
         if (this.$refs.solona) {
           this.$refs.solona.innerHTML = ''
           this.success = false
           const res = await solana(this.rechargeAmount ?? 0.001, this.$refs.solona)
+          await findReference(connection, res, {finality: 'confirmed'})
           this.success = true
+          this.refreshNftList()
+
           setTimeout(() => {
             this.success = false
+            this.rechargeDialog = false
           }, 2000)
           console.log(res)
         }
