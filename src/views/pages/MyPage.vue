@@ -185,18 +185,36 @@ export default {
           this.$refs.solona.innerHTML = ''
           this.success = false
           const res = await solana(this.rechargeAmount ?? 0.001, this.$refs.solona)
-          await findReference(connection, res, {finality: 'confirmed'})
-          this.success = true
-          const script = document.createElement("script");
-          script.type = "text/javascript";
-          script.src = "https://cdn.jsdelivr.net/gh/ambition-so/embed-prod-build@main/bundle.v1.1.3.js";
+          let success = false
+          let count = 0
+          while (count < 5) {
 
-          const script2 = document.createElement("script");
-          script2.type = "text/javascript";
-          script2.src = "https://cdn.tailwindcss.com";
+            await new Promise(r => setTimeout(r, 5000))
+            count++
+            try {
+              await findReference(connection, res, {finality: 'confirmed'})
+              success = true
+            } catch (e) {
+              console.log(e)
+            }
 
-          document.head.append(script);
-          document.head.append(script2);
+          }
+          if (success) {
+            this.success = true
+            const script = document.createElement("script");
+            script.type = "text/javascript";
+            script.src = "https://cdn.jsdelivr.net/gh/ambition-so/embed-prod-build@main/bundle.v1.1.3.js";
+
+            const script2 = document.createElement("script");
+            script2.type = "text/javascript";
+            script2.src = "https://cdn.tailwindcss.com";
+
+            document.head.append(script);
+            document.head.append(script2);
+          } else {
+            return
+          }
+
 
         }
 
