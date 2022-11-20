@@ -42,7 +42,11 @@
       <template v-if="tab===0">
         <div class="py-2">
           <v-list three-line>
-            <order-list-item :item="t" v-for="t in activeOrder" :key="t.item_id">
+            <order-list-item
+                @click="showChangeNumberDialog=true"
+                :item="t" v-for="t in activeOrder"
+                :key="t.item_id"
+            >
               <v-list-item-action>
                 <v-btn icon>
                   <v-icon>mdi-pencil</v-icon>
@@ -97,6 +101,31 @@
         </div>
       </template>
     </div>
+    <v-dialog fullscreen
+              v-model="showChangeNumberDialog"
+    >
+      <v-card elevation="0" class="pa-4">
+        <v-card
+            class="pa-4 d-flex align-center justify-center"
+            color="#f6f6f6"
+            elevation="0"
+        >
+          {{ input }}
+        </v-card>
+        <div style="display: grid;
+        grid-template-columns: repeat(4,minmax(0,1fr));
+        grid-gap: 4px;">
+          <v-card color="white" :key="key" v-for="key in keys">
+            <v-responsive :aspect-ratio="1">
+              <div style="height: 100%;width: 100%"
+                   class="d-flex align-center justify-center">
+                {{ key }}
+              </div>
+            </v-responsive>
+          </v-card>
+        </div>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -109,6 +138,12 @@ import {keyBy} from "lodash-es";
 import {getItems} from "@/dataLayer/service/firebase/item";
 import {getTransByUser} from "@/dataLayer/service/firebase/transaction";
 
+const keys = [
+  "7", "8", "9", "C",
+  "4", "5", "6", "",
+  "1", "2", "3", "",
+  "", "0", "", "OK"
+]
 export default {
   components: {OrderListItem, PageTitle},
   name: "OrderListPage",
@@ -121,6 +156,9 @@ export default {
       activeOrder: [],
       transactions: [],
       itemDict: {},
+      keys,
+      input: '',
+      showChangeNumberDialog: false
     }
   },
   props: {
@@ -138,6 +176,17 @@ export default {
     console.log(this.transactions)
   },
   methods: {
+    inputK(key) {
+      switch (key) {
+        case 'OK':
+          break
+        case 'C':
+          this.input = ''
+          break
+        default:
+          this.input += key
+      }
+    },
     async refreshData() {
       this.itemDict = keyBy(await getItems(), 'item_id')
       this.logs = (await getUserOrderList()).map(it => {

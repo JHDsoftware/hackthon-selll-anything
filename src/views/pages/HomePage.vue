@@ -137,11 +137,7 @@
         <my-page @close="showUserPanel=false"></my-page>
       </v-card>
     </v-dialog>
-    <v-dialog fullscreen v-model="showChangeNumberDialog">
-      <v-card class="pa-4">
 
-      </v-card>
-    </v-dialog>
   </div>
 </template>
 
