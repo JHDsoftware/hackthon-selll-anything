@@ -15,7 +15,7 @@
           <version-display/>
         </v-card-subtitle>
         <v-card-subtitle :class="okToLogin?'':'mt-12'">
-          {{ okToLogin ? '' : 'Checking account setting' }}
+          {{ okToLogin ? '' : '正在检查账号设置' }}
         </v-card-subtitle>
         <v-card-text style="min-height: 196px">
           <div v-if="!okToLogin" style="display: flex;justify-content: center">

@@ -2,44 +2,38 @@
   <v-card @click="$emit('click')" style="user-select: none;border-radius: 16px"
           color="white"
           elevation="0">
-    <v-img :aspect-ratio="1" :src="orderInfo.imageUrl">
-      <template #placeholder>
-        <div style="width: 100%;height: 120px;"
-             class="d-flex align-center justify-center">
-          <v-progress-circular indeterminate/>
-        </div>
-      </template>
-    </v-img>
-    <div class="pa-2 px-4">
-      <div class="text-caption">
-        <span v-if="isBuy" class="success--text text--darken-3 font-weight-medium">Needed</span>
-        <span v-else class="error--text text--darken-3 font-weight-medium">Provided</span>
-        by
-        <v-avatar size="16" class="ml-1">
-          <v-img :src="'https://api.multiavatar.com/'+t.user_id+'.svg'"></v-img>
-        </v-avatar>
-      </div>
-      <div class="mt-1">
-        <div class="text-body-1 text-capitalize text-truncate">
-          {{ orderInfo.item_name }}
-        </div>
-        <div class="text-caption text-capitalize text-truncate">
-          {{ orderInfo.description }}
+    <div class="pa-3 px-4">
+      <div class="d-flex">
+        <div class="text-caption">
+          起飞日期: 2022/12/24
         </div>
       </div>
-      <div class="d-flex align-center mt-2">
-        <div class="mt-0 text-body-2 font-weight-medium">
-          {{ t.price | priceDisplay }}
+      <div class="mt-4" style="display: grid;grid-template-columns: repeat(2,minmax(0,1fr))">
+        <div class="d-flex align-center">
+          <v-icon class="mr-2" size="20">mdi-airplane-takeoff</v-icon>
+          <div class="text-body-1 font-weight-black">上海</div>
         </div>
+        <div class="d-flex align-center">
+          <v-icon class="mr-2" size="20">mdi-airplane-landing</v-icon>
+          <div class="text-body-1 font-weight-black">法兰克福</div>
+        </div>
+      </div>
+      <div class="mt-4 text-body-2">
+        <div>📑 文件： 10欧/份</div>
+        <div>📦 小件物品： 25欧/kg</div>
+        <div>🛍️ 奢饰品: 另议</div>
+      </div>
+      <div class="mt-4 d-flex">
+        <v-btn elevation="0" color="primary lighten-4 black--text">
+          <v-icon left>mdi-phone</v-icon>
+          马上联系
+        </v-btn>
         <v-spacer></v-spacer>
-        <div class="d-flex text-body-2 align-center">
-          &times;
-          {{ t.quantity }}
-        </div>
+        <v-icon color="grey lighten-2">mdi-information-outline</v-icon>
       </div>
-
 
     </div>
+
   </v-card>
 </template>
 

@@ -7,7 +7,7 @@ Vue.config.productionTip = false
 
 Vue.filter('priceDisplay', function (price) {
     return parseFloat(price).toFixed(2)
-        .replace('.', ',') + ' SOL'
+        .replace('.', ',') + ' €'
 })
 
 Vue.filter('timeStampDisplay', function (timeStamp) {

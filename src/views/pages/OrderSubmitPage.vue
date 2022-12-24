@@ -2,7 +2,7 @@
   <v-container style="background: #f6f6f6;width: 100%" class="fill-height align-start">
     <div class="pa-6" style="width: 100%">
       <page-title>
-        Submit New Offer
+        我可以帮带
         <template #backButton>
           <v-btn outlined style="border-radius: 8px" icon @click="$router.back()">
             <v-icon>mdi-arrow-left</v-icon>
@@ -398,6 +398,7 @@ export default {
 
 }
 </script>
+
 
 <style scoped>
 

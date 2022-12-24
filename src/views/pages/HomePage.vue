@@ -28,7 +28,7 @@
                  color="primary black--text lighten-4"
           >
             <v-icon left small>mdi-tune</v-icon>
-            Search
+            搜索
           </v-btn>
           <v-spacer></v-spacer>
           <v-btn
@@ -38,7 +38,7 @@
               color="warning black--text lighten-4"
               small>
             <v-icon left small>mdi-clipboard-list</v-icon>
-            My Offers
+            我的订单
           </v-btn>
           <v-btn
               elevation="0"
@@ -46,17 +46,13 @@
               color="success black--text lighten-4"
               small>
             <v-icon left small>mdi-plus-circle</v-icon>
-            new Offer
+            我来帮带
           </v-btn>
         </div>
       </template>
     </v-app-bar>
     <v-main v-scroll="onScroll" class="overflow-y-auto" style="background: #f0f0f0;min-height: calc(100vh)">
-      <div class="px-6 pb-12">
-        <div style="width: 100%" class="pa-6 py-10 mb-4 d-flex align-center justify-center flex-column">
-          <div class="display-1 text-center">Explore, Trade and Share</div>
-          <div class="text-body-1 font-weight-black">Things that you love😋</div>
-        </div>
+      <div class="px-6 pb-12 pt-6">
         <div style="display: grid;grid-template-columns: repeat(auto-fit,minmax(180px,1fr));grid-gap: 12px">
           <order-card
               @click="$router.push('/offerSubmit/'+t.item_id)"
@@ -65,7 +61,7 @@
               :t="t"
           />
         </div>
-        <div v-if="offsetTop>0" style="position: fixed; bottom: 36px;right: 36px;">
+        <div style="position: fixed; bottom: 36px;right: 36px;">
           <v-btn
               class="mx-2"
               fab
@@ -137,7 +133,6 @@
         <my-page @close="showUserPanel=false"></my-page>
       </v-card>
     </v-dialog>
-
   </div>
 </template>
 
