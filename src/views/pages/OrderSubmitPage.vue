@@ -9,61 +9,73 @@
           </v-btn>
         </template>
         <template #subtitle>
-          meet something special 🐻
+          提交我的帮带信息，快速寻找帮带订单！
         </template>
       </page-title>
-      <div class="mt-16" style="width: 100%">
-        <template v-if="step===0">
-          <div class="text-body-1
-        font-weight-medium
-        mb-8">What do you want to trade?
-          </div>
-          <v-autocomplete
-              autofocus
-              item-text="item_name"
-              item-value="item_id"
-              v-model="selectedItemId"
-              :search-input.sync="searchInput"
-              placeholder="A Cute... Car!"
-              :items="items"
-              @blur="lostFocus"
-              filled
-              rounded
-          >
-            <template #prepend-item>
-              <v-subheader class="mb-1">
-                <strong class="mr-1">Select one </strong> from our awesome list of wandering
-              </v-subheader>
-              <v-divider></v-divider>
-            </template>
-            <template v-slot:no-data>
-              <v-list-item @click="lostFocus">
-                <v-list-item-title>
-                  <strong>Tap here</strong> to create this brand new Item
-                </v-list-item-title>
-              </v-list-item>
-            </template>
-          </v-autocomplete>
-          <next-step-button v-if="selectedItemId" @click="step=2"/>
-        </template>
-        <template v-else-if="step===1">
+      <v-form v-model="formValid" ref="form">
+        <div class="mt-16" style="width: 100%">
           <div>
-            <div class="text-body-1
-        font-weight-medium
-        mb-8">Fill in some Details🔍
+            <div class="text-subtitle-1 font-weight-black text-decoration-underline">我的行程</div>
+            <div class="mt-2">
+              <div class="mt-2" style="display: grid;grid-template-columns: repeat(2,minmax(0,1fr));grid-gap: 16px">
+                <v-card @click="flyToChina=true" :color="flyToChina?'primary':''" :dark="flyToChina" elevation="0"
+                        class="pa-2 px-4 text-body-2 d-flex align-center">
+                  <v-icon>mdi-airplane-landing</v-icon>
+                  <v-spacer></v-spacer>
+                  飞往国内
+                </v-card>
+                <v-card @click="flyToChina=false" :color="flyToChina?'':'primary'" :dark="!flyToChina" elevation="0"
+                        class=" pa-4 px-4 text-body-2 d-flex align-center">
+                  <v-icon>mdi-airplane-takeoff</v-icon>
+                  <v-spacer></v-spacer>
+                  飞往德国
+                </v-card>
+              </div>
             </div>
-            <div style="width: 100%" class="d-flex justify-center">
+            <div class="mt-8">
+              <v-dialog style="width: min-content;" max-width="286px">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field v-bind="attrs"
+                                required
+                                v-on="on" label="起飞日期*"
+                                filled v-model="takeoffDate"
+                                :rules="nameRules"
+                                readonly>
+
+                  </v-text-field>
+
+                </template>
+                <v-card>
+                  <div>
+                    <v-date-picker :min="today" v-model="takeoffDate"></v-date-picker>
+                  </div>
+                </v-card>
+              </v-dialog>
+
+            </div>
+            <div style="display: grid;grid-template-columns: repeat(2,minmax(0,1fr));grid-gap: 16px">
+              <div>
+                <v-select v-model="takeoffCity" :rules="nameRules" :items="startCity" return-object label="起飞城市*"
+                          filled></v-select>
+              </div>
+              <div>
+                <v-select :items="targetCity" v-model="landingCity" :rules="nameRules" return-object label="落地城市*"
+                          filled></v-select>
+              </div>
+            </div>
+            <div>
               <v-card
-                  width="144" elevation="0"
-                  color="grey lighten-2"
+                  width="100%" elevation="0"
+                  color="white lighten-2"
                   style="position: relative"
-                  class="my-4">
+                  class="mb-4">
                 <div style="position: absolute;z-index: 1;width: 100%">
                   <v-file-input
                       style="opacity: 0;"
-                      height="144"
+                      height="96"
                       full-width
                       filled
+                      :rules="nameRules"
                       rounded
                       v-model="file"
                       prepend-icon=""
@@ -71,329 +83,197 @@
                       accept="image/*"
                   />
                 </div>
-                <v-img width="100%"
-                       height="144"
-                       style="border-radius: 12px"
-                       v-if="uploadUrl" :src="uploadUrl"/>
+                <div v-if="uploadUrl">
+                  <v-img width="100%"
+                         height="96"
+                         style="border-radius: 12px"
+                         :src="uploadUrl"/>
+                  <div class="text-body-2 mt-1 pa-1">✅ 机票照片已经上传</div>
+                </div>
+
                 <v-card
                     elevation="0"
                     color="transparent"
                     v-else
-                    class="d-flex justify-center align-center"
-                    height="144"
+                    class="pa-4 d-flex align-center"
                 >
-                  <v-icon large>mdi-image</v-icon>
+                  <div class="mr-4">
+                    <v-icon large>mdi-image</v-icon>
+                  </div>
+                  <div>
+                    <div class="text-body-2">点击这里上传机票照片</div>
+                    <div class="text-caption">
+                      我们需要您的机票来校验您的信息真实性
+                    </div>
+                  </div>
+
                 </v-card>
-                <v-btn elevation="0" color="green lighten-4" style="position: absolute;right: -12px;bottom: -12px" fab
-                       x-small>
-                  <v-icon>
-                    mdi-plus
-                  </v-icon>
-                </v-btn>
-
               </v-card>
             </div>
 
 
-            <div class="text-caption mb-2">
-              Name of the Thing
-            </div>
-            <v-text-field v-model="itemName" placeholder="e.g. A cute Car" rounded filled></v-text-field>
-            <div class="text-caption mb-2">
-              Some detailed Description
-            </div>
-            <v-text-field
-                v-model="itemDesc"
-                placeholder="Something more you want to tell the people about this" rounded
-                filled/>
-            <back-step-button @click="step=1" class="mr-2"/>
-            <next-step-button :disabled="!(itemDesc&&itemName&&file)" :loading="loading" @click="confirmAddItem"/>
           </div>
-        </template>
-        <template v-else-if="step===2">
-          <div style="width: 100%">
-            <v-card
-                v-if="currentItem"
-                elevation="0" class="pa-4 d-flex align-center"
-                style="border-radius: 16px;width: 100%"
-            >
-              <v-img style="border-radius: 16px" class="flex-grow-0" width="144" aspect-ratio="1"
-                     :src="currentItem.imageUrl"></v-img>
-              <div class="flex-grow-1 ml-4 d-flex flex-column" style="height: 144px">
-                <div class="text-body-1 font-weight-medium">
-                  {{ currentItem.item_name }}
-                </div>
-                <div style="max-lines: 3;
-                text-overflow: ellipsis;
-                overflow: hidden;
-                line-clamp: 2"
-                     class="text-body-2 mt-1">
-                  {{ currentItem.description }}
-                </div>
-                <v-spacer></v-spacer>
-                <div class="text-caption text-truncate">
-                  Id: {{ currentItem.item_id }}
-                </div>
-              </div>
-            </v-card>
-            <div class="text-body-1 mt-12 font-weight-medium">
-              I would like to...
+          <div class="mt-8">
+            <div class="text-subtitle-1 font-weight-black text-decoration-underline">价格设定</div>
+            <div class="mt-2">
+              <v-text-field :rules="nameRules" label="小件物品每千克价格*" filled
+                            type="number" step="0.01" min="0"
+                            v-model="smallPackagePrice"
+                            messages="不足一千克部分按照一千克计算"
+                            append-icon="mdi-currency-eur"/>
             </div>
-            <div class="mt-4 d-flex">
-              <v-card @click="buyOrSell='buy'; scrollToElement(); clearPriceAndData(); getItemDetail()"
-                      elevation="0"
-                      :color="buyOrSell==='buy'?'primary lighten-4':''"
-                      width="144"
-                      style="border-radius: 16px">
-                <v-responsive :aspect-ratio="1">
-                  <div style="width: 100%;height: 100%;" class="d-flex align-center justify-center flex-column">
-                    <v-icon size="36">mdi-basket-plus</v-icon>
-                    <div class="text-body-2 mt-4 text--secondary font-weight-medium">
-                      Buy this Item
-                    </div>
-                  </div>
-                </v-responsive>
-              </v-card>
-              <v-card elevation="0"
-                      class="ml-4"
-                      @click="buyOrSell='sell'; scrollToElement(); clearPriceAndData(); getItemDetail()"
-                      :color="buyOrSell==='sell'?'primary lighten-4':''"
-                      width="144"
-                      style="border-radius: 16px">
-                <v-responsive :aspect-ratio="1">
-                  <div style="width: 100%;height: 100%;" class="d-flex align-center justify-center flex-column">
-                    <v-icon size="36">mdi-store</v-icon>
-                    <div class="text-body-2 mt-4 text--secondary font-weight-medium">
-                      Sell this Item
-                    </div>
-                  </div>
-                </v-responsive>
-              </v-card>
-
+            <div class="mt-2">
+              <v-text-field :rules="nameRules"
+                            step="0.01"
+                            v-model="filePrice"
+                            min="0"
+                            label="每份文件价格*"
+                            filled
+                            type="number"
+                            append-icon="mdi-currency-eur"/>
             </div>
-            <template v-if="buyOrSell">
-              <div
-                  class="mt-2">
-                <div class="text-body-1 mt-12 font-weight-medium">
-                  Current market status
-                </div>
-                <div class="d-flex mt-4">
-                  <v-card width="120px" elevation="0" class="pa-2">
-                    <div class="text-caption" v-if="buyOrSell==='buy'">Avg Buy Price</div>
-                    <div class="text-caption" v-else>Avg Sell Price</div>
-                    <div class="d-flex mt-4">
-                      <v-icon small color="warning darken-2">mdi-finance</v-icon>
-                      <v-spacer></v-spacer>
-                      <div class="text-body-1 text-truncate">
-                        {{ selectedItemDetail.avgPrice | priceDisplay }}
-                      </div>
-                    </div>
-                  </v-card>
-                  <v-card width="120px" elevation="0" class="ml-2 pa-2">
-                    <div class="text-caption" v-if="buyOrSell==='buy'">Total Stock</div>
-                    <div class="text-caption" v-else>Total Stock</div>
-                    <div class="d-flex mt-4">
-                      <v-icon small color="success darken-2">mdi-server</v-icon>
-                      <v-spacer></v-spacer>
-                      <div class="text-body-1 text-truncate">
-                        {{ selectedItemDetail.totalStock }}
-                      </div>
-                    </div>
-                  </v-card>
-                  <v-card width="120px" elevation="0" class="ml-2 pa-2">
-                    <div class="text-caption" v-if="buyOrSell==='buy'">Min Offer Price</div>
-                    <div class="text-caption" v-else>Min Price</div>
-                    <div class="d-flex mt-4">
-                      <v-icon small color="error darken-2">mdi-cart-percent</v-icon>
-                      <v-spacer></v-spacer>
-                      <div class="text-body-2 text-truncate">
-                        {{ selectedItemDetail.minPrice| priceDisplay }}({{ selectedItemDetail.minCount }})
-                      </div>
-                    </div>
-                  </v-card>
-                </div>
-              </div>
-              <div class="text-body-1 mt-12 font-weight-medium"
-              >
-                I {{ isBuy ? 'need' : 'will provide' }}...
-              </div>
-              <div class="mt-4 d-flex">
-                <v-text-field
-                    autofocus
-                    v-model="amount"
-                    placeholder="The amount of your offer"
-                    type="number" step="1" min="0"
-                    rounded filled>
-                </v-text-field>
-              </div>
-              <div class="text-body-1 font-weight-medium">
-                {{ isBuy ? 'the max price I can afford is...' : 'the price for each is....' }}
-              </div>
-              <div v-if="isBuy&&amount" class="text-caption">
-                <template v-if="rightNowPrice">
-                  If you pay {{ rightNowPrice|priceDisplay }}, you can directly get the item you need.
-                  <a
-                      @click="price=rightNowPrice">Apply</a>
-                </template>
-                <template v-else>
-                  <v-progress-circular indeterminate size="14"/>
-                </template>
-
-              </div>
-              <div class="mt-4 d-flex">
-                <v-text-field
-                    v-model="price"
-                    placeholder="price, e.g. 123.5"
-                    type="number" step="0.01" min="0"
-                    rounded filled>
-                  <template #append>
-                    <div class="mt-1">SOL</div>
-                  </template>
-                </v-text-field>
-              </div>
-
-              <v-btn :disabled="!submitRule" @click="submitOffer" height="52"
-                     rounded
-                     elevation="0"
-                     color="primary lighten-4 black--text"
-                     :loading="loading">
-                Submit Offer
-                <v-icon right>mdi-check</v-icon>
-              </v-btn>
-            </template>
-            <div id="goDown"></div>
           </div>
-        </template>
+          <div class="mt-8">
+            <div class="text-subtitle-1 font-weight-black text-decoration-underline">补充说明</div>
+            <div class="text-caption">其他想要让您的潜在客户了解的一些详情</div>
+            <div class="mt-2">
+              <v-textarea label="补充说明" v-model="appendInfo" filled></v-textarea>
+            </div>
+          </div>
+          <div class="mt-8">
+            <div class="text-subtitle-1 font-weight-black text-decoration-underline">联系信息*</div>
+            <div class="text-caption">以下联系信息将会在用户解锁信息后被用户获取，请注意保护个人隐私。</div>
+            <div class="mt-2">
+              <v-textarea label="联系信息*" v-model="contactInfo" filled :rules="nameRules"/>
+            </div>
+          </div>
 
-      </div>
+          <div class="d-flex">
+            <v-simple-checkbox color="primary" v-model="confirmOk" class="mr-2"></v-simple-checkbox>
+            <div class="text-caption mt-4">我保证以上信息真实有效，我已经知晓本平台不对最终交易结果做任何保证。</div>
+          </div>
+
+          <v-btn @click="submit"
+                 :loading="loading"
+                 :disabled="!canSubmit" color="primary" elevation="0" class="mt-4"
+                 large block>
+            提交
+            <v-icon right>mdi-check</v-icon>
+          </v-btn>
+
+        </div>
+      </v-form>
+      <v-dialog persistent v-model="showAddCompleteDialog" max-width="300px">
+        <v-card class="pa-4 d-flex flex-column align-center">
+          <div class="text-body-1">
+            提交成功！
+          </div>
+          <div class="text-body-2 mt-4 text-center">
+            您提交的信息将在审核后显示在平台上，审核通过时将会给您的注册邮箱发送一封邮件。非常感谢🙇‍！
+          </div>
+          <div class="mt-4">
+            <v-btn @click="confirmed" elevation="0">
+              好的
+            </v-btn>
+          </div>
+        </v-card>
+      </v-dialog>
     </div>
   </v-container>
 </template>
 
 <script>
 import PageTitle from "@/views/widgets/PageTitle";
-import NextStepButton from "@/views/widgets/NextStepButton";
-import BackStepButton from "@/views/widgets/BackStepButton";
+import dayjs from "dayjs";
 import {uploadImage} from "@/dataLayer/service/firebase/uploadImage";
-import {addItem, getItems} from "@/dataLayer/service/firebase/item";
-import {addOrder, getItemDetail, SideOption} from "@/dataLayer/service/firebase/order";
+import {addPickupOrder} from "@/dataLayer/service/firebase/pickupOrder";
 
+const today = dayjs().format('YYYY-MM-DD')
 export default {
   props: {id: {}},
   name: "OrderSubmitPage",
-  components: {BackStepButton, NextStepButton, PageTitle},
+  components: {PageTitle},
   watch: {
-    searchInput(val) {
-      if (val) {
-        this.lastSearchInput = val
-      }
-    },
-    amount(val) {
-      if (this.isBuy && val) {
-        setTimeout(() => {
-          this.rightNowPrice = this.selectedItemDetail.minPrice
-        }, 2000)
-
-      } else {
-        this.rightNowPrice = ''
-      }
+    flyToChina() {
+      this.takeoffCity = null
+      this.landingCity = null
     }
   },
   computed: {
-    isBuy: function () {
-      return this.buyOrSell === 'buy'
-    },
     uploadUrl: function () {
-      console.log(this.file)
       return this.file ? URL.createObjectURL(this.file) : null
     },
-    currentItem: function () {
-      console.log(this.items, this.selectedItemId)
-      return this.items.find(it => it.item_id === this.selectedItemId)
+    startCity: function () {
+      return this.flyToChina ? this.germanyCities : this.chineseCities
     },
-    submitRule: function () {
-      return this.amount !== 0 && this.amount !== "0" && this.amount !== "" && this.amount !== null && this.price !== 0 && this.price !== "0" && this.price !== "" && this.price !== null
+    targetCity: function () {
+      return this.flyToChina ? this.chineseCities : this.germanyCities
+    },
+    canSubmit: function () {
+      return this.confirmOk && this.formValid
     }
   },
   data: function () {
     return {
-      itemList: [],
-      itemName: '',
-      itemDesc: '',
-      step: 0,
-      file: null,
-      items: [],
-      selectedItemId: null,
-      searchInput: '',
-      lastSearchInput: '',
-      buyOrSell: null,
-      amount: '',
-      rightNowPrice: '',
-      price: '',
       loading: false,
-      selectedItemDetail: ''
+      showAddCompleteDialog: false,
+      formValid: false,
+      today,
+      nameRules: [
+        v => !!v || '请填写此信息',
+      ],
+      germanyCities: [
+        "杜塞",
+        "法兰克福",
+        "柏林",
+        "汉堡",
+        "慕尼黑",
+        "斯图加特",
+        "德累斯顿",
+        "纽伦堡",
+        "汉诺威",
+      ],
+      chineseCities: [
+        "上海",
+        "北京",
+        "青岛",
+        "天津",
+        "广州",
+        "成都",
+      ],
+
+      file: null,
+      flyToChina: true,
+      takeoffDate: today,
+      takeoffCity: null,
+      landingCity: null,
+      smallPackagePrice: null,
+      filePrice: null,
+      appendInfo: null,
+      contactInfo: null,
+      confirmOk: false
+
+
     };
   },
   methods: {
-    async getItemDetail() {
-      this.selectedItemDetail = await getItemDetail(this.selectedItemId, this.buyOrSell)
-      console.log(this.selectedItemDetail, "detail")
-    },
-    clearPriceAndData() {
-      this.price = ''
-      this.amount = ''
-    },
-    scrollToElement() {
-      const el = document.getElementById('goDown')
-      if (el) {
-        setTimeout(() => {
-          el.scrollIntoView({behavior: "smooth"})
-        }, 10)
-
-      }
-    },
-    async reloadItems() {
-      this.items = await getItems()
-    },
-    async submitOffer() {
-      this.loading = true
-      await addOrder(this.selectedItemId,
-          this.price, this.amount,
-          this.isBuy ? SideOption.Buy : SideOption.Sell)
-      this.loading = false
-      await this.$router.push('/loading')
-    },
-    startAddItem() {
-      this.itemName = this.lastSearchInput
-      this.itemDesc = ''
-      this.file = null
-      this.step = 1
-    },
-    async confirmAddItem() {
+    async submit() {
       this.loading = true
       const imageUrl = await uploadImage(this.file)
-      const id = await addItem(this.itemName, this.itemDesc, imageUrl, []);
-      console.log(id)
-      console.log("Uploaded Image Id")
-      await this.reloadItems()
+      await addPickupOrder(this.flyToChina, this.takeoffDate,
+          this.takeoffCity, this.landingCity, this.smallPackagePrice,
+          this.filePrice, this.appendInfo, this.contactInfo, imageUrl)
       this.loading = false
-      this.selectedItemId = id
-      this.step = 2
+      this.showAddCompleteDialog = true
+
     },
-    lostFocus() {
-      if (this.lastSearchInput) {
-        if (!this.selectedItemId) {
-          this.startAddItem()
-        }
-      }
+    async confirmed() {
+      this.showAddCompleteDialog = true
+      await this.$router.push('/loading')
     }
   },
   mounted() {
-    this.reloadItems()
-    if (this.id) {
-      this.selectedItemId = this.id
-      this.step = 2
-    }
+
   }
 
 }

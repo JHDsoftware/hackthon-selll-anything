@@ -8,7 +8,7 @@
           起飞日期: 2022/12/24
         </div>
       </div>
-      <div class="mt-4" style="display: grid;grid-template-columns: repeat(2,minmax(0,1fr))">
+      <div class="mt-4 pr-6" style="display: grid;grid-template-columns: repeat(2,minmax(0,1fr));grid-gap: 36px">
         <div class="d-flex align-center">
           <v-icon class="mr-2" size="20">mdi-airplane-takeoff</v-icon>
           <div class="text-body-1 font-weight-black">上海</div>
@@ -22,11 +22,14 @@
         <div>📑 文件： 10欧/份</div>
         <div>📦 小件物品： 25欧/kg</div>
         <div>🛍️ 奢饰品: 另议</div>
+        <div>
+          ✅ 已实名认证/机票已经审核
+        </div>
       </div>
-      <div class="mt-4 d-flex">
+      <div class="mt-4 d-flex align-center">
         <v-btn elevation="0" color="primary lighten-4 black--text">
           <v-icon left>mdi-phone</v-icon>
-          马上联系
+          一键付费联系
         </v-btn>
         <v-spacer></v-spacer>
         <v-icon color="grey lighten-2">mdi-information-outline</v-icon>
