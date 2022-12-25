@@ -28,7 +28,7 @@
                         class=" pa-4 px-4 text-body-2 d-flex align-center">
                   <v-icon>mdi-airplane-takeoff</v-icon>
                   <v-spacer></v-spacer>
-                  飞往德国
+                  飞往海外
                 </v-card>
               </div>
             </div>

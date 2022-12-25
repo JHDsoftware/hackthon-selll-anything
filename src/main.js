@@ -2,9 +2,15 @@ import Vue from 'vue'
 import App from './App.vue'
 import vuetify from './plugins/vuetify'
 import router from './router'
+import dayjs from "dayjs";
 
 Vue.config.productionTip = false
-
+const relativeTime = require('dayjs/plugin/relativeTime');
+const duration = require('dayjs/plugin/duration');
+dayjs.extend(duration)
+dayjs.extend(relativeTime)
+require('dayjs/locale/zh')
+dayjs.locale('zh')
 Vue.filter('priceDisplay', function (price) {
     return parseFloat(price).toFixed(2)
         .replace('.', ',') + ' €'

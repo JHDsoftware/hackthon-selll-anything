@@ -58,12 +58,12 @@
                   elevation="0"
                   color="primary"
                   @click="submit"
-              >{{ 'Register/Login' }}
+              >{{ '注册/登录' }}
               </v-btn>
 
 
               <div class="text-caption font-weight-bold
-               my-3 mt-12">{{ 'Or use this way' }}
+               my-3 mt-12">{{ '或者使用第三方登录' }}
               </div>
 
               <!--           external providers list -->
@@ -85,7 +85,7 @@
             <div v-if="errorProvider" class="error--text">{{ errorProviderMessages }}</div>
             <div class="mt-5">
               <a @click="passwordForget=true">
-                {{ 'forget password?' }}
+                {{ '忘记密码了？' }}
               </a>
             </div>
           </div>
@@ -164,13 +164,13 @@ export default {
 
       providers: [{
         id: 'google',
-        label: 'Google',
+        label: '谷歌登录',
         isLoading: false,
         color: '#fbbc05'
       },
         {
           id: 'account-clock',
-          label: 'Login As Guest',
+          label: '游客登录',
           isLoading: false,
           color: 'black'
         }],

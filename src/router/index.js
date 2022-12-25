@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import LoginPage from "@/views/pages/LoginPage";
 import MyPage from "@/views/pages/MyPage";
-import OrderListPage from "@/views/pages/OrderListPage";
+import OrderListPage from "@/views/pages/MyOrderPage.vue";
 import HomePage from "@/views/pages/HomePage";
 import {getCurrentUserId} from "@/dataLayer/service/firebase/user";
 import OrderSubmitPage from "@/views/pages/OrderSubmitPage";

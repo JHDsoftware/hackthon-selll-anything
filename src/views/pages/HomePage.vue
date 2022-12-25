@@ -46,35 +46,37 @@
               color="success black--text lighten-4"
               small>
             <v-icon left small>mdi-plus-circle</v-icon>
-            我来帮带
+            我可以帮带
           </v-btn>
         </div>
       </template>
     </v-app-bar>
     <v-main v-scroll="onScroll" class="overflow-y-auto" style="background: #f0f0f0;min-height: calc(100vh)">
       <div class="px-6 pb-12 pt-6">
-        <div style="display: grid;grid-template-columns: repeat(auto-fit,minmax(180px,1fr));grid-gap: 12px">
+        <div style="display: grid;grid-template-columns: repeat(auto-fit,minmax(180px,1fr));grid-gap: 16px">
           <order-card
-              @click="$router.push('/offerSubmit/'+t.item_id)"
+              @click="openOrderDetail(t)"
               v-for="t in orderList"
               :key="t.order_id"
               :t="t"
           />
         </div>
-        <div style="position: fixed; bottom: 36px;right: 36px;">
-          <v-btn
-              class="mx-2"
-              fab
-              dark
-              large
-              color="primary"
-              @click="toTop()"
-          >
-            <v-icon dark>
-              mdi-arrow-up
-            </v-icon>
-          </v-btn>
-        </div>
+        <v-fab-transition>
+          <div v-if="offsetTop>16" style="position: fixed; bottom: 36px;right: 36px;">
+            <v-btn
+                class="mx-2"
+                fab
+                elevation="1"
+                color="primary lighten-4 black--text"
+                @click="toTop()"
+            >
+              <v-icon dark>
+                mdi-arrow-up
+              </v-icon>
+            </v-btn>
+          </div>
+        </v-fab-transition>
+
       </div>
     </v-main>
     <v-navigation-drawer width="340" app right v-model="showMyOrders">
@@ -133,6 +135,11 @@
         <my-page @close="showUserPanel=false"></my-page>
       </v-card>
     </v-dialog>
+    <v-dialog fullscreen v-model="showDetailDialog">
+      <v-card v-if="showDetailDialog">
+        <check-out-page @close="showDetailDialog=false" :order-info="orderItem"/>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -141,18 +148,19 @@ import LogoDisplay from "@/views/widgets/LogoDisplay";
 import MyPage from "@/views/pages/MyPage";
 import {getCurrentUser, getCurrentUserId} from "@/dataLayer/service/firebase/user";
 import OrderCard from "@/views/widgets/items/OrderCard";
-import {getOrderByList} from "@/dataLayer/service/firebase/order";
-import OrderListPage from "@/views/pages/OrderListPage";
+import OrderListPage from "@/views/pages/MyOrderPage.vue";
 import {collection, onSnapshot, query} from 'firebase/firestore'
 import {GlobalDB} from "@/plugins/google-fire-base";
+import {pickupOrderPath} from "@/dataLayer/service/firebase/pickupOrder";
+import CheckOutPage from "@/views/pages/CheckOutPage.vue";
 
 export default {
   name: "HomePage",
-  components: {MyPage, OrderCard, LogoDisplay, OrderListPage},
+  components: {CheckOutPage, MyPage, OrderCard, LogoDisplay, OrderListPage},
   async mounted() {
-    onSnapshot(query(collection(GlobalDB, "order")), (snapshot) => {
-      const res = snapshot.docs.map(it => it.data())
-      this.orderList = getOrderByList(res)
+    onSnapshot(query(collection(GlobalDB, pickupOrderPath)), (snapshot) => {
+      this.orderList = snapshot.docs.map(it => it.data())
+      console.log(this.orderList)
     });
   },
   computed: {
@@ -163,6 +171,7 @@ export default {
   data: function () {
     return {
       showSearchDialog: false,
+      showDetailDialog: false,
       searchText: '',
       searchTextModel: '',
       message: '',
@@ -173,11 +182,16 @@ export default {
       userId: getCurrentUserId(),
       orderList: [],
       showMyOrders: false,
-      showChangeNumberDialog: false
+      showChangeNumberDialog: false,
+      orderItem: null,
     };
   },
 
   methods: {
+    openOrderDetail(orderItem) {
+      this.orderItem = orderItem
+      this.showDetailDialog = true
+    },
 
     gotoSalePage() {
       this.showMyOrders = true
