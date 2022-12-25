@@ -11,6 +11,8 @@ dayjs.extend(duration)
 dayjs.extend(relativeTime)
 require('dayjs/locale/zh')
 dayjs.locale('zh')
+const advancedFormat = require('dayjs/plugin/advancedFormat')
+dayjs.extend(advancedFormat)
 Vue.filter('priceDisplay', function (price) {
     return parseFloat(price).toFixed(2)
         .replace('.', ',') + ' €'

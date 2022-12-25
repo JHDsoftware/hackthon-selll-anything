@@ -53,7 +53,7 @@
     </v-app-bar>
     <v-main v-scroll="onScroll" class="overflow-y-auto" style="background: #f0f0f0;min-height: calc(100vh)">
       <div class="px-6 pb-12 pt-6">
-        <div style="display: grid;grid-template-columns: repeat(auto-fit,minmax(180px,1fr));grid-gap: 16px">
+        <div style="display: grid;grid-template-columns: repeat(auto-fit,minmax(240px,1fr));grid-gap: 16px">
           <order-card
               @click="openOrderDetail(t)"
               v-for="t in orderList"

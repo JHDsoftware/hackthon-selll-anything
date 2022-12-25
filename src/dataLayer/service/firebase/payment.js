@@ -7,6 +7,7 @@ export const paymentPath = "paymentPath"
 
 const defaultPayment = {
     pickupOrderId: '',
+    withInsurance: false
 
 }
 

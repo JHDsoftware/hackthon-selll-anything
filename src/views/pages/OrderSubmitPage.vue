@@ -55,12 +55,36 @@
             </div>
             <div style="display: grid;grid-template-columns: repeat(2,minmax(0,1fr));grid-gap: 16px">
               <div>
-                <v-select v-model="takeoffCity" :rules="nameRules" :items="startCity" return-object label="起飞城市*"
+                <v-select v-model="takeoffCity"
+                          :rules="nameRules"
+                          :items="startCity"
+                          return-object label="起飞机场*"
                           filled></v-select>
               </div>
               <div>
-                <v-select :items="targetCity" v-model="landingCity" :rules="nameRules" return-object label="落地城市*"
+                <v-select :items="targetCity"
+                          v-model="landingCity"
+                          :rules="nameRules"
+                          return-object label="落地机场*"
                           filled></v-select>
+              </div>
+            </div>
+            <div style="display: grid;grid-template-columns: repeat(2,minmax(0,1fr));grid-gap: 16px">
+              <div>
+                <v-text-field
+                    :rules="nameRules"
+                    label="出发城市*"
+                    filled
+                    v-model="leavingCity"
+                />
+              </div>
+              <div>
+                <v-text-field
+                    :rules="nameRules"
+                    label="到达城市*"
+                    filled
+                    v-model="arriveCity"
+                />
               </div>
             </div>
             <div>
@@ -110,6 +134,53 @@
                 </v-card>
               </v-card>
             </div>
+            <div>
+              <v-card
+                  width="100%" elevation="0"
+                  color="white lighten-2"
+                  style="position: relative"
+                  class="mb-4">
+                <div style="position: absolute;z-index: 1;width: 100%">
+                  <v-file-input
+                      style="opacity: 0;"
+                      height="96"
+                      full-width
+                      filled
+                      :rules="nameRules"
+                      rounded
+                      v-model="idFile"
+                      prepend-icon=""
+                      prepend-inner-icon="mdi-image"
+                      accept="image/*"
+                  />
+                </div>
+                <div v-if="fileUrl">
+                  <v-img width="100%"
+                         height="96"
+                         style="border-radius: 12px"
+                         :src="fileUrl"/>
+                  <div class="text-body-2 mt-1 pa-1">✅ 个人证件照片已经上传</div>
+                </div>
+
+                <v-card
+                    elevation="0"
+                    color="transparent"
+                    v-else
+                    class="pa-4 d-flex align-center"
+                >
+                  <div class="mr-4">
+                    <v-icon large>mdi-image</v-icon>
+                  </div>
+                  <div>
+                    <div class="text-body-2">点击这里上传个人证件照片</div>
+                    <div class="text-caption">
+                      我们需要您的个人证件照片来校验您的信息真实性
+                    </div>
+                  </div>
+
+                </v-card>
+              </v-card>
+            </div>
 
 
           </div>
@@ -131,6 +202,14 @@
                             filled
                             type="number"
                             append-icon="mdi-currency-eur"/>
+            </div>
+            <div class="d-flex align-center mt-n4">
+              <v-checkbox v-model="canTakeMedicine" hide-details label="我可以携带药品">
+              </v-checkbox>
+            </div>
+            <div class="d-flex align-center">
+              <v-checkbox v-model="canTakeLuxury" hide-details label="我可以携带奢饰品">
+              </v-checkbox>
             </div>
           </div>
           <div class="mt-8">
@@ -183,10 +262,10 @@
 </template>
 
 <script>
-import PageTitle from "@/views/widgets/PageTitle";
-import dayjs from "dayjs";
-import {uploadImage} from "@/dataLayer/service/firebase/uploadImage";
-import {addPickupOrder} from "@/dataLayer/service/firebase/pickupOrder";
+import PageTitle from "@/views/widgets/PageTitle"
+import dayjs from "dayjs"
+import {uploadImage} from "@/dataLayer/service/firebase/uploadImage"
+import {addPickupOrder} from "@/dataLayer/service/firebase/pickupOrder"
 
 const today = dayjs().format('YYYY-MM-DD')
 export default {
@@ -202,6 +281,9 @@ export default {
   computed: {
     uploadUrl: function () {
       return this.file ? URL.createObjectURL(this.file) : null
+    },
+    fileUrl: function () {
+      return this.idFile ? URL.createObjectURL(this.idFile) : null
     },
     startCity: function () {
       return this.flyToChina ? this.germanyCities : this.chineseCities
@@ -246,23 +328,40 @@ export default {
       flyToChina: true,
       takeoffDate: today,
       takeoffCity: null,
+      leavingCity: "",
+      arriveCity: "",
       landingCity: null,
       smallPackagePrice: null,
       filePrice: null,
       appendInfo: null,
       contactInfo: null,
-      confirmOk: false
+      confirmOk: false,
+      idFile: null,
+      canTakeMedicine: false,
+      canTakeLuxury: false
 
 
-    };
+    }
   },
   methods: {
     async submit() {
       this.loading = true
       const imageUrl = await uploadImage(this.file)
-      await addPickupOrder(this.flyToChina, this.takeoffDate,
-          this.takeoffCity, this.landingCity, this.smallPackagePrice,
-          this.filePrice, this.appendInfo, this.contactInfo, imageUrl)
+      const idCardUrl = await uploadImage(this.idFile)
+      await addPickupOrder(this.flyToChina,
+          this.takeoffDate,
+          this.takeoffCity,
+          this.landingCity,
+          this.smallPackagePrice,
+          this.filePrice,
+          this.appendInfo,
+          this.contactInfo,
+          imageUrl,
+          idCardUrl,
+          this.arriveCity,
+          this.leavingCity,
+          this.canTakeMedicine,
+          this.canTakeLuxury)
       this.loading = false
       this.showAddCompleteDialog = true
 

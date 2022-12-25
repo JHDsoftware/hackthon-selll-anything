@@ -18,10 +18,17 @@ const defaultPickupOrder = {
     authed: false,
     deleteAt: "",
     ticketUrl: "",
+    arriveCity: "",
+    leavingCity: "",
+    idCardUrl: "",
+    canTakeMedicine: false,
+    canTakeLuxury: false
 }
 
-export async function addPickupOrder(flyToChina, takeoffDate, takeoffCity, landingCity, smallPackagePrice, filePrice,
-                                     appendInfo, contactInfo, ticketUrl,) {
+export async function addPickupOrder(flyToChina, takeoffDate, takeoffCity,
+                                     landingCity, smallPackagePrice, filePrice,
+                                     appendInfo, contactInfo, ticketUrl, idCardUrl, arriveCity, leavingCity,
+                                     canTakeMedicine, canTakeLuxury) {
     try {
         const newItemId = doc(collection(GlobalDB, pickupOrderPath))
         const newItem = Object.assign({
@@ -36,12 +43,14 @@ export async function addPickupOrder(flyToChina, takeoffDate, takeoffCity, landi
             appendInfo,
             contactInfo,
             ticketUrl,
+            idCardUrl, arriveCity, leavingCity,
+            canTakeMedicine, canTakeLuxury
         })
         await setDoc(newItemId, newItem)
-        console.log("Document written with ID: ", newItemId.id)
+        console.log("ok")
         return newItemId.id
     } catch (e) {
-        console.error("Error adding document: ", e)
+        console.log(e)
         return null
     }
 }
@@ -55,7 +64,7 @@ export async function getMyOrders() {
 export async function getMyPurchasedOrders() {
     const payments = await getMyPayments()
     return (await Promise.allSettled(payments.map(async it =>
-        await docContentOf(doc(GlobalDB, pickupOrderPath, it.pickupOrderId))))).map(it=>it.value)
+        await docContentOf(doc(GlobalDB, pickupOrderPath, it.pickupOrderId))))).map(it => it.value)
 
 }
 
