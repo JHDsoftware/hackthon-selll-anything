@@ -1,8 +1,7 @@
 <template>
-  <v-card @click="$emit('click')" style="user-select: none;border-radius: 16px"
-          color="white"
+  <v-card  style="user-select: none;border-radius: 16px"
           elevation="0">
-    <div class="pa-3 px-4">
+    <div @click="$emit('click')" class="pa-3 px-4">
       <order-general-display :t="t"/>
       <div class="mt-4 d-flex align-center">
         <v-btn elevation="0" color="primary lighten-4 black--text">

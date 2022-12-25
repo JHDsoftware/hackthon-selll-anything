@@ -83,53 +83,12 @@
       <order-list-page :show="showMyOrders"
                        @close="showMyOrders=false"/>
     </v-navigation-drawer>
-    <v-dialog fullscreen v-model="showSearchDialog">
-      <v-card style="width: 100vw;height: 100vh">
-        <div class="pa-6 d-flex align-center flex-column justify-center fill-height">
-          <template v-if="!loading">
-            <div class="text-h5">
-              Search
-            </div>
-            <div class="mt-8" style="width: 300px">
-              <v-text-field
-                  v-model="searchTextModel"
-                  rounded
-                  hide-details
-                  autofocus
-                  filled
-                  placeholder="e.g. A Cute Toaster......"
-              />
-            </div>
-          </template>
-          <template v-else>
-            <div class="text-h5">
-              Rescuring results from 🌋
-            </div>
-          </template>
-
-          <div class="text-caption mt-2 text--secondary">
-            {{ message }}
-          </div>
-
-          <div class="d-flex mt-6">
-            <v-btn
-                v-if="!loading"
-                @click="showSearchDialog=false"
-                class="mr-2"
-                icon
-                style="background: #f6f6f6"
-            >
-              <v-icon>mdi-close</v-icon>
-            </v-btn>
-            <v-btn :loading="loading" @click="confirmSearch" elevation="0" rounded>
-              <v-icon left>mdi-magnify</v-icon>
-              Search
-            </v-btn>
-          </div>
-
-        </div>
+    <v-bottom-sheet v-model="showSearchDialog">
+      <v-card color="#f6f6f6">
+        <search-page v-if="showSearchDialog" @close="showSearchDialog=false"
+                     :showing="showSearchDialog"/>
       </v-card>
-    </v-dialog>
+    </v-bottom-sheet>
     <v-dialog fullscreen v-model="showUserPanel">
       <v-card style="width: 100vw;height: 100vh">
         <my-page @close="showUserPanel=false"></my-page>
@@ -144,24 +103,25 @@
 </template>
 
 <script>
-import LogoDisplay from "@/views/widgets/LogoDisplay";
-import MyPage from "@/views/pages/MyPage";
-import {getCurrentUser, getCurrentUserId} from "@/dataLayer/service/firebase/user";
-import OrderCard from "@/views/widgets/items/OrderCard";
-import OrderListPage from "@/views/pages/MyOrderPage.vue";
+import LogoDisplay from "@/views/widgets/LogoDisplay"
+import MyPage from "@/views/pages/MyPage"
+import {getCurrentUser, getCurrentUserId} from "@/dataLayer/service/firebase/user"
+import OrderCard from "@/views/widgets/items/OrderCard"
+import OrderListPage from "@/views/pages/MyOrderPage.vue"
 import {collection, onSnapshot, query} from 'firebase/firestore'
-import {GlobalDB} from "@/plugins/google-fire-base";
-import {pickupOrderPath} from "@/dataLayer/service/firebase/pickupOrder";
-import CheckOutPage from "@/views/pages/CheckOutPage.vue";
+import {GlobalDB} from "@/plugins/google-fire-base"
+import {pickupOrderPath} from "@/dataLayer/service/firebase/pickupOrder"
+import CheckOutPage from "@/views/pages/CheckOutPage.vue"
+import SearchPage from "@/views/pages/SearchPage.vue"
 
 export default {
   name: "HomePage",
-  components: {CheckOutPage, MyPage, OrderCard, LogoDisplay, OrderListPage},
+  components: {SearchPage, CheckOutPage, MyPage, OrderCard, LogoDisplay, OrderListPage},
   async mounted() {
     onSnapshot(query(collection(GlobalDB, pickupOrderPath)), (snapshot) => {
       this.orderList = snapshot.docs.map(it => it.data())
       console.log(this.orderList)
-    });
+    })
   },
   computed: {
     userName() {
@@ -170,21 +130,17 @@ export default {
   },
   data: function () {
     return {
-      showSearchDialog: false,
+      showSearchDialog: true,
       showDetailDialog: false,
-      searchText: '',
-      searchTextModel: '',
-      message: '',
-      loading: false,
-      offsetTop: 0,
       showUserPanel: false,
+      showMyOrders: false,
+
+      offsetTop: 0,
       user: getCurrentUser(),
       userId: getCurrentUserId(),
       orderList: [],
-      showMyOrders: false,
-      showChangeNumberDialog: false,
       orderItem: null,
-    };
+    }
   },
 
   methods: {
@@ -210,23 +166,8 @@ export default {
       this.$router.push('offerSubmit')
     },
     startSearch() {
-      this.searchTextModel = ''
-      this.message = ''
       this.showSearchDialog = true
     },
-    confirmSearch() {
-      if (this.searchTextModel) {
-        this.searchText = this.searchTextModel
-        this.loading = true
-        setTimeout(() => {
-          this.loading = false
-          this.showSearchDialog = false
-        }, 2000)
-      } else {
-        this.message = 'please input some text'
-      }
-
-    }
   }
 }
 </script>

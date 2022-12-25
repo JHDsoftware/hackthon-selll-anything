@@ -16,22 +16,7 @@
         <div class="mt-16" style="width: 100%">
           <div>
             <div class="text-subtitle-1 font-weight-black text-decoration-underline">我的行程</div>
-            <div class="mt-2">
-              <div class="mt-2" style="display: grid;grid-template-columns: repeat(2,minmax(0,1fr));grid-gap: 16px">
-                <v-card @click="flyToChina=true" :color="flyToChina?'primary':''" :dark="flyToChina" elevation="0"
-                        class="pa-2 px-4 text-body-2 d-flex align-center">
-                  <v-icon>mdi-airplane-landing</v-icon>
-                  <v-spacer></v-spacer>
-                  飞往国内
-                </v-card>
-                <v-card @click="flyToChina=false" :color="flyToChina?'':'primary'" :dark="!flyToChina" elevation="0"
-                        class=" pa-4 px-4 text-body-2 d-flex align-center">
-                  <v-icon>mdi-airplane-takeoff</v-icon>
-                  <v-spacer></v-spacer>
-                  飞往海外
-                </v-card>
-              </div>
-            </div>
+            <fly-to-china-selector v-model="flyToChina"></fly-to-china-selector>
             <div class="mt-8">
               <v-dialog style="width: min-content;" max-width="286px">
                 <template v-slot:activator="{ on, attrs }">
@@ -266,12 +251,13 @@ import PageTitle from "@/views/widgets/PageTitle"
 import dayjs from "dayjs"
 import {uploadImage} from "@/dataLayer/service/firebase/uploadImage"
 import {addPickupOrder} from "@/dataLayer/service/firebase/pickupOrder"
+import FlyToChinaSelector from "@/views/widgets/FlyToChinaSelector.vue"
 
 const today = dayjs().format('YYYY-MM-DD')
 export default {
   props: {id: {}},
   name: "OrderSubmitPage",
-  components: {PageTitle},
+  components: {FlyToChinaSelector, PageTitle},
   watch: {
     flyToChina() {
       this.takeoffCity = null

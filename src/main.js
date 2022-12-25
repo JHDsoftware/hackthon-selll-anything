@@ -3,6 +3,7 @@ import App from './App.vue'
 import vuetify from './plugins/vuetify'
 import router from './router'
 import dayjs from "dayjs";
+import './registerServiceWorker'
 
 Vue.config.productionTip = false
 const relativeTime = require('dayjs/plugin/relativeTime');
