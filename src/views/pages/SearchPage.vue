@@ -81,7 +81,8 @@
       </div>
     </template>
     <template v-else>
-      <div class="d-flex flex-column align-center justify-center" style="height:calc(100vh - 64px)">
+      <div class="d-flex flex-column align-center justify-center"
+           style="height:400px">
         <div class="text-h5">
           正在从 🌋 中搜索结果..
         </div>

@@ -1,19 +1,26 @@
 <template>
   <div>
-    <div>
-
-      <div class="d-flex text-h6">
-
-        <div class="font-weight-black">{{ t.takeoffCity }}</div>
-        <div class="mx-1">飞往</div>
-        <div class="font-weight-black">{{ t.landingCity }}</div>
-        <v-spacer></v-spacer>
-        <div>{{ takeoffDate }}</div>
+    <div style="display: grid;grid-template-columns: repeat(2,minmax(0,1fr));grid-gap: 8px">
+      <div class="text-body-2">
+        <div class="text-caption">
+          出发行程
+        </div>
+        <div class="font-weight-black">{{ t.leavingCity }}->{{ t.takeoffCity }}</div>
+      </div>
+      <div class="text-body-2">
+        <div class="text-caption">
+          落地后行程
+        </div>
+        <div class="font-weight-black">{{ t.landingCity }}->{{t.arriveCity}}</div>
       </div>
     </div>
     <div class="mt-4 text-body-2">
-      <div>🗺️ 出发/到达城市： {{ t.leavingCity }}/{{t.arriveCity}}</div>
-      <div>📑 文件： {{ t.filePrice | priceDisplay }}/份</div>
+      <div>
+        <div >
+          🛫 起飞时间: {{ takeoffDate }}
+        </div>
+      </div>
+      <div class="mt-2">📑 文件： {{ t.filePrice | priceDisplay }}/份</div>
       <div>📦 小件物品： {{ t.smallPackagePrice | priceDisplay }}/kg</div>
       <div>
         <template v-if="t.canTakeLuxury">

@@ -14,7 +14,7 @@
     <div class="mt-8"
          style="display: grid;grid-gap:8px;grid-template-columns: repeat(2,minmax(0,1fr))">
       <v-card
-          width="80" @click="showSolana"
+          width="80"
           class="pa-2" elevation="0" color="#f6f6f6">
         <v-responsive :aspect-ratio="1">
           <div style="width: 100%;height: 100%" class="d-flex flex-column justify-center align-center">
@@ -55,7 +55,6 @@
           <div class="text-body-2 mb-4">
             Redem your voucher NFT now!
           </div>
-          <wallet-multi-button ref="wallet" :wallets="wallets"/>
           <v-btn icon @click="finish">
             <v-icon>mdi-check</v-icon>
           </v-btn>
@@ -121,20 +120,11 @@
 <script>
 import {getCurrentUser} from "@/dataLayer/service/firebase/user";
 import {FireBaseAuth} from "@/plugins/google-fire-base";
-import {connection, solana} from "@/plugins/Solana";
-import {findReference} from "@solana/pay";
-import 'solana-wallets-vue-2/styles.css'
-import {WalletMultiButton} from "solana-wallets-vue-2/src/library";
-import {
-  CoinbaseWalletAdapter,
-  GlowWalletAdapter,
-  PhantomWalletAdapter,
-  SlopeWalletAdapter,
-  TorusWalletAdapter
-} from "@solana/wallet-adapter-wallets";
+
+
 import LottieWebVueEsm from "lottie-web-vue";
-import {bundlrStorage, keypairIdentity, Metaplex} from "@metaplex-foundation/js";
-import {v4 as uuidv4} from 'uuid';
+
+
 
 const keys = [
   "7", "8", "9", "C",
@@ -144,7 +134,7 @@ const keys = [
 ]
 export default {
   components: {
-    WalletMultiButton,
+
     LottieWebVueEsm,
   },
   name: "MyPage",
@@ -155,23 +145,13 @@ export default {
     userName() {
       return this.user.isAnonymous ? 'Guest' : this.user.displayName
     },
-    walletReady() {
-      return this.$refs?.wallet?.walletStore?.connected
-    }
+
   },
   data: function () {
     return {
       keys,
       myWallet: 3,
       initialed: false,
-
-      wallets: [
-        new CoinbaseWalletAdapter(),
-        new PhantomWalletAdapter(),
-        new GlowWalletAdapter(),
-        new SlopeWalletAdapter(),
-        new TorusWalletAdapter(),
-      ],
       rechargeAmount: '',
       rechargeDialog: false,
       user: getCurrentUser(),
@@ -204,77 +184,10 @@ export default {
         this.createNFT()
       }, 300)
     },
-    async createNFT() {
-      const store = this.$refs.wallet.walletStore
-      if (!store.connected) {
-        await store.connect()
-      }
-      this.store = store
-      const owner = store?.publicKey
-      const metaplex = Metaplex.make(connection)
-          .use(keypairIdentity(owner))
-          .use(bundlrStorage());
-      const {uri} = await metaplex.nfts().uploadMetadata({
-        name: "TradeAny Coupon",
-        description: "A very good Coupon which can save 0.005 SOL",
-        image: "https://random.imagecdn.app/500/500",
-      });
-      const res = await metaplex.nfts().create({
-        uri,
-        name: "TAC#" + uuidv4(),
-        tokenOwner: owner
-      })
-      console.log(res)
-      this.refreshNftList(metaplex)
-    },
-    async refreshNftList(metaplex) {
-
-      this.nftList = await metaplex.nfts().findAllByOwner({
-        owner: this.$refs.wallet.walletStore?.publicKey
-      });
-    },
-    async refreshQrCode() {
-      this.$nextTick(async () => {
-        if (this.$refs.solona) {
-          this.$refs.solona.innerHTML = ''
-          this.success = false
-          const res = await solana(this.rechargeAmount ?? 0.001, this.$refs.solona)
-          let success = false
-          let count = 0
-          while (count < 5) {
-
-            await new Promise(r => setTimeout(r, 5000))
-            count++
-            try {
-              await findReference(connection, res, {finality: 'confirmed'})
-              success = true
-              this.myWallet = parseFloat(this.myWallet) + parseFloat(this.rechargeAmount)
-            } catch (e) {
-              console.log(e)
-            }
-
-          }
-          if (success) {
-            this.success = true
-          } else {
-            return
-          }
 
 
-        }
 
 
-      })
-    },
-    async showSolana() {
-      this.rechargeDialog = true
-    },
-    updateMyWallet() {
-      this.myWallet += parseFloat(this.rechargeAmount)
-      localStorage.setItem("wallet", this.myWallet)
-      this.rechargeAmount = ''
-      this.rechargeDialog = false
-    },
     logout() {
       FireBaseAuth.signOut()
       this.$router.push('/login')
@@ -284,9 +197,6 @@ export default {
     },
   },
   mounted() {
-    localStorage.getItem("wallet") ?
-        this.myWallet = parseFloat(localStorage.getItem("wallet")) : this.myWallet = 3
-
   }
 }
 </script>

@@ -111,7 +111,7 @@ import OrderListPage from "@/views/pages/MyOrderPage.vue"
 import {collection, onSnapshot, query} from 'firebase/firestore'
 import {GlobalDB} from "@/plugins/google-fire-base"
 import {pickupOrderPath} from "@/dataLayer/service/firebase/pickupOrder"
-import CheckOutPage from "@/views/pages/CheckOutPage.vue"
+import CheckOutPage from "@/views/pages/OrderDetailPage.vue"
 import SearchPage from "@/views/pages/SearchPage.vue"
 
 export default {
@@ -130,7 +130,7 @@ export default {
   },
   data: function () {
     return {
-      showSearchDialog: true,
+      showSearchDialog: false,
       showDetailDialog: false,
       showUserPanel: false,
       showMyOrders: false,

@@ -9,7 +9,11 @@
           </v-btn>
         </template>
         <template #subtitle>
-          付费后查看全部详情
+          <div @click="copy(orderInfo.id)">
+            #{{ orderInfo.id }}
+            <v-icon class="ml-2" small>mdi-content-copy</v-icon>
+          </div>
+
         </template>
       </page-title>
     </div>
@@ -28,6 +32,14 @@
         </info-line>
         <info-line>
           <template #default>
+            出发城市:
+          </template>
+          <template #value>
+            {{ orderInfo.leavingCity }}
+          </template>
+        </info-line>
+        <info-line>
+          <template #default>
             起飞城市:
           </template>
           <template #value>
@@ -40,6 +52,14 @@
           </template>
           <template #value>
             {{ orderInfo.landingCity }}
+          </template>
+        </info-line>
+        <info-line>
+          <template #default>
+            最终到达城市:
+          </template>
+          <template #value>
+            {{ orderInfo.arriveCity }}
           </template>
         </info-line>
         <info-line-subheader>
@@ -66,7 +86,32 @@
         </info-line>
         <info-line>
           <template #default>
-            📦补充说明：
+            📋携带规则：
+          </template>
+          <template #append>
+            <div>
+
+              <template v-if="orderInfo.canTakeLuxury">
+                ✅ 可以携带奢饰品
+              </template>
+              <template v-else>
+                ❌ 不能携带奢饰品
+              </template>
+
+              <template v-if="orderInfo.canTakeMedicine">
+                ✅ 可以携带药品
+              </template>
+              <template v-else>
+                ❌ 不能携带药品
+              </template>
+
+
+            </div>
+          </template>
+        </info-line>
+        <info-line>
+          <template #default>
+            📖补充说明：
           </template>
           <template #append>
             {{ orderInfo.appendInfo }}
@@ -93,7 +138,7 @@
             🔒尚未解锁
           </template>
           <template #append>
-            如果需要使用其他支付方式，请联系人工客服开通
+            解锁后才可以查看全部信息
           </template>
           <template #value>
 
@@ -122,13 +167,21 @@
           </template>
         </info-line>
       </div>
-      <div v-if="!unlocked" class="pa-2 pb-8 white elevation-3" style="position: fixed;bottom: 0px;left: 0;right: 0;width: 100%">
-        <v-btn large color="primary lighten-4 black--text" elevation="0"
+      <div class="pa-2 pb-8 white elevation-3"
+           style="position: fixed;bottom: 0px;left: 0;right: 0;width: 100%">
+        <v-btn v-if="!unlocked" large color="primary lighten-4 black--text" elevation="0"
                block
                @click="confirmDialog=true">
           <v-icon left>mdi-lock</v-icon>
           支付{{ informationFeeAmount | priceDisplay }}马上解锁
         </v-btn>
+        <v-btn v-else large color="green lighten-4 black--text" elevation="0"
+               block
+               @click="confirmDialog=true">
+          <v-icon left>mdi-lock-open</v-icon>
+          已经解锁
+        </v-btn>
+
       </div>
 
     </div>
@@ -152,9 +205,18 @@
         <div>支付5欧，在通过海关时被税被查后，凭相关单据，获得最高500€/3500元被税补偿，
           *补偿以海关单据实际金额为准，最高补偿500€/3500元
         </div>
-
-
         <div class="mt-8" ref="paypal-button"></div>
+        <v-card @click="toWechat" 
+                elevation="0" class="mt-4 pa-4" dark color="green darken-4">
+          <div>
+            其他支付方式
+          </div>
+          <div class="text-caption">
+            点击这里复制🗄️人工客服微信号联系客服, 请将帮带ID发送给客服。
+          </div>
+        </v-card>
+
+
       </v-card>
     </v-bottom-sheet>
     <v-dialog v-model="finished" max-width="400px">
@@ -178,6 +240,7 @@ import {addPayment, getMyPayments} from "@/dataLayer/service/firebase/payment"
 import LottieWebVueEsm from "lottie-web-vue"
 import {loadScript} from "@paypal/paypal-js"
 import {getCurrentUserId} from "@/dataLayer/service/firebase/user"
+import {Toast} from "@/plugins/vuetify"
 
 export default {
   components: {
@@ -231,6 +294,17 @@ export default {
     }
   },
   methods: {
+    async toWechat(){
+      await this.copy('juhaodong3')
+      window.open('weixin://dl/chat?juhaodong3')
+    },
+    async copy(text) {
+      await navigator.clipboard.writeText(text)
+      await Toast.fire({
+        icon: "success",
+        text: text + "已经复制到剪贴板"
+      })
+    },
     async sendOrder() {
       await addPayment(this.orderInfo.id)
       this.finished = true

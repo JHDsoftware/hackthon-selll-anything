@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="d-flex align-center">
+    <div class="d-flex align-start">
       <div>
         <div class="text-body-1 ">
           <slot></slot>
