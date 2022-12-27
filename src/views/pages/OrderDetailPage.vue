@@ -32,7 +32,7 @@
         </info-line>
         <info-line>
           <template #default>
-            出发城市:
+            最初出发城市:
           </template>
           <template #value>
             {{ orderInfo.leavingCity }}
@@ -143,7 +143,7 @@
           <template #value>
 
             <v-chip @click="confirmDialog=true" class="my-1" small color="yellow lighten-4">
-              支付{{ informationFeeAmount | priceDisplay }}解锁
+              现在解锁享有30%折扣
             </v-chip>
           </template>
         </info-line>
@@ -173,7 +173,8 @@
                block
                @click="confirmDialog=true">
           <v-icon left>mdi-lock</v-icon>
-          支付{{ informationFeeAmount | priceDisplay }}马上解锁
+          支付<span
+            class="text-caption text-decoration-line-through">5.00 €</span>{{ informationFeeAmount | priceDisplay }}马上解锁
         </v-btn>
         <v-btn v-else large color="green lighten-4 black--text" elevation="0"
                block
@@ -181,9 +182,7 @@
           <v-icon left>mdi-lock-open</v-icon>
           已经解锁
         </v-btn>
-
       </div>
-
     </div>
 
     <v-bottom-sheet v-model="confirmDialog">
@@ -202,7 +201,7 @@
           <v-spacer></v-spacer>
           <v-checkbox v-model="useInsurance" dense hide-details></v-checkbox>
         </div>
-        <div>支付5欧，在通过海关时被税被查后，凭相关单据，获得最高500€/3500元被税补偿，
+        <div>支付{{ insuranceFeeAmount | priceDisplay }}欧，在通过海关时被税被查后，凭相关单据，获得最高500€/3500元被税补偿，
           *补偿以海关单据实际金额为准，最高补偿500€/3500元
         </div>
         <div class="mt-8" ref="paypal-button"></div>
@@ -272,7 +271,7 @@ export default {
       myOrders: [],
       finished: false,
       confirmDialog: false,
-      informationFeeAmount: 5,
+      informationFeeAmount: 3.5,
       insuranceFeeAmount: 5,
       useInsurance: false,
       paypal: null,
@@ -294,7 +293,7 @@ export default {
     }
   },
   methods: {
-    async toWechat(){
+    async toWechat() {
       await this.copy('bangdaikefu')
       window.open('weixin://dl/chat?bangdaikefu')
     },
@@ -308,6 +307,7 @@ export default {
     async sendOrder() {
       await addPayment(this.orderInfo.id)
       this.finished = true
+      this.confirmDialog = false
       await this.refreshData()
     },
     async refreshData() {

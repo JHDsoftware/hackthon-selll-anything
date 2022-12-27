@@ -11,7 +11,7 @@ const defaultPayment = {
 
 }
 
-export async function addPayment(pickupOrderId,) {
+export async function addPayment(pickupOrderId) {
     try {
         const newItemId = doc(collection(GlobalDB, paymentPath))
         const newItem = Object.assign({
@@ -27,6 +27,7 @@ export async function addPayment(pickupOrderId,) {
         return null
     }
 }
+
 
 export async function getMyPayments() {
     return await resultOf(query(

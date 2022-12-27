@@ -1,8 +1,8 @@
 <template>
   <div v-cloak
-       class="d-flex  align-center justify-center pa-2
+       class="d-flex  align-center justify-center pa-4
         flex-column" style="height: 100vh;background: #f6f6f6">
-    <v-card class="text-center py-6 px-2"
+    <v-card  class="text-center py-6 px-2"
             width="100%"
             style="border-radius: 16px"
             elevation="0"
@@ -30,7 +30,6 @@
                   :error="error"
                   :label="'Email'"
                   :name="'Email'"
-                  outlined
                   @keyup.enter="submit"
                   @change="resetErrors"
               ></v-text-field>
@@ -44,7 +43,6 @@
                   :error-messages="errorMessages"
                   :label="'Password'"
                   :name="'Password'"
-                  outlined
                   @change="resetErrors"
                   @keyup.enter="submit"
                   @click:append="showPassword = !showPassword"
@@ -59,6 +57,7 @@
                   color="primary"
                   @click="submit"
               >{{ '注册/登录' }}
+                <v-icon right>mdi-arrow-right</v-icon>
               </v-btn>
 
 
@@ -73,8 +72,9 @@
                   :loading="provider.isLoading"
                   :disabled="isSignInDisabled"
                   :color="provider.color"
-                  class="mb-2 white--text"
+                  class="mb-2"
                   block
+                  dark
                   elevation="0"
                   @click="signInProvider(provider.id)"
               >
@@ -134,8 +134,8 @@ import {
   loginWithGoogle,
   resetPasswordEmail
 } from '@/plugins/google-fire-base'
-import LogoDisplay from "@/views/widgets/LogoDisplay";
-import VersionDisplay from "@/views/widgets/VersionDisplay";
+import LogoDisplay from "@/views/widgets/LogoDisplay"
+import VersionDisplay from "@/views/widgets/VersionDisplay"
 
 export default {
   name: 'LoginPage',

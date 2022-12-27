@@ -40,11 +40,22 @@
             </div>
             <div style="display: grid;grid-template-columns: repeat(2,minmax(0,1fr));grid-gap: 16px">
               <div>
+                <v-text-field
+                    :rules="nameRules"
+                    label="最初出发城市*"
+                    filled
+                    v-model="leavingCity"
+                />
+              </div>
+              <div>
                 <v-text-field v-model="takeoffCity"
                               :rules="nameRules"
                               label="起飞机场*"
                               filled></v-text-field>
               </div>
+            </div>
+            <div style="display: grid;grid-template-columns: repeat(2,minmax(0,1fr));grid-gap: 16px">
+
               <div>
                 <v-text-field
                     v-model="landingCity"
@@ -52,20 +63,10 @@
                     label="落地机场*"
                     filled></v-text-field>
               </div>
-            </div>
-            <div style="display: grid;grid-template-columns: repeat(2,minmax(0,1fr));grid-gap: 16px">
               <div>
                 <v-text-field
                     :rules="nameRules"
-                    label="出发城市*"
-                    filled
-                    v-model="leavingCity"
-                />
-              </div>
-              <div>
-                <v-text-field
-                    :rules="nameRules"
-                    label="到达城市*"
+                    label="最终到达城市*"
                     filled
                     v-model="arriveCity"
                 />
@@ -187,6 +188,9 @@
                             type="number"
                             append-icon="mdi-currency-eur"/>
             </div>
+            <div class="mb-2 mt-n2 text-caption">
+              增加可带种类，可在下方补充说明需要单独议价，提高您的帮带收入
+            </div>
             <div class="d-flex align-center mt-n4">
               <v-checkbox v-model="canTakeMedicine" hide-details label="我可以携带药品">
               </v-checkbox>
@@ -195,6 +199,8 @@
               <v-checkbox v-model="canTakeLuxury" hide-details label="我可以携带奢饰品">
               </v-checkbox>
             </div>
+
+
           </div>
           <div class="mt-8">
             <div class="text-subtitle-1 font-weight-black text-decoration-underline">补充说明</div>
