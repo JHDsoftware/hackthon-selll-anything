@@ -5,7 +5,7 @@
       <order-general-display :t="t"/>
       <div class="mt-4 d-flex align-center">
         <v-btn elevation="0" dark>
-          <v-icon left>mdi-phone</v-icon>
+          <v-icon left>mdi-lock</v-icon>
           一键付费联系
         </v-btn>
         <v-spacer></v-spacer>

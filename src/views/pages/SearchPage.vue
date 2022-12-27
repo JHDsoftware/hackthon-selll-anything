@@ -14,21 +14,6 @@
       </page-title>
 
       <div class="mt-8">
-        <v-text-field
-            class="mt-2"
-            v-model="searchTextModel"
-            hide-details
-            rounded
-            dense
-            label="出发城市或到达城市"
-            autofocus
-            filled
-        />
-        <div class="text-subtitle-1 font-weight-black my-4 mb-2">
-          特殊要求
-        </div>
-        <v-checkbox hide-details label="可以带奢饰品"></v-checkbox>
-        <v-checkbox hide-details label="可以带药品"></v-checkbox>
         <div class="text-subtitle-1 font-weight-black my-4 mb-2">
           出发日期
         </div>
@@ -45,10 +30,20 @@
           <v-card elevation="0" class="pa-2 px-4">
             一个月内
           </v-card>
-          <v-card elevation="0" class="pa-2 px-4">
-            其他时间
-          </v-card>
         </div>
+        <div class="text-subtitle-1 font-weight-black my-4 mb-2">
+          地点
+        </div>
+        <v-text-field
+            class="mt-2"
+            v-model="searchTextModel"
+            hide-details
+            dense
+            label="出发城市或到达城市"
+            autofocus
+            filled
+        />
+
       </div>
       <div class="text-caption mt-2 text--secondary">
         {{ message }}
