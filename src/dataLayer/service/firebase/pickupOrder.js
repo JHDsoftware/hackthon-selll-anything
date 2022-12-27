@@ -3,6 +3,7 @@ import {GlobalDB} from "@/plugins/google-fire-base"
 import {docContentOf, resultOf} from "@/dataLayer/service/firebase/queryUtils"
 import {getCurrentUserId} from "@/dataLayer/service/firebase/user"
 import {getMyPayments} from "@/dataLayer/service/firebase/payment"
+import dayjs from "dayjs"
 
 export const pickupOrderPath = "pickupOrder"
 
@@ -53,6 +54,29 @@ export async function addPickupOrder(flyToChina, takeoffDate, takeoffCity,
         console.log(e)
         return null
     }
+}
+
+export async function withdrawOrder(oldItem) {
+    await setDoc(
+        doc(GlobalDB, pickupOrderPath, oldItem.id),
+        Object.assign(
+            {},
+            oldItem,
+            {
+                deleteAt: dayjs().toISOString()
+            }))
+}
+
+export async function updatePickupOrder(oldItem, filePrice = null, smallPackagePrice = null) {
+    await setDoc(
+        doc(GlobalDB, pickupOrderPath, oldItem.id),
+        Object.assign(
+            {},
+            oldItem,
+            {
+                filePrice: filePrice ?? oldItem.filePrice,
+                smallPackagePrice: smallPackagePrice ?? oldItem.smallPackagePrice
+            }))
 }
 
 export async function getMyOrders() {

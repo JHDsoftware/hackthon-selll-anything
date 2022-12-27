@@ -53,7 +53,29 @@
     </v-app-bar>
     <v-main v-scroll="onScroll" class="overflow-y-auto" style="background: #f0f0f0;min-height: calc(100vh)">
       <div class="px-6 pb-12 pt-6">
-        <div style="display: grid;grid-template-columns: repeat(auto-fit,minmax(240px,1fr));grid-gap: 16px">
+        <div>
+          <v-carousel  height="100" hide-delimiters>
+            <v-carousel-item>
+              <v-card @click="showAdDialog=true" style="border-radius: 16px" height="100">
+                <v-img height="100" src="https://picsum.photos/400/100"></v-img>
+              </v-card>
+            </v-carousel-item>
+            <v-carousel-item>
+              <v-card @click="showAdDialog=true" style="border-radius: 16px" height="100">
+                <v-img height="100" src="https://picsum.photos/400/100"></v-img>
+              </v-card>
+            </v-carousel-item>
+            <v-carousel-item>
+              <v-card @click="showAdDialog=true" style="border-radius: 16px" height="100">
+                <v-img height="100" src="https://picsum.photos/400/100"></v-img>
+              </v-card>
+            </v-carousel-item>
+          </v-carousel>
+
+        </div>
+        <div
+            class="mt-4"
+            style="display: grid;grid-template-columns: repeat(auto-fit,minmax(240px,1fr));grid-gap: 16px">
           <order-card
               @click="openOrderDetail(t)"
               v-for="t in orderList"
@@ -99,6 +121,35 @@
         <check-out-page @close="showDetailDialog=false" :order-info="orderItem"/>
       </v-card>
     </v-dialog>
+    <v-bottom-sheet v-model="showAdDialog">
+      <v-card tile class="pa-4">
+        <page-title>
+          特别好的一个商品
+          <template #backButton>
+            <v-btn outlined style="border-radius: 8px" icon @click="showAdDialog=false">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </template>
+          <template #subtitle>
+            广告的描述描述
+          </template>
+        </page-title>
+        <v-card elevation="0" class="mt-2">
+          <v-img src="https://picsum.photos/400/600"></v-img>
+        </v-card>
+        <v-card @click="toWechat"
+                elevation="0" class="mt-4 pa-2 text-center" dark color="green lighten-4 black--text">
+          <div>
+            联系我们，立刻下单
+          </div>
+          <div class="text-caption">
+            点击这里复制我们的微信号
+          </div>
+        </v-card>
+
+
+      </v-card>
+    </v-bottom-sheet>
   </div>
 </template>
 
@@ -113,10 +164,11 @@ import {GlobalDB} from "@/plugins/google-fire-base"
 import {pickupOrderPath} from "@/dataLayer/service/firebase/pickupOrder"
 import CheckOutPage from "@/views/pages/OrderDetailPage.vue"
 import SearchPage from "@/views/pages/SearchPage.vue"
+import PageTitle from "@/views/widgets/PageTitle.vue"
 
 export default {
   name: "HomePage",
-  components: {SearchPage, CheckOutPage, MyPage, OrderCard, LogoDisplay, OrderListPage},
+  components: {PageTitle, SearchPage, CheckOutPage, MyPage, OrderCard, LogoDisplay, OrderListPage},
   async mounted() {
     onSnapshot(query(collection(GlobalDB, pickupOrderPath)), (snapshot) => {
       this.orderList = snapshot.docs.map(it => it.data())
@@ -140,6 +192,8 @@ export default {
       userId: getCurrentUserId(),
       orderList: [],
       orderItem: null,
+
+      showAdDialog: false
     }
   },
 
@@ -168,6 +222,10 @@ export default {
     startSearch() {
       this.showSearchDialog = true
     },
+    async toWechat() {
+      await this.copy('bangdaikefu')
+      window.open('weixin://dl/chat?bangdaikefu')
+    }
   }
 }
 </script>

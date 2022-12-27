@@ -21,13 +21,24 @@
             class="pb-4"
             style="display: grid;grid-auto-flow: column;
             grid-auto-columns: max-content;grid-gap: 8px;overflow-x: scroll">
-          <v-card elevation="0" class="pa-2 px-4">
+          <v-card :color="currentSelectTimeRange===null?'primary':''"
+                  @click="currentSelectTimeRange=null"
+                  :dark="currentSelectTimeRange===null"
+                  elevation="0" class="pa-2 px-4">
             不限
           </v-card>
-          <v-card elevation="0" class="pa-2 px-4">
+          <v-card
+              :color="currentSelectTimeRange==='week'?'primary':''"
+              @click="currentSelectTimeRange='week'"
+              :dark="currentSelectTimeRange==='week'"
+              elevation="0" class="pa-2 px-4">
             一周内
           </v-card>
-          <v-card elevation="0" class="pa-2 px-4">
+          <v-card
+              :color="currentSelectTimeRange==='month'?'primary':''"
+              @click="currentSelectTimeRange='month'"
+              :dark="currentSelectTimeRange==='month'"
+              elevation="0" class="pa-2 px-4">
             一个月内
           </v-card>
         </div>
@@ -99,6 +110,7 @@ export default {
       loading: false,
       searchTextModel: '',
       message: '',
+      currentSelectTimeRange: null,
     }
   },
   methods: {

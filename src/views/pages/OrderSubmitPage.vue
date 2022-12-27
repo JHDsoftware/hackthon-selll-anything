@@ -40,18 +40,17 @@
             </div>
             <div style="display: grid;grid-template-columns: repeat(2,minmax(0,1fr));grid-gap: 16px">
               <div>
-                <v-select v-model="takeoffCity"
-                          :rules="nameRules"
-                          :items="startCity"
-                          return-object label="起飞机场*"
-                          filled></v-select>
+                <v-text-field v-model="takeoffCity"
+                              :rules="nameRules"
+                              label="起飞机场*"
+                              filled></v-text-field>
               </div>
               <div>
-                <v-select :items="targetCity"
-                          v-model="landingCity"
-                          :rules="nameRules"
-                          return-object label="落地机场*"
-                          filled></v-select>
+                <v-text-field
+                    v-model="landingCity"
+                    :rules="nameRules"
+                    label="落地机场*"
+                    filled></v-text-field>
               </div>
             </div>
             <div style="display: grid;grid-template-columns: repeat(2,minmax(0,1fr));grid-gap: 16px">
@@ -334,7 +333,8 @@ export default {
       this.loading = true
       const imageUrl = await uploadImage(this.file)
       const idCardUrl = await uploadImage(this.idFile)
-      await addPickupOrder(this.flyToChina,
+      await addPickupOrder(
+          this.flyToChina,
           this.takeoffDate,
           this.takeoffCity,
           this.landingCity,

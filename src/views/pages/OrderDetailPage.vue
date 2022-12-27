@@ -163,7 +163,7 @@
             售后服务
           </template>
           <template #append>
-            如果有任何疑问，可以通过微信联系我们的人工客服 Wechat：juhaodong2
+            如果有任何疑问，可以通过微信联系我们的人工客服 Wechat：bangdaikefu
           </template>
         </info-line>
       </div>
@@ -295,8 +295,8 @@ export default {
   },
   methods: {
     async toWechat(){
-      await this.copy('juhaodong3')
-      window.open('weixin://dl/chat?juhaodong3')
+      await this.copy('bangdaikefu')
+      window.open('weixin://dl/chat?bangdaikefu')
     },
     async copy(text) {
       await navigator.clipboard.writeText(text)
