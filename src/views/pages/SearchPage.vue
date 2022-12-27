@@ -14,32 +14,18 @@
       </page-title>
 
       <div class="mt-8">
-        <div class="text-subtitle-1 font-weight-black my-2">
-          行程
-        </div>
-        <fly-to-china-selector></fly-to-china-selector>
         <v-text-field
             class="mt-2"
             v-model="searchTextModel"
             hide-details
+            rounded
             dense
-            label="出发地点"
+            label="出发城市或到达城市"
             autofocus
             filled
-            placeholder="到达地点"
-        />
-        <v-text-field
-            class="mt-2"
-            v-model="searchTextModel"
-            hide-details
-            dense
-            label="到达地点"
-            autofocus
-            filled
-            placeholder="到达地点"
         />
         <div class="text-subtitle-1 font-weight-black my-4 mb-2">
-          规则
+          特殊要求
         </div>
         <v-checkbox hide-details label="可以带奢饰品"></v-checkbox>
         <v-checkbox hide-details label="可以带药品"></v-checkbox>
@@ -57,7 +43,7 @@
             一周内
           </v-card>
           <v-card elevation="0" class="pa-2 px-4">
-           一个月内
+            一个月内
           </v-card>
           <v-card elevation="0" class="pa-2 px-4">
             其他时间
@@ -97,11 +83,10 @@
 
 <script>
 import PageTitle from "@/views/widgets/PageTitle.vue"
-import FlyToChinaSelector from "@/views/widgets/FlyToChinaSelector.vue"
 
 export default {
   name: "SearchPage",
-  components: {FlyToChinaSelector, PageTitle},
+  components: {PageTitle},
   props: {
     showing: {}
   },

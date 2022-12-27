@@ -4,7 +4,7 @@
       <div>
         <div class="text-body-1 ">
           <slot></slot>
-        </div>
+        </div> 
 
       </div>
       <v-spacer></v-spacer>

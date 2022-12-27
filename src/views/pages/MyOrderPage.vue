@@ -15,7 +15,7 @@
         <v-card
             @click="tab=0"
             :color="tab===0?'success black--text lighten-2':'transparent'"
-            :elevation="tab===0?1:0"
+            :elevation="0"
             class="pa-2 d-flex align-center text-caption justify-center"
         >
           我提交的
@@ -23,11 +23,11 @@
         <v-card
             @click="tab=1"
             :color="tab===1?'success black--text lighten-2':'transparent'"
-            :elevation="tab===1?1:0"
+            :elevation="0"
             class="pa-2 d-flex align-center text-caption justify-center"
         >
           我购买的
-        </v-card>
+        </v-card> 
       </div>
       <template v-if="tab===0">
         <div class="py-2">

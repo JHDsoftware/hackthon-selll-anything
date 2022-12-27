@@ -206,7 +206,7 @@
           *补偿以海关单据实际金额为准，最高补偿500€/3500元
         </div>
         <div class="mt-8" ref="paypal-button"></div>
-        <v-card @click="toWechat" 
+        <v-card @click="toWechat"
                 elevation="0" class="mt-4 pa-4" dark color="green darken-4">
           <div>
             其他支付方式
