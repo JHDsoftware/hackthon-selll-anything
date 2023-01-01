@@ -9,7 +9,11 @@
           一键付费联系
         </v-btn>
         <v-spacer></v-spacer>
-        <v-icon color="grey lighten-2">mdi-information-outline</v-icon>
+        <div class="text--secondary d-flex align-center">
+          <v-icon small left color="grey lighten-2">mdi-information-outline</v-icon>
+          <div class="text-caption">更有最高500欧被税险</div>
+        </div>
+
       </div>
     </div>
   </v-card>

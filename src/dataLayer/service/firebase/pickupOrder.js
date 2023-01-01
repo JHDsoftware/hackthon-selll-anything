@@ -88,7 +88,8 @@ export async function getMyOrders() {
 export async function getMyPurchasedOrders() {
     const payments = await getMyPayments()
     return (await Promise.allSettled(payments.map(async it =>
-        await docContentOf(doc(GlobalDB, pickupOrderPath, it.pickupOrderId))))).map(it => it.value)
+        ({...await docContentOf(doc(GlobalDB, pickupOrderPath, it.pickupOrderId)), withInsurance: it.withInsurance}))))
+        .map(that => that.value)
 
 }
 

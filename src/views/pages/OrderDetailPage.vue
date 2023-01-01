@@ -120,7 +120,7 @@
         <info-line-subheader>
           联系信息
         </info-line-subheader>
-        <template v-if="unlocked">
+        <template v-if="unlocked||isMyOrder">
           <info-line>
             <template #default>
               联系信息
@@ -158,52 +158,59 @@
             我们根据用户提供的机票和个人有效证件照片检查信息的真实性，将要提供的联系信息均真实有效。所有显示出来的信息均已通过我们的审核。
           </template>
         </info-line>
-        <info-line>
-          <template #default>
-            售后服务
-          </template>
-          <template #append>
-            如果有任何疑问，可以通过微信联系我们的人工客服 Wechat：bangdaikefu
-          </template>
-        </info-line>
       </div>
       <div class="pa-2 pb-8 white elevation-3"
            style="position: fixed;bottom: 0px;left: 0;right: 0;width: 100%">
-        <v-btn v-if="!unlocked" large color="primary lighten-4 black--text" elevation="0"
+        <v-btn v-if="isMyOrder" block large color="green lighten-4 black--text" elevation="0">
+          <v-icon left>mdi-shield-lock-outline</v-icon>
+          本条信息由我发布
+        </v-btn>
+        <v-btn v-else-if="!unlocked" large color="primary lighten-4 black--text" elevation="0"
                block
                @click="confirmDialog=true">
           <v-icon left>mdi-lock</v-icon>
           支付<span
             class="text-caption text-decoration-line-through">5.00 €</span>{{ informationFeeAmount | priceDisplay }}马上解锁
         </v-btn>
+        <v-btn v-else-if="haveInsurance" block large color="green lighten-4 black--text" elevation="0">
+          <v-icon left>mdi-shield-lock-outline</v-icon>
+          已经购买了被税险！
+        </v-btn>
+
         <v-btn v-else large color="green lighten-4 black--text" elevation="0"
                block
                @click="confirmDialog=true">
           <v-icon left>mdi-lock-open</v-icon>
-          已经解锁
+          已经解锁, 购买被税险
         </v-btn>
       </div>
     </div>
 
     <v-bottom-sheet v-model="confirmDialog">
       <v-card class="pa-4 py-6 text-body-2">
-        <div class="text-subtitle-1 font-weight-bold">5欧信息服务费包含：</div>
-        <div class="mt-2">☑️个人信息验证</div>
-        <div>☑️ 机票信息核实</div>
-        <div>☑️ 帮带信息人工审核</div>
+        <template v-if="unlocked">
+          <div class="text-subtitle-1 my-2 font-weight-bold d-flex align-center">
+            启用被税补偿
+            <v-spacer></v-spacer>
+          </div>
+          <div>支付{{ insuranceFeeAmount | priceDisplay }}欧，在通过海关时被税被查后，凭相关单据，获得最高500€/3500元被税补偿，
+            *补偿以海关单据实际金额为准，最高补偿500€/3500元
+          </div>
+        </template>
+        <template v-else>
+          <div class="text-subtitle-1 font-weight-bold">5欧信息服务费包含：</div>
+          <div class="mt-2">☑️个人信息验证</div>
+          <div>☑️ 机票信息核实</div>
+          <div>☑️ 帮带信息人工审核</div>
+          <div class="text-subtitle-1 my-2 mt-8 font-weight-bold">️注意事项：</div>
+          <div>️解锁联系后未达成一致，信息服务费不退款</div>
+          <div>️不负责帮带过程中的问题责任</div>
+          <div class="text-subtitle-1 my-2 mt-8 font-weight-bold">️被税补偿：
+          </div>
+          <div>️在协商后，可以回到帮带详情页面支付{{ insuranceFeeAmount|priceDisplay }}获得最高500€/3500元被税补偿</div>
+        </template>
 
 
-        <div class="text-subtitle-1 my-2 mt-8 font-weight-bold">️注意事项：</div>
-        <div>️解锁联系后未达成一致，信息服务费不退款</div>
-        <div>️不负责帮带过程中的问题责任</div>
-        <div class="text-subtitle-1 my-2 mt-8 font-weight-bold d-flex align-center">
-          启用被税补偿
-          <v-spacer></v-spacer>
-          <v-checkbox v-model="useInsurance" dense hide-details></v-checkbox>
-        </div>
-        <div>支付{{ insuranceFeeAmount | priceDisplay }}欧，在通过海关时被税被查后，凭相关单据，获得最高500€/3500元被税补偿，
-          *补偿以海关单据实际金额为准，最高补偿500€/3500元
-        </div>
         <div class="mt-8" ref="paypal-button"></div>
         <v-card @click="toWechat"
                 elevation="0" class="mt-4 pa-4" dark color="green darken-4">
@@ -252,11 +259,17 @@ export default {
     orderInfo: {}
   },
   computed: {
+    isMyOrder() {
+      return this.orderInfo.userId === getCurrentUserId()
+    },
     unlocked() {
-      return this.myOrders.some(it => it.pickupOrderId === this.orderInfo.id) || this.orderInfo.userId === getCurrentUserId()
+      return this.myOrders.some(it => it.pickupOrderId === this.orderInfo.id)
+    },
+    haveInsurance() {
+      return this.unlocked && this.myOrders.find(it => it.pickupOrderId === this.orderInfo.id)?.withInsurance
     },
     finalAmount() {
-      return (this.useInsurance ? this.insuranceFeeAmount : 0) + this.informationFeeAmount
+      return (this.unlocked ? this.insuranceFeeAmount : this.informationFeeAmount)
     }
   },
   data: function () {

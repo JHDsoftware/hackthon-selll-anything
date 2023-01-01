@@ -54,36 +54,19 @@
         <template v-else>
           <div class="py-2">
             <div :key="t.id" v-for="t in purchasedOrders">
-              <v-card elevation="0" color="grey lighten-4" class="pa-4 text-body-2 mb-2">
-                <div class="d-flex">
-                  <div>
-                    <div>{{ t.takeoffDate }}</div>
-                    <div class="d-flex text-h6">
-                      <div class="font-weight-bold">{{ t.takeoffCity }}</div>
-                      <div class="mx-1">飞往</div>
-                      <div class="font-weight-bold">{{ t.landingCity }}</div>
-                    </div>
-                  </div>
-                  <v-spacer></v-spacer>
-                  <v-btn icon>
-                    <v-icon>
-                      mdi-dots-vertical
-                    </v-icon>
+              <v-card @click="openDetail(t)" elevation="0" color="grey lighten-4"
+                      class="pa-4 text-body-2 mb-2">
+                <order-general-display :t="t"/>
+                <div class="mt-4 d-flex align-center">
+                  <v-btn v-if="!t.withInsurance" @click.stop="withdrawOrder(t)" elevation="0" color="primary lighten-4 black--text">
+                    <v-icon left>mdi-shield-lock-outline</v-icon>
+                    购买被税险
                   </v-btn>
-                </div>
-                <div class="mt-4 text-body-2">
-                  <div>📑 文件： {{ t.filePrice | priceDisplay }}/份</div>
-                  <div>📦 小件物品： {{ t.smallPackagePrice | priceDisplay }}/kg</div>
-                  <div>🛍️ 其他信息</div>
-                  <div class="pl-6">{{ t.appendInfo }}</div>
-                  <div>📞 联系信息</div>
-                  <div class="pl-6">{{ t.contactInfo }}</div>
-                  <div v-if="t.authed">
-                    ✅ 已实名认证/机票已经审核
-                  </div>
-                  <div v-else>
-                    ⚠️ 正在等待审核
-                  </div>
+                  <v-chip v-else  elevation="0" color="green lighten-4 black--text">
+                    <v-icon left>mdi-shield-lock-outline</v-icon>
+                    已经购买被税险
+                  </v-chip>
+                  <v-spacer></v-spacer>
                 </div>
               </v-card>
             </div>
