@@ -361,7 +361,7 @@ export default {
     this.paypal = await loadScript({
       currency: "EUR",
       "client-id":
-          "AaaptlTEZvoBibZua_vmL5ZMdpi2pwgY5xHd4FfYk80LIas_TN97ViZFBpz50V_z_miJk3dOXbLerkez"
+          "AccC0QXJfXebFGT9SdaBr9InnHj2o6UdyPuPolH4ghXbN0bpTIGrCbrTlN9yFlQEZFLiEn5yBlHhVMSb"
     })
 
   },
