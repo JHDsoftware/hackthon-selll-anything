@@ -1,7 +1,6 @@
 <template>
   <div class="text-decoration-underline">
-    <span class="font-weight-medium">帮带宝</span>
-    <span class="font-weight-black"> v0.0.1</span>
+    <v-img width="72" :src="require('@/assets/logo.png')"></v-img>
   </div>
 </template>
 

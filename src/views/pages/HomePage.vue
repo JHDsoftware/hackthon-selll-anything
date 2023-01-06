@@ -54,24 +54,9 @@
     <v-main v-scroll="onScroll" class="overflow-y-auto" style="background: #f0f0f0;min-height: calc(100vh)">
       <div class="px-6 pb-12 pt-6">
         <div>
-          <v-carousel  height="100" hide-delimiters>
-            <v-carousel-item>
-              <v-card @click="showAdDialog=true" style="border-radius: 16px" height="100">
-                <v-img height="100" src="https://picsum.photos/400/100"></v-img>
-              </v-card>
-            </v-carousel-item>
-            <v-carousel-item>
-              <v-card @click="showAdDialog=true" style="border-radius: 16px" height="100">
-                <v-img height="100" src="https://picsum.photos/400/100"></v-img>
-              </v-card>
-            </v-carousel-item>
-            <v-carousel-item>
-              <v-card @click="showAdDialog=true" style="border-radius: 16px" height="100">
-                <v-img height="100" src="https://picsum.photos/400/100"></v-img>
-              </v-card>
-            </v-carousel-item>
-          </v-carousel>
-
+          <v-card style="width: 100%;border-radius: 16px" elevation="0">
+            <v-img :aspect-ratio="16/9" :src="require('@/assets/banner.jpg')"></v-img>
+          </v-card>
         </div>
         <div
             class="mt-4"
