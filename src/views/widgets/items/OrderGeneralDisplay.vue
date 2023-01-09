@@ -22,21 +22,6 @@
       </div>
       <div class="mt-2">📑 文件： {{ t.filePrice | priceDisplay }}/份</div>
       <div>📦 小件物品： {{ t.smallPackagePrice | priceDisplay }}/kg</div>
-      <div>
-        <template v-if="t.canTakeLuxury">
-          ✅ 可以携带奢饰品
-        </template>
-        <template v-else>
-          ❌ 不能携带奢饰品
-        </template>
-        <template v-if="t.canTakeMedicine">
-          ✅ 可以携带药品
-        </template>
-        <template v-else>
-          ❌ 不能携带药品
-        </template>
-
-      </div>
       <div class="mt-2">
         <div v-if="t.authed">
           ✅ 已实名认证/机票已经审核
