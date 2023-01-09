@@ -72,6 +72,8 @@
                 />
               </div>
             </div>
+
+
             <div>
               <v-card
                   width="100%" elevation="0"
@@ -112,12 +114,14 @@
                   <div>
                     <div class="text-body-2">点击这里上传机票照片</div>
                     <div class="text-caption">
-                      我们需要您的机票来校验您的信息真实性
+                      机票您可以将票号进行部分打码隐藏，我们只核对时间与本人名字等路程信息。
                     </div>
                   </div>
 
                 </v-card>
               </v-card>
+
+
             </div>
             <div>
               <v-card
@@ -159,12 +163,16 @@
                   <div>
                     <div class="text-body-2">点击这里上传个人证件照片</div>
                     <div class="text-caption">
-                      我们需要您的个人证件照片来校验您的信息真实性
+                      您可以上传学生卡、医保卡、交通卡等包含名字的身份证明即可，有证件号码的您可以打码隐藏后上传
                     </div>
                   </div>
 
                 </v-card>
               </v-card>
+            </div>
+            <div class="pa-2 text-body-2">
+              隐私保护：根据欧盟GDPR数据保护，我们将坚持保护您的信息隐私。<br>
+              您上传的证件机票信息只有平台后台审核人员可以查看，任何其他人员无法查看，帮带日期过后将会全部删除
             </div>
 
 
@@ -191,16 +199,6 @@
             <div class="mb-2 mt-n2 text-caption">
               增加可带种类，可在下方补充说明需要单独议价，提高您的帮带收入
             </div>
-            <div class="d-flex align-center mt-n4">
-              <v-checkbox v-model="canTakeMedicine" hide-details label="我可以携带药品">
-              </v-checkbox>
-            </div>
-            <div class="d-flex align-center">
-              <v-checkbox v-model="canTakeLuxury" hide-details label="我可以携带奢饰品">
-              </v-checkbox>
-            </div>
-
-
           </div>
           <div class="mt-8">
             <div class="text-subtitle-1 font-weight-black text-decoration-underline">补充说明</div>

@@ -86,31 +86,6 @@
         </info-line>
         <info-line>
           <template #default>
-            📋携带规则：
-          </template>
-          <template #append>
-            <div>
-
-              <template v-if="orderInfo.canTakeLuxury">
-                ✅ 可以携带奢饰品
-              </template>
-              <template v-else>
-                ❌ 不能携带奢饰品
-              </template>
-
-              <template v-if="orderInfo.canTakeMedicine">
-                ✅ 可以携带药品
-              </template>
-              <template v-else>
-                ❌ 不能携带药品
-              </template>
-
-
-            </div>
-          </template>
-        </info-line>
-        <info-line>
-          <template #default>
             📖补充说明：
           </template>
           <template #append>
